@@ -1,0 +1,14 @@
+﻿<sscLotteryTool:DemoWindow x:Class="SscLotteryTool.SingleBitForecastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sscLotteryTool="clr-namespace:SscLotteryTool"
+        Title="腾讯分分彩-连中2统计" Height="706" Width="1015"
+        Style="{StaticResource MainWindowStyle}"
+        WindowStartupLocation="CenterScreen"
+        ShowMaxButton="true" 
+        ShowMinButton="true"
+        Icon="App.ico">
+    <Grid>
+        <Grid x:Name="Container" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ></Grid>
+    </Grid>
+</sscLotteryTool:DemoWindow>

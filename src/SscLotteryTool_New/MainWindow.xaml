@@ -1,0 +1,17 @@
+﻿<sscLotteryTool:DemoWindow x:Class="SscLotteryTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sscLotteryTool="clr-namespace:SscLotteryTool"
+        Title="腾讯分分彩" Height="706" Width="1015"
+        Style="{StaticResource MainWindowStyle}"
+        WindowStartupLocation="CenterScreen"
+                           Icon="App.ico">
+    <Window.Resources>
+        <sscLotteryTool:GridHeightConverter x:Key="gridConverter"></sscLotteryTool:GridHeightConverter>
+    </Window.Resources>
+    <Grid x:Name="Container1" >
+        <ScrollViewer Grid.Column="0" Name="scrollViewer1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden" >
+            <Grid x:Name="Container"  Height="{Binding Path=ActualHeight,ElementName=scrollViewer1,Converter={StaticResource gridConverter}}" Width="2490"></Grid>
+        </ScrollViewer>
+    </Grid>
+</sscLotteryTool:DemoWindow>
