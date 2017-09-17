@@ -106,12 +106,13 @@ namespace SscLotteryTool
 
         private static List<int> UserHighBits = new List<int>();
         private static List<int> UserLowBits = new List<int>();
-        private static KeyValueConfig config;
+        public static KeyValueConfig config;
 
         public MainWindow()
         {
             InitializeComponent();
             StartTime = DateTime.Now;
+            UserStartTime = DateTime.Now;
 
             GetRandomData();
             _lastDatas = new List<LotteryNumber>();
@@ -121,6 +122,7 @@ namespace SscLotteryTool
             _textBoxs = new Dictionary<int, TextBox[]>();
             this.Loaded += MainWindow_Loaded;
             config = new KeyValueConfig(string.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Config.ini"));
+            var cookie = config["cookie", ""];
             LimitChar = int.Parse(config["Limitchar", "3"]);
             RowCount = int.Parse(config["RowSize", "12"]) + RowHeader;
             ColumnCount = int.Parse(config["ColumnSize", "30"]) + ColumnHeader;
@@ -136,7 +138,6 @@ namespace SscLotteryTool
             {
                 UserLowBits = Method.GetNumber(LowNumber);
             }
-
         }
 
         private static string _highNumber;
@@ -156,7 +157,6 @@ namespace SscLotteryTool
                     }
                 }
                 UpdateUserDisplays();
-
             }
         }
         private static string _lowNumber;
@@ -195,10 +195,16 @@ namespace SscLotteryTool
         {
             lock (_lock)
             {
-                if (DateTime.Now.Day != StartTime.Day)
+                if (DateTime.Now.Day != UserStartTime.Day)
                 {
                     _lastDatas.Clear();
                     UserForecastNums.Clear();
+                    UserStartTime = DateTime.Now;
+                }
+
+                if (DateTime.Now.Day != StartTime.Day)
+                {
+                    _lastDatas.Clear();
                     AutoForecastNums.Clear();
                     DisplayList3.Clear();
                     DisplayList4.Clear();
@@ -210,7 +216,7 @@ namespace SscLotteryTool
                 {
                     if (!_lastDatas.Exists(t => t.ActualIndex == d.ActualIndex))
                     {
-                        if (_lastDatas.Count >= 30)
+                        if (_lastDatas.Count >= 1440)
                         {
                             _lastDatas.RemoveAt(_lastDatas.Count - 1);
                         }
@@ -250,25 +256,27 @@ namespace SscLotteryTool
                 {
                     LastLowDatas.Add(item.Clone());
                 }
+                if (IsOpenUserStatic)
+                {
+                    ForecastNumber fnum1 = new ForecastNumber();
+                    fnum1.Time = lastNum.Time;
+                    fnum1.HighBits = UserHighBits;
+                    fnum1.LowBits = UserLowBits;
+                    fnum1.High = lastNum.HightBit;
+                    fnum1.Low = lastNum.LowBit;
+
+                    lock (_lock)
+                    {
+                        UserForecastNums.Add(fnum1);
+                    }
+
+
+                    UpdateUserDisplays();
+
+                }
+
                 if (IsOpenStatic)
                 {
-                    //ForecastNumber fnum1 = new ForecastNumber();
-                    //fnum1.Time = lastNum.Time;
-                    //fnum1.HighBits = UserHighBits;
-                    //fnum1.LowBits = UserLowBits;
-                    //fnum1.High = lastNum.HightBit;
-                    //fnum1.Low = lastNum.LowBit;
-
-                    //lock (_lock)
-                    //{
-                    //    UserForecastNums.Add(fnum1);
-                    //}
-
-                    //if (AutoForecastNums.Count == 40)
-                    //{
-                    //    AutoForecastNums.RemoveRange(35, 5);
-                    //}
-
                     ForecastNumber fnum = new ForecastNumber();
                     fnum.Time = lastNum.Time;
                     fnum.HighBits = n1;
@@ -297,9 +305,6 @@ namespace SscLotteryTool
                             AutoForecastNums.Insert(0, fnum);
                         }
                     }
-
-                    //UpdateUserDisplays();
-
                     UpdateAutoDisplays();
                 }
 
@@ -339,6 +344,45 @@ namespace SscLotteryTool
         }
 
         public static bool IsOpenStatic = false;
+
+        static bool _isOpenUserStatic = false;
+
+
+        public static bool IsOpenUserStatic
+        {
+            get
+            {
+                return _isOpenUserStatic;
+            }
+            set
+            {
+
+                _isOpenUserStatic = value;
+                if (_isOpenUserStatic)
+                {
+                    lock (_lock)
+                    {
+                        UserForecastNums.Clear();
+                    }
+                }
+            }
+        }
+
+        public static DateTime _userStartTime;
+        public static DateTime UserStartTime
+        {
+            get { return _userStartTime; }
+            set
+            {
+                lock (_lock)
+                {
+                    _userStartTime = value;
+                }
+            }
+        }
+        public static DateTime UserEndTime { get; set; }
+
+
         public static DateTime _startTime;
         public static DateTime StartTime
         {
@@ -391,8 +435,8 @@ namespace SscLotteryTool
         private static List<ForecastNumber> GetUserNumber(int hour)
         {
             List<ForecastNumber> result = new List<ForecastNumber>();
-            DateTime endTime = StartTime.AddHours(hour);
-            DateTime startTime = StartTime.AddHours(hour - 1);
+            DateTime endTime = UserStartTime.AddHours(hour);
+            DateTime startTime = UserStartTime.AddHours(hour - 1);
             if (startTime > DateTime.Now)
             {
                 return result;
@@ -954,6 +998,12 @@ namespace SscLotteryTool
             btn5.SetValue(Grid.ColumnProperty, 1);
             bd5.Child = btn5;
 
+            var bd6 = AllBorders[2, 6];
+            Button btn6 = new Button() { Content = "统计2", Padding = new Thickness(0), };
+            btn6.Click += btn6_Click;
+            btn6.SetValue(Grid.RowProperty, 2);
+            btn6.SetValue(Grid.ColumnProperty, 1);
+            bd6.Child = btn6;
 
 
 
@@ -1021,6 +1071,18 @@ namespace SscLotteryTool
                 gd1.Children.Add(btnclear2);
                 bd.Child = gd1;
             }
+        }
+
+        private bool _unforecast5;
+        private void btn6_Click(object sender, RoutedEventArgs e)
+        {
+            if (_unforecast5) return;
+
+            StatisticWindow fw = new StatisticWindow();
+            this.UpdateData += fw.Start;
+            fw.Closed += fw_Closed;
+            fw.Show();
+            _unforecast5 = true;
         }
 
         private void btn5_Click(object sender, RoutedEventArgs e)
@@ -1101,6 +1163,14 @@ namespace SscLotteryTool
                 this.UpdateData -= ((StatisticWindow2)sender).Start;
                 //IsOpenStatic = false;
             }
+
+            if (sender is StatisticWindow)
+            {
+                _unforecast5 = false;
+                this.UpdateData -= ((StatisticWindow)sender).Start;
+                //IsOpenStatic = false;
+            }
+
             this.Activate();
             this.BringIntoView();
         }

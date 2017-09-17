@@ -2,15 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sscLotteryTool="clr-namespace:SscLotteryTool"
-        Title="腾讯分分彩-分析统计" Height="706" Width="1015"
+        Title="腾讯分分彩-分析统计2" Height="706" Width="1015"
         Style="{StaticResource MainWindowStyle}"
         WindowStartupLocation="CenterScreen"
         ShowMaxButton="true" 
         ShowMinButton="true"
         Icon="App.ico">
     <Grid x:Name="Container1" >
-        <!--Width="1190"-->
-        <ScrollViewer Grid.Column="0" Name="scrollViewer1" HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Horizontal" Margin="0">
+                <Button Content="开始统计" Click="ButtonStart_Click"></Button>
+                <TextBlock x:Name="startBlock" Text="00:00:00" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
+                <Button Content="结束统计" Click="ButtonEnd_Click"></Button>
+                <TextBlock x:Name="endBlock" Text="00:00:00" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock x:Name="state" Text="" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Grid>
+        <ScrollViewer Grid.Row="1" Name="scrollViewer1" HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" >
             <Grid x:Name="Container" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ></Grid>
         </ScrollViewer>
     </Grid>

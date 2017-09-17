@@ -62,13 +62,15 @@ namespace SscLotteryTool
             if (MainWindow.IsOpenStatic)
             {
                 startBlock.Text = MainWindow.StartTime.ToString("yyyy-MM-dd HH:mm:ss");
-                endBlock.Text = "0000-00-00 00:00:00";
+                endBlock.Text = "0001-01-01 00:00:00";
             }
             else
             {
                 startBlock.Text = MainWindow.StartTime.ToString("yyyy-mm-dd HH:mm:ss");
                 endBlock.Text = MainWindow.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
             }
+            state.Text = !MainWindow.IsOpenStatic ? "停止" : "运行中";
+
         }
 
         public void Start()
@@ -413,7 +415,9 @@ namespace SscLotteryTool
             MainWindow.IsOpenStatic = true;
             MainWindow.StartTime = DateTime.Now;
             startBlock.Text = MainWindow.StartTime.ToString("yyyy-MM-dd HH:mm:ss");
-            endBlock.Text = "0000-00-00 00:00:00";
+            endBlock.Text = "0001-01-01 00:00:00";
+            state.Text = !MainWindow.IsOpenStatic ? "停止" : "运行中";
+
         }
 
         private void ButtonEnd_Click(object sender, RoutedEventArgs e)
@@ -421,6 +425,8 @@ namespace SscLotteryTool
             MainWindow.IsOpenStatic = false;
             MainWindow.EndTime = DateTime.Now;
             endBlock.Text = MainWindow.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
+            state.Text = !MainWindow.IsOpenStatic ? "停止" : "运行中";
+
         }
     }
 }

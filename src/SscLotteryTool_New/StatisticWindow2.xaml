@@ -19,6 +19,7 @@
                 <TextBlock x:Name="startBlock" Text="00:00:00" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
                 <Button Content="结束统计" Click="ButtonEnd_Click"></Button>
                 <TextBlock x:Name="endBlock" Text="00:00:00" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock x:Name="state" Text="" Margin="5,0,5,0" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Grid>
         <ScrollViewer Grid.Row="1" Name="scrollViewer1" HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" >

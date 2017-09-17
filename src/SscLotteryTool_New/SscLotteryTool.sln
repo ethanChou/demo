@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SscLotteryTool", "SscLotteryTool.csproj", "{92353282-0E41-42CA-95B7-BCC1B8329F6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SscLotteryTool_New", "SscLotteryTool_New.csproj", "{A67C912C-154D-46CA-A2FA-546600B0D63D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "..\ConsoleApplication1\ConsoleApplication1.csproj", "{0C169681-8A07-453F-AEE0-38323C753BD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OASystem", "E:\迅雷下载\OASystem\OASystem.csproj", "{62955E2C-2C0B-454C-A955-C77257341584}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{92353282-0E41-42CA-95B7-BCC1B8329F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92353282-0E41-42CA-95B7-BCC1B8329F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92353282-0E41-42CA-95B7-BCC1B8329F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92353282-0E41-42CA-95B7-BCC1B8329F6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C169681-8A07-453F-AEE0-38323C753BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C169681-8A07-453F-AEE0-38323C753BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C169681-8A07-453F-AEE0-38323C753BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C169681-8A07-453F-AEE0-38323C753BD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62955E2C-2C0B-454C-A955-C77257341584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62955E2C-2C0B-454C-A955-C77257341584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62955E2C-2C0B-454C-A955-C77257341584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62955E2C-2C0B-454C-A955-C77257341584}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
