@@ -21,69 +21,165 @@ namespace SscLotteryTool
         /// </summary>
         private const string Url = "https://mma.qq.com/cgi-bin/im/online&callback=test";
         private Thread _runThread;
+        private Thread _getDataThread;
         private bool _isStop = false;
         /// <summary>
         /// 数据更新
         /// </summary>
         public event Action<List<LotteryNumber>> LotteryRefresh;
 
-        private int RefrehsInterval;
+        private Queue<LotteryNumber> _buffer = new Queue<LotteryNumber>();
+        private Stopwatch _watch = new Stopwatch();
+        private LotteryNumber _lastData;
+        private static object _lock = new object();
+        private List<LotteryNumber> _lastDatas;
+        private string baseRoot, dataDir;
+        //private int RefrehsInterval;
         public LotteryStatistical(int interval = 60)
         {
-            RefrehsInterval = 20;
+            //RefrehsInterval = 20;
         }
 
         public void Start()
         {
+
+            baseRoot = AppDomain.CurrentDomain.BaseDirectory;
+            dataDir = Path.Combine(baseRoot, "Data");
+
+            InitDir(dataDir);
+
             _isStop = false;
+            _getDataThread = new Thread(RunData);
             _runThread = new Thread(Run);
-            //_runThread.SetApartmentState(ApartmentState.STA);
             _runThread.Start();
+            _getDataThread.Start();
+
+
+        }
+
+        private void InitDir(string dir)
+        {
+            try
+            {
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public void Stop()
         {
             _isStop = true;
             _runThread.Join();
+            _getDataThread.Join();
         }
-        List<LotteryNumber> _lastDatas;
+
+        private void RunData()
+        {
+            while (!_isStop)
+            {
+                try
+                {
+                    LotteryNumber result = GetDataEx(Url);
+
+                    if (result == null) continue;
+
+                    if (_lastData == null || !_lastData.ActualIndex.Equals(result.ActualIndex))
+                    {
+                        lock (_lock)
+                        {
+                            _buffer.Enqueue(result);
+                            _lastData = result;
+                        }
+                    }
+
+                    string tempDir = Path.Combine(dataDir, String.Format("{0}{1}{2}", result.Time.Year, result.Time.Month, result.Time.Day), result.Time.Hour.ToString());
+
+                    InitDir(tempDir);
+
+                    using (FileStream fileStream = new FileStream(Path.Combine(tempDir, "ssc.txt"), FileMode.OpenOrCreate))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.UTF8))
+                        {
+                            streamWriter.AutoFlush = true;
+                            streamWriter.BaseStream.Seek(0, SeekOrigin.End);
+                            streamWriter.WriteLine("[{0}] 在线人数: {1},期号：{2},开奖号码：{3}", result.onlinetime, result.onlinenumber, result.ActualIndex, result.ActualNum);
+                        }
+                    }
+
+                    Thread.Sleep(1000);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
         private void Run()
         {
             while (!_isStop)
             {
                 try
                 {
-                    List<LotteryNumber> result = GetData(Url);
-                    if (result.Count == 0)
+                    LotteryNumber number;
+                    lock (_lock)
                     {
-                        Thread.Sleep(10);
-                        continue;
+                        if (_buffer.Count == 0)
+                        {
+                            //Console.WriteLine("队列为空");
+                            continue;
+                        }
+                        number = _buffer.Dequeue();
                     }
 
-                    if (_lastDatas == null)
-                    {
-                        _lastDatas = result;
-                    }
-                    else
-                    {
-                        if (_lastDatas.Count > 0 && result.Count > 0)
-                        {
-                            if (_lastDatas[0].ActualIndex == result[0].ActualIndex)
-                            {
-                                Thread.Sleep(2000);
-                                continue;
-                            }
-                        }
-                    }
+                    List<LotteryNumber> result = new List<LotteryNumber>() { number };
+                    _watch.Restart();
+
                     if (LotteryRefresh != null)
                     {
                         LotteryRefresh(result);
                     }
 
-                    //Console.WriteLine("{0},{1},{2}", DateTime.Now.ToString("HH:mm:ss"), result[0].onlinetime, result[0].ActualIndex);
-                    _lastDatas = result;
+                    //List<LotteryNumber> result = GetData(Url);
+                    //if (result.Count == 0)
+                    //{
+                    //    Thread.Sleep(10);
+                    //    continue;
+                    //}
+
+                    //if (_lastDatas == null)
+                    //{
+                    //    _lastDatas = result;
+                    //}
+                    //else
+                    //{
+                    //    if (_lastDatas.Count > 0 && result.Count > 0)
+                    //    {
+                    //        if (_lastDatas[0].ActualIndex == result[0].ActualIndex)
+                    //        {
+                    //            Thread.Sleep(2000);
+                    //            continue;
+                    //        }
+                    //    }
+                    //}
+                    //if (LotteryRefresh != null)
+                    //{
+                    //    LotteryRefresh(result);
+                    //}
+                    //_lastDatas = result;
+
+                    _watch.Stop();
+
+                    Console.WriteLine("----------------------- UI Time-------------{0}", _watch.ElapsedMilliseconds);
 
                     #region refer js code
+
                     //                  $(document).ready(function() {
                     //  ajaxdata();
 
@@ -125,6 +221,7 @@ namespace SscLotteryTool
 
                     //    }
                     //});
+
                     #endregion
                 }
                 catch (Exception ex)
@@ -135,8 +232,10 @@ namespace SscLotteryTool
             }
         }
 
+
         private List<LotteryNumber> GetData(string url)
         {
+            _watch.Restart();
             List<LotteryNumber> resultList = new List<LotteryNumber>();
 
             //string url = "https://mma.qq.com/cgi-bin/im/online&callback=test";
@@ -163,12 +262,12 @@ namespace SscLotteryTool
                         Debug.WriteLine("{0}:{1}", ct.ToString("HH:mm:ss"), jsonData);
                         if (jsonData.StartsWith("online_resp"))
                         {
-                            int s = jsonData.IndexOf(':')+1;
+                            int s = jsonData.IndexOf(':') + 1;
                             int e = jsonData.IndexOf(',');
-                            Console.WriteLine(jsonData.Substring(s, e - s));
-                            int num = int.Parse(jsonData.Substring(s,e-s));
+                            //Console.WriteLine(jsonData.Substring(s, e - s));
+                            int num = int.Parse(jsonData.Substring(s, e - s));
                             LotteryNumber lnub = new LotteryNumber();
-                            lnub.onlinetime = ct.ToString() ;
+                            lnub.onlinetime = ct.ToString();
                             lnub.onlinenumber = num;
                             resultList.Add(lnub);
                         }
@@ -178,6 +277,7 @@ namespace SscLotteryTool
                         }
                     }
                 }
+                response.Close();
             }
             catch (Exception)
             {
@@ -209,8 +309,65 @@ namespace SscLotteryTool
             //{
             //    throw;
             //}
+
+            _watch.Stop();
+            Console.WriteLine("Take Time {0}", _watch.ElapsedMilliseconds);
             return resultList;
         }
+
+        private LotteryNumber GetDataEx(string url)
+        {
+            //_watch.Restart();
+            LotteryNumber result = new LotteryNumber();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+            request.Method = "GET";
+            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko";
+            request.Headers.Add("Accept-Language", "zh-Hans-CN,zh-Hans;q=0.5");
+
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream rs = response.GetResponseStream();
+                if (rs != null)
+                {
+                    using (StreamReader reader = new StreamReader(rs))
+                    {
+                        var jsonData = reader.ReadToEnd();
+                        // online_resp({"c":242949766,"ec":0,"h":272203829})
+                        DateTime ct = DateTime.Now;
+                        Debug.WriteLine("====={0}:{1}", ct.ToString("HH:mm:ss"), jsonData);
+                        if (jsonData.StartsWith("online_resp"))
+                        {
+                            int s = jsonData.IndexOf(':') + 1;
+                            int e = jsonData.IndexOf(',');
+                            //Console.WriteLine(jsonData.Substring(s, e - s));
+                            int num = int.Parse(jsonData.Substring(s, e - s));
+                            LotteryNumber lnub = new LotteryNumber();
+                            lnub.onlinetime = ct.ToString();
+                            lnub.onlinenumber = num;
+                            result = lnub;
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+                response.Close();
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
+
+            //_watch.Stop();
+            //Console.WriteLine("Take Time {0}", _watch.ElapsedMilliseconds);
+            return result;
+        }
+
 
         //private List<LotteryNumber> GetDataEx(string url, string cookie = "__cfduid=d661681e05fabf41ec51f59a7f73010711505575723")
         //{

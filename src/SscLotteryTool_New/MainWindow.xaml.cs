@@ -111,6 +111,8 @@ namespace SscLotteryTool
         public MainWindow()
         {
             InitializeComponent();
+
+          
             StartTime = DateTime.Now;
             UserStartTime = DateTime.Now;
 
