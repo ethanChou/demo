@@ -52,6 +52,15 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// Identifies the LinkNavigator dependency property.
         /// </summary>
         public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow), new PropertyMetadata(new DefaultLinkNavigator()));
+        /// <summary>
+        /// Identifies the IsShowBack dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsShowBackProperty = DependencyProperty.Register("IsShowBack", typeof(bool), typeof(ModernWindow), new PropertyMetadata(false));
+        /// <summary>
+        /// Identifies the IsShowMenuLink dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsShowMenuLinkProperty =
+            DependencyProperty.Register("IsShowMenuLink", typeof(bool), typeof(ModernWindow), new PropertyMetadata(false));
 
         private Storyboard backgroundAnimation;
 
@@ -106,10 +115,12 @@ namespace FirstFloor.ModernUI.Windows.Controls
 
             // retrieve BackgroundAnimation storyboard
             var border = GetTemplateChild("WindowBorder") as Border;
-            if (border != null) {
+            if (border != null)
+            {
                 this.backgroundAnimation = border.Resources["BackgroundAnimation"] as Storyboard;
 
-                if (this.backgroundAnimation != null) {
+                if (this.backgroundAnimation != null)
+                {
                     this.backgroundAnimation.Begin();
                 }
             }
@@ -118,7 +129,8 @@ namespace FirstFloor.ModernUI.Windows.Controls
         private void OnAppearanceManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // start background animation if theme has changed
-            if (e.PropertyName == "ThemeSource" && this.backgroundAnimation != null) {
+            if (e.PropertyName == "ThemeSource" && this.backgroundAnimation != null)
+            {
                 this.backgroundAnimation.Begin();
             }
         }
@@ -128,16 +140,19 @@ namespace FirstFloor.ModernUI.Windows.Controls
             // true by default
             e.CanExecute = true;
 
-            if (this.LinkNavigator != null && this.LinkNavigator.Commands != null) {
+            if (this.LinkNavigator != null && this.LinkNavigator.Commands != null)
+            {
                 // in case of command uri, check if ICommand.CanExecute is true
                 Uri uri;
                 string parameter;
                 string targetName;
 
                 // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements??
-                if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName)) {
+                if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName))
+                {
                     ICommand command;
-                    if (this.LinkNavigator.Commands.TryGetValue(uri, out command)) {
+                    if (this.LinkNavigator.Commands.TryGetValue(uri, out command))
+                    {
                         e.CanExecute = command.CanExecute(parameter);
                     }
                 }
@@ -146,12 +161,14 @@ namespace FirstFloor.ModernUI.Windows.Controls
 
         private void OnNavigateLink(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.LinkNavigator != null) {
-                 Uri uri;
+            if (this.LinkNavigator != null)
+            {
+                Uri uri;
                 string parameter;
                 string targetName;
 
-                if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName)) {
+                if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName))
+                {
                     this.LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
                 }
             }
@@ -228,6 +245,28 @@ namespace FirstFloor.ModernUI.Windows.Controls
         {
             get { return (LinkCollection)GetValue(TitleLinksProperty); }
             set { SetValue(TitleLinksProperty, value); }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsShowMenuLink
+        {
+            get { return (bool)GetValue(IsShowMenuLinkProperty); }
+            set { SetValue(IsShowMenuLinkProperty, value); }
+        }
+
+
+
+
+        /// <summary>
+        /// Gets or sets IsShowBack in the title area of the window.
+        /// </summary>
+        public bool IsShowBack
+        {
+            get { return (bool)GetValue(IsShowBackProperty); }
+            set { SetValue(IsShowBackProperty, value); }
         }
 
         /// <summary>

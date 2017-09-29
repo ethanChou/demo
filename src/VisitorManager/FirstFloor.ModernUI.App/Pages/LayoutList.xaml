@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:content="clr-namespace:FirstFloor.ModernUI.App.Content"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="820" d:DesignWidth="590">
     <Grid Style="{StaticResource ContentRoot}">
         <content:LoremIpsumList />
     </Grid>

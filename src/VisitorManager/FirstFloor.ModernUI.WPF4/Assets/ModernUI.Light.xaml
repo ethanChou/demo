@@ -107,10 +107,11 @@
     <SolidColorBrush x:Key="SubMenuTextHover" Color="#66000000" />
     <SolidColorBrush x:Key="SubMenuTextSelected" Color="#333333" />
 
+    <Thickness x:Key="WindowContentMargin">2</Thickness>
     <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />
     <SolidColorBrush x:Key="WindowBorder" Color="{DynamicResource AccentColor}" Opacity=".5" />
     <SolidColorBrush x:Key="WindowBorderActive" Color="{DynamicResource AccentColor}" />
-    <LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity=".1">
+    <LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity=".2">
         <GradientStop Offset="0" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset=".3" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset="1" Color="Transparent" />
@@ -131,4 +132,7 @@
     <SolidColorBrush x:Key="SystemButtonForegroundIsPressed" Color="#919191" />
 
     <Rectangle x:Key="WindowBackgroundContent" x:Shared="false" Height="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top"/>
+
+
+    <SolidColorBrush x:Key="GroupBoxBorder" Color="#cccccc" />
 </ResourceDictionary>

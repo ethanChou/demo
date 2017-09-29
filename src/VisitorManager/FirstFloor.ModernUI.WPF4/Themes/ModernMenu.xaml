@@ -24,7 +24,7 @@
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40" />
-                            <RowDefinition Height="16" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
                         <ListBox ItemsSource="{TemplateBinding VisibleLinkGroups}"
@@ -32,9 +32,9 @@
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="FontFamily" Value="Segoe UI Light" />
+                                    <!--<Setter Property="FontFamily" Value="Segoe UI Light" />-->
                                     <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-                                    <Setter Property="FontSize" Value="23"/>
+                                    <Setter Property="FontSize" Value="18"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                                     <Setter Property="VerticalContentAlignment" Value="Center" />
                                     <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
@@ -43,6 +43,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ListBoxItem">
                                                 <TextBlock DataContext="{TemplateBinding Content}"
+                                                           FontFamily="{DynamicResource DefaultFontFamily}"
                                                            Text="{Binding DisplayName, Converter={StaticResource ToLowerConverter}}"
                                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -67,7 +68,7 @@
                             </ListBox.ItemsPanel>
                         </ListBox>
 
-                        <ListBox Grid.Row="1"
+                        <ListBox Grid.Row="1" Visibility="Visible"
                                  ItemsSource="{Binding SelectedLinkGroup.Links, RelativeSource={RelativeSource TemplatedParent}}"
                                  SelectedItem="{Binding SelectedLink, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                  VerticalAlignment="Top">

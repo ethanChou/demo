@@ -44,6 +44,7 @@ namespace CommandBehaviors
             //PreviewMouseMove PreviewMouseUp PreviewMouseWheel PreviewMouseDown 
             //PreviewMouseLeftButtonDown PreviewMouseLeftButtonUp 
             //PreviewMouseRightButtonDown PreviewMouseRightButtonUp
+
             System.Windows.UIElement ui;
           
                

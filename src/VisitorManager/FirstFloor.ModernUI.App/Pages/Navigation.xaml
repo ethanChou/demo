@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:app="clr-namespace:FirstFloor.ModernUI.App"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d" Height="536" Width="497">
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.Resources>
             <!-- define an implicit BBCodeBlock style and add custom commands to the link navigator -->

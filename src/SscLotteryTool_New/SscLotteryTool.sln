@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SscLotteryTool_New", "SscLotteryTool_New.csproj", "{A67C912C-154D-46CA-A2FA-546600B0D63D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OASystem", "D:\WorkSpace\OASystem.csproj", "{D1649CD9-BF64-4A8B-B97B-906512FD3A26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A67C912C-154D-46CA-A2FA-546600B0D63D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1649CD9-BF64-4A8B-B97B-906512FD3A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1649CD9-BF64-4A8B-B97B-906512FD3A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1649CD9-BF64-4A8B-B97B-906512FD3A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1649CD9-BF64-4A8B-B97B-906512FD3A26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

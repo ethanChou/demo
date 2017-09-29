@@ -23,8 +23,6 @@ namespace VisitorManager
         public MainWindow()
         {
             InitializeComponent();
-         
-
         }
     }
 }
