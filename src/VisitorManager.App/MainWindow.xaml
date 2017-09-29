@@ -1,0 +1,47 @@
+﻿<mui:ModernWindow x:Class="VisitorManager.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        IsTitleVisible="True"
+        IsShowMenuLink="False"
+        Title="VISITORMANAGER" Height="768" Width="1024"
+        MinHeight="768"
+        MinWidth="1024"
+        
+        IsShowBack="False"          
+        ContentSource="/Content/MainContent.xaml">
+    
+    
+    <mui:ModernWindow.MenuLinkGroups>
+        <mui:LinkGroup DisplayName="来访人员">
+            <mui:LinkGroup.Links>
+                <mui:Link Source="/Content/MainContent.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="来访登记">
+            <mui:LinkGroup.Links>
+                <mui:Link  Source="/Pages/UserRegister.xaml" />
+
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="访问离开">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Wireframe" Source="/Pages/UserLeave.xaml" />
+               
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="综合查询">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Styles" Source="/Pages/Test/ControlsStyles.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="系统设置">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Settings" Source="/Pages/Settings.xaml" />
+                <mui:Link DisplayName="Settings2" Source="/Pages/Test/ControlsModern.xaml" />
+              
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+       
+    </mui:ModernWindow.MenuLinkGroups>
+</mui:ModernWindow>

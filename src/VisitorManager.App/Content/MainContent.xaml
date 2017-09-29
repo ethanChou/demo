@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="VisitorManager.App.Content.MainContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button Height="50" Width="100" Content="来防登记" Margin="5,0,5,0">
+
+            </Button>
+            <Button Height="50" Width="100" Content="访问离开" Margin="5,0,5,0"></Button>
+            <Button Height="50" Width="100" Content="综合查询" Margin="5,0,5,0"></Button>
+            <Button Height="50" Width="100" Content="统计" Margin="5,0,5,0"></Button>
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>

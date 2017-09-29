@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="VisitorManager.App.Pages.UserSearch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             
+             d:DesignHeight="600" d:DesignWidth="1024">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+
+        </Grid.RowDefinitions>
+       
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="时间段" Width="60"  VerticalAlignment="Center"></TextBlock>
+            <DatePicker Height="30" Width="150"></DatePicker>
+            <DatePicker Height="30" Width="150"></DatePicker>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Text="访问单位" Width="60"  VerticalAlignment="Center"></TextBlock>
+            <ComboBox Height="30" Width="150"></ComboBox>
+            <TextBlock Text="访问状态" Width="60"  VerticalAlignment="Center"></TextBlock>
+            <ComboBox Height="30" Width="150">
+                <ComboBoxItem>等待进入</ComboBoxItem>
+                <ComboBoxItem>正在访问</ComboBoxItem>
+                <ComboBoxItem>已经离开</ComboBoxItem>
+                <ComboBoxItem>逾期未还</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+      
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Text="被访者" Width="60"  VerticalAlignment="Center"></TextBlock>
+            <ComboBox Height="30" Width="150"></ComboBox>
+            <TextBlock Text="来访者" Width="60"  VerticalAlignment="Center"></TextBlock>
+            <ComboBox Height="30" Width="150"></ComboBox>
+        </StackPanel>
+       
+        <Grid Grid.Row="3">
+            <DataGrid AutoGenerateColumns="False"   VerticalAlignment="Top" Margin="0,0,0,4" ItemsSource="{Binding Channels}"
+                  CanUserSortColumns="False"  IsReadOnly="True"
+                  CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
+                  CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False" 
+                  SelectedIndex="{Binding SelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="姓名" Width="50*" Binding="{Binding }" />
+                    <DataGridTextColumn Header="被访者" Width="50*" Binding="{Binding }" />
+                    <DataGridTextColumn Header="访问单位" Width="50*" Binding="{Binding }" />
+                    <DataGridTextColumn Header="来访时间" Width="50*" Binding="{Binding }" />
+                    <DataGridTextColumn Header="离开时间" Width="50*"  Binding="{Binding }" />
+                    <DataGridTextColumn Header="证件类型" Width="50*"  Binding="{Binding }" />
+                    <DataGridTextColumn Header="证件号码" Width="50*"  Binding="{Binding }" />
+                    <DataGridTextColumn Header="通行证类型" Width="50*"  Binding="{Binding }" />
+                    <DataGridTextColumn Header="访问状态" Width="50*"  Binding="{Binding }" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button Content="导出" Height="30" Width="80" Margin="10,0,10,0"></Button>
+            <Button Content="打印" Height="30" Width="80" Margin="10,0,10,0"></Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
