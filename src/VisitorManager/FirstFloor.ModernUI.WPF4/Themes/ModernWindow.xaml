@@ -32,11 +32,11 @@
                         <Border.Background>
                             <SolidColorBrush x:Name="WindowBorderBackground" Color="{DynamicResource WindowBackgroundColor}" />
                         </Border.Background>
-                        <Border.Resources>
+                        <!--<Border.Resources>
                             <Storyboard x:Key="BackgroundAnimation">
                                 <ColorAnimation Storyboard.TargetName="WindowBorderBackground" Storyboard.TargetProperty="Color" To="{DynamicResource WindowBackgroundColor}" Duration="0:0:.6" />
                             </Storyboard>
-                        </Border.Resources>
+                        </Border.Resources>-->
 
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <AdornerDecorator>
@@ -59,6 +59,7 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
+                                        
                                         <!-- title -->
                                         <TextBlock Text="{TemplateBinding Title}" Margin="8,0" VerticalAlignment="Center" Style="{StaticResource ModernWindowTitle}"
                                                    DataContext="{TemplateBinding IsTitleVisible}"
@@ -183,7 +184,7 @@
                         <Trigger Property="WindowState" Value="Maximized">
                             <Setter TargetName="Maximize" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="Restore" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="LayoutRoot" Property="Margin" Value="7" />
+                            <Setter TargetName="LayoutRoot" Property="Margin" Value="0" />
                         </Trigger>
                         <Trigger Property="WindowState" Value="Normal">
                             <Setter TargetName="Maximize" Property="Visibility" Value="Visible" />

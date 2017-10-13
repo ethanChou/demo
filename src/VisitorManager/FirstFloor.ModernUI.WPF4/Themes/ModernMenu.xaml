@@ -24,7 +24,7 @@
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="0" />
                         </Grid.RowDefinitions>
 
                         <ListBox ItemsSource="{TemplateBinding VisibleLinkGroups}"
@@ -34,7 +34,7 @@
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                                     <!--<Setter Property="FontFamily" Value="Segoe UI Light" />-->
                                     <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-                                    <Setter Property="FontSize" Value="18"/>
+                                    <Setter Property="FontSize" Value="16"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                                     <Setter Property="VerticalContentAlignment" Value="Center" />
                                     <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
@@ -68,7 +68,7 @@
                             </ListBox.ItemsPanel>
                         </ListBox>
 
-                        <ListBox Grid.Row="1" Visibility="Visible"
+                        <ListBox Grid.Row="1" Visibility="Collapsed"
                                  ItemsSource="{Binding SelectedLinkGroup.Links, RelativeSource={RelativeSource TemplatedParent}}"
                                  SelectedItem="{Binding SelectedLink, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                  VerticalAlignment="Top">

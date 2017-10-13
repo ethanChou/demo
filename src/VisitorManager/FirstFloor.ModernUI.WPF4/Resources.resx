@@ -121,16 +121,16 @@
     <value>back</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>cancel</value>
+    <value>取消</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>close</value>
+    <value>关闭</value>
   </data>
   <data name="Maximize" xml:space="preserve">
-    <value>maximize</value>
+    <value>最大化</value>
   </data>
   <data name="Minimize" xml:space="preserve">
-    <value>minimize</value>
+    <value>最小化</value>
   </data>
   <data name="NavigateLink" xml:space="preserve">
     <value>Navigate link</value>
@@ -145,13 +145,13 @@
     <value>Unable to navigate to {0}, no source specified</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>no</value>
+    <value>否</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>ok</value>
+    <value>确定</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>restore</value>
+    <value>恢复</value>
   </data>
   <data name="UIThreadRequired" xml:space="preserve">
     <value>Operation requires the UI thread</value>
@@ -166,6 +166,6 @@
     <value>Unknown token type</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>yes</value>
+    <value>是</value>
   </data>
 </root>

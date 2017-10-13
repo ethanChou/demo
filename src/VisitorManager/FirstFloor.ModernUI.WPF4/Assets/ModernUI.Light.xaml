@@ -111,7 +111,7 @@
     <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />
     <SolidColorBrush x:Key="WindowBorder" Color="{DynamicResource AccentColor}" Opacity=".5" />
     <SolidColorBrush x:Key="WindowBorderActive" Color="{DynamicResource AccentColor}" />
-    <LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity=".2">
+    <LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity=".8">
         <GradientStop Offset="0" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset=".3" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset="1" Color="Transparent" />
@@ -134,5 +134,5 @@
     <Rectangle x:Key="WindowBackgroundContent" x:Shared="false" Height="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top"/>
 
 
-    <SolidColorBrush x:Key="GroupBoxBorder" Color="#cccccc" />
+    <SolidColorBrush x:Key="GroupBoxBorder" Color="#808080" />
 </ResourceDictionary>

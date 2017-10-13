@@ -21,6 +21,12 @@ namespace FirstFloor.ModernUI.Windows.Controls
         : DpiAwareWindow
     {
         /// <summary>
+        /// 
+        /// </summary>
+        public static readonly DependencyProperty AppImgProperty =
+            DependencyProperty.Register("AppImg", typeof(ImageSource), typeof(ModernWindow), new PropertyMetadata(null));
+
+        /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>
         public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object), typeof(ModernWindow));
@@ -314,5 +320,18 @@ namespace FirstFloor.ModernUI.Windows.Controls
             get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
             set { SetValue(LinkNavigatorProperty, value); }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ImageSource AppImg
+        {
+            get { return (ImageSource)GetValue(AppImgProperty); }
+            set { SetValue(AppImgProperty, value); }
+        }
+
+       
+        
     }
 }

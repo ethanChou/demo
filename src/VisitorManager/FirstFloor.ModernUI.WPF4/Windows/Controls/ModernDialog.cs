@@ -206,8 +206,8 @@ namespace FirstFloor.ModernUI.Windows.Controls
                 Content = new BBCodeBlock { BBCode = text, Margin = new Thickness(0, 0, 0, 8) },
                 MinHeight = 0,
                 MinWidth = 0,
-                MaxHeight = 480,
-                MaxWidth = 640,
+                Height = 180,
+                Width = 360,
             };
             if (owner != null) {
                 dlg.Owner = owner;

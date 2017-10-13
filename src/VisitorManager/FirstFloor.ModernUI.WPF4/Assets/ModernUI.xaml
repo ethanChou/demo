@@ -36,7 +36,7 @@
 
     <!-- font settings -->
     <FontFamily x:Key="DefaultFontFamily">微软雅黑</FontFamily>
-    <sys:Double x:Key="DefaultFontSize">13</sys:Double>
+    <sys:Double x:Key="DefaultFontSize">12</sys:Double>
 
     <FontFamily x:Key="FixedFontFamily">微软雅黑</FontFamily>
     <sys:Double x:Key="FixedFontSize">13.333</sys:Double>
