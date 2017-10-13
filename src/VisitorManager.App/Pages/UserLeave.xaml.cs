@@ -22,6 +22,15 @@ namespace VisitorManager.App.Pages
         public UserLeave()
         {
             InitializeComponent();
+            var m = new UserLeaveViewModel();
+            
+            this.DataContext = m;
+            this.Loaded += (sender, arg) =>
+            {
+                m.Loaded();
+            };
         }
+
+      
     }
 }

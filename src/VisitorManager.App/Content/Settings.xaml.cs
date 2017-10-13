@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,21 +16,13 @@ using System.Windows.Shapes;
 namespace VisitorManager.App.Pages
 {
     /// <summary>
-    /// UserSearch.xaml 的交互逻辑
+    /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class UserSearch : UserControl
+    public partial class Settings : UserControl
     {
-        public UserSearch()
+        public Settings()
         {
             InitializeComponent();
-            this.IsVisibleChanged += UserSearch_IsVisibleChanged;
         }
-
-        void UserSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Console.WriteLine(e.NewValue);
-        }
-
-      
     }
 }

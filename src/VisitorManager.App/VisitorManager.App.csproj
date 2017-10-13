@@ -15,11 +15,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,12 +28,18 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge.Controls">
+      <HintPath>..\VisitorManager\lib\AForge.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\VisitorManager\lib\Microsoft.Windows.Shell.dll</HintPath>
@@ -53,6 +59,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -62,6 +69,10 @@
     <Compile Include="Content\MainContent.xaml.cs">
       <DependentUpon>MainContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Controls\ImageListBox.xaml.cs">
+      <DependentUpon>ImageListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controls\ImageListBoxItemTemplateSizeConvert.cs" />
     <Compile Include="Pages\UserLeave.xaml.cs">
       <DependentUpon>UserLeave.xaml</DependentUpon>
     </Compile>
@@ -71,8 +82,8 @@
     <Compile Include="Pages\UserStatistic.xaml.cs">
       <DependentUpon>UserStatistic.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
+    <Compile Include="Pages\UserVisiting.xaml.cs">
+      <DependentUpon>UserVisiting.xaml</DependentUpon>
     </Compile>
     <Page Include="Assets\ModernUI.HelloKitty.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -142,23 +153,27 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\Test\ControlsModern.xaml">
+    <Page Include="Pages\Controls\ImageListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Test\ControlsStyles.xaml">
+    <Page Include="Content\Test\ControlsModern.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Test\Help.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Test\Introduction.xaml">
+    <Page Include="Content\Test\ControlsStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings.xaml">
+    <Page Include="Content\Test\Help.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Test\Introduction.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -182,25 +197,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window1.xaml">
+    <Page Include="Pages\UserVisiting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pages\Test\ControlsModern.xaml.cs">
+    <Compile Include="Content\Test\ControlsModern.xaml.cs">
       <DependentUpon>ControlsModern.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Test\ControlsStyles.xaml.cs">
+    <Compile Include="Content\Test\ControlsStyles.xaml.cs">
       <DependentUpon>ControlsStyles.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Test\Help.xaml.cs">
+    <Compile Include="Content\Test\Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Test\Introduction.xaml.cs">
+    <Compile Include="Content\Test\Introduction.xaml.cs">
       <DependentUpon>Introduction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings.xaml.cs">
+    <Compile Include="Content\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SystemConfig.xaml.cs">
@@ -233,9 +248,29 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommandBehavior\CommandBehaviors.csproj">
+      <Project>{60594233-eae0-4b42-93b7-f7d89ca14811}</Project>
+      <Name>CommandBehaviors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Render.Core\Renderer.Core.csproj">
+      <Project>{3c55f69f-739d-4a3b-862c-4c36b8f5d616}</Project>
+      <Name>Renderer.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VisitorManager\FirstFloor.ModernUI.WPF4\FirstFloor.ModernUI.WPF4.csproj">
       <Project>{a0ea4572-2726-4585-8e17-3a81a0eafa61}</Project>
       <Name>FirstFloor.ModernUI.WPF4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VisitorManager\VisitorManager\VisitorManager.ViewModel.csproj">
+      <Project>{5ef87016-0994-4394-97ac-82d76581e7e6}</Project>
+      <Name>VisitorManager.ViewModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video.DirectShow\Video.DirectShow.csproj">
+      <Project>{26cd2ce7-ff63-4669-83b0-7d9c8f3408ee}</Project>
+      <Name>Video.DirectShow</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video\Video.csproj">
+      <Project>{809725dc-6502-4732-a51c-deb7fea12975}</Project>
+      <Name>Video</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -248,7 +283,10 @@
     <Resource Include="Assets\background.snowflakes.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Windows\" />
+    <Resource Include="App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\defaultPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

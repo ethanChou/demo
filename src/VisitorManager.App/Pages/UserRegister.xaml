@@ -4,9 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:aforge="clr-namespace:AForge.Controls;assembly=AForge.Controls"
+             xmlns:common="clr-namespace:VisitorManager.ViewModel.Common;assembly=VisitorManager.ViewModel"
+             xmlns:app="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
+             xmlns:bav="http://commandbehaviors.com/"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1024">
-    <Grid>
+             d:DesignHeight="700" d:DesignWidth="1080">
+    <UserControl.Resources>
+        <common:NegateConverter x:Key="NegeateConverter"></common:NegateConverter>
+        <common:CardTypeConverter x:Key="CardTypeConverter"></common:CardTypeConverter>
+    </UserControl.Resources>
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -14,10 +22,11 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Text="被访单位" VerticalAlignment="Center" Margin="10,0,5,0"></TextBlock>
-            <ComboBox  Height="22" Width="87"></ComboBox>
+            <ComboBox  Height="22" Width="87" ItemsSource="{Binding Departments}" SelectedIndex="{Binding DepartmentIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
 
             <TextBlock Text="被访人员" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
-            <ComboBox  Height="22" Width="90"></ComboBox>
+
+            <ComboBox  Height="22" Width="90" ItemsSource="{Binding Employees}" SelectedIndex="{Binding EmployeeIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
             <TextBlock Text="联系方式" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
             <TextBox  Height="22" Width="100"></TextBox>
 
@@ -25,9 +34,9 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"></ColumnDefinition>
-                <ColumnDefinition Width="330"></ColumnDefinition>
-                <ColumnDefinition Width="200*"></ColumnDefinition>
+                <ColumnDefinition Width="360*"></ColumnDefinition>
+                <ColumnDefinition Width="260*"></ColumnDefinition>
+                <ColumnDefinition Width="350*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
@@ -39,182 +48,301 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="身份证照片" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="1,1,0.5,1">
-                    <Grid>
-                        <Image ></Image>
-                        <Grid>
-                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Width="150" Height="150">
-                                <Grid  Background="White" Margin="5">
-                                    <Grid.LayoutTransform>
-                                        <RotateTransform Angle="135"></RotateTransform>
-                                    </Grid.LayoutTransform>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <Path Grid.Row="0" Grid.Column="0"  Stretch="Fill" Fill="#FF000000" Data="F1 M 53,49 M 57,24C 38.7746,24 24,38.7746 24,57L 19,57C 19,36.0132 36.0132,19 57,19L 57,24 Z M 57,34C 44.2974,34 34,44.2975 34,57L 29,57C 29,41.536 41.536,29 57,29L 57,34 Z M 57,44C 49.8203,44 44,49.8203 44,57L 39,57C 39,47.0589 47.0589,39 57,39L 57,44 Z "/>
-                                    <Path Grid.Row="1" Grid.Column="1"  Stretch="Fill" Fill="#FF000000" Data="F1 M 53,49 M 57,24C 38.7746,24 24,38.7746 24,57L 19,57C 19,36.0132 36.0132,19 57,19L 57,24 Z M 57,34C 44.2974,34 34,44.2975 34,57L 29,57C 29,41.536 41.536,29 57,29L 57,34 Z M 57,44C 49.8203,44 44,49.8203 44,57L 39,57C 39,47.0589 47.0589,39 57,39L 57,44 Z " RenderTransformOrigin="0.5,0.5">
-                                        <Path.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform/>
-                                                <SkewTransform/>
-                                                <RotateTransform Angle="180"/>
-                                                <TranslateTransform/>
-                                            </TransformGroup>
-                                        </Path.RenderTransform>
-                                    </Path>
-                                </Grid>
-                            </Border>
 
-                            <TextBlock Text="请刷卡" FontSize="20" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20"></TextBlock>
-                        </Grid>
-                    </Grid>
-
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="来访者照片" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="1,1,0.5,1">
-                    <Grid>
-                        <Image ></Image>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="证件照片" FontWeight="Bold" FontSize="14"></TextBlock>
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="#808080" Background="#eeeeee" CornerRadius="3" Margin="0,0,2,2">
                         <Grid >
+                            <Image ></Image>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition Height="100"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Image Grid.RowSpan="2" Source="{StaticResource DefaultImage}" VerticalAlignment="Center" >
+                                </Image>
+
+                                <!--<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                    <Grid  Background="Transparent" Margin="0">
+                                        <Grid.LayoutTransform>
+                                            <RotateTransform Angle="135"></RotateTransform>
+                                        </Grid.LayoutTransform>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Path Grid.Row="0" Grid.Column="0"  Stretch="Fill" Fill="#FF000000" Data="F1 M 53,49 M 57,24C 38.7746,24 24,38.7746 24,57L 19,57C 19,36.0132 36.0132,19 57,19L 57,24 Z M 57,34C 44.2974,34 34,44.2975 34,57L 29,57C 29,41.536 41.536,29 57,29L 57,34 Z M 57,44C 49.8203,44 44,49.8203 44,57L 39,57C 39,47.0589 47.0589,39 57,39L 57,44 Z "/>
+                                        <Path Grid.Row="1" Grid.Column="1"  Stretch="Fill" Fill="#FF000000" Data="F1 M 53,49 M 57,24C 38.7746,24 24,38.7746 24,57L 19,57C 19,36.0132 36.0132,19 57,19L 57,24 Z M 57,34C 44.2974,34 34,44.2975 34,57L 29,57C 29,41.536 41.536,29 57,29L 57,34 Z M 57,44C 49.8203,44 44,49.8203 44,57L 39,57C 39,47.0589 47.0589,39 57,39L 57,44 Z " RenderTransformOrigin="0.5,0.5">
+                                            <Path.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="180"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </Path.RenderTransform>
+                                        </Path>
+                                    </Grid>
+
+                                    <TextBlock Text="请刷卡" Grid.Row="1" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-5,0,0,0"></TextBlock>
+                                </StackPanel>-->
+
+
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+                <Grid Grid.Row="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="来访者照片" FontWeight="Bold" FontSize="14"></TextBlock>
+                    <Border Grid.Row="1" Background="#eeeeee" BorderBrush="#808080"  BorderThickness="1" CornerRadius="3" Margin="0,0,2,2">
+                        <Grid Margin="0,0,0,0" >
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
-                                <RowDefinition Height="70"></RowDefinition>
+                                <RowDefinition Height="20"></RowDefinition>
+                                <RowDefinition Height="35"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Grid Width="150" Height="150" VerticalAlignment="Center" >
-                                <Path Stretch="Fill" Fill="#FF000000" Data="F1 M 47.8381,21.7991C 47.8381,22.5549 47.8381,43.9027 47.8381,44.308C 48.2282,44.308 55.6214,44.308 55.9237,44.308C 56.6305,42.2814 57,40.1702 57,38.038C 57,31.4217 53.4896,25.2445 47.8381,21.7991 Z M 28.2202,54.3022C 28.2202,53.559 28.2202,38.8064 28.2202,37.9282C 27.586,38.5109 20.5876,44.8823 20.3698,45.0807C 21.8927,48.9061 24.6722,52.153 28.2202,54.3022 Z M 29.3433,21.1109C 22.9626,24.3916 19,30.8601 19,38.038C 19,39.6762 19.2461,41.3356 19.6908,42.9865C 20.2067,42.5136 36.2036,27.951 36.533,27.6512C 36.2112,27.3599 29.5586,21.3093 29.3433,21.1109 Z M 45.8334,20.7056C 43.3549,19.5782 40.7193,18.9998 37.9994,18.9998C 35.735,18.9998 33.5069,19.4389 31.3649,20.2411C 31.8669,20.6971 45.1869,32.8108 45.8334,33.4019C 45.8334,32.5279 45.8334,20.9758 45.8334,20.7056 Z M 30.216,46.3136C 30.6239,46.3136 54.3801,46.3136 55.0679,46.3136C 52.1562,52.3346 46.297,56.388 39.7322,57.0002L 36.2492,57.0002C 34.1676,56.806 32.1473,56.2655 30.216,55.3999C 30.216,55.1255 30.216,46.7105 30.216,46.3136 Z "/>
+                            <Image Grid.RowSpan="3" x:Name="displayImage" Stretch="UniformToFill">
+
+                            </Image>
+                            <Grid Grid.Row="0" Grid.RowSpan="2" 
+                              Visibility="{Binding DefaultVis,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <Image Source="{StaticResource DefaultImage}" VerticalAlignment="Center" >
+                                </Image>
                             </Grid>
-
-
-                            <Border Grid.Row="1" Width="60" Height="60" BorderBrush="Gray" VerticalAlignment="Center" BorderThickness="1" CornerRadius="5">
-                                <Grid Margin="5">
-                                    <Path x:Name="Cutter" Stretch="Fill" Fill="#FF000000" Data="F1 M 24,31C 24,32.1046 23.3284,33 22.5,33C 21.6716,33 21,32.1046 21,31C 21,29.8955 21.6716,29 22.5,29C 23.3284,29 24,29.8955 24,31 Z M 73,38C 73,57.33 57.33,73 38,73C 18.67,73 3,57.33 3,38C 3,18.67 18.67,3.00002 38,3.00002C 57.3299,3.00002 73,18.6701 73,38 Z M 22,26.0001C 19.2386,26.0001 17,28.2387 17,31.0001L 17,45.0001C 17,47.7615 19.2386,50.0001 22,50.0001L 33.2316,50.0001C 33.3923,48.5774 33.6626,46.7702 34.1154,44.8522C 31.1907,44.2177 29,41.6147 29,38.5C 29,34.9102 31.9101,32 35.5,32C 37.2666,32 38.8686,32.7048 40.0402,33.8485C 41.1646,32.9855 42.468,32.3696 43.9792,32.1075C 42.4693,30.9173 41.5,29.0718 41.5,27C 41.5,25.8018 41.8242,24.6792 42.3897,23.7154C 41.5176,22.1415 39.8181,21 38,21L 32,21C 29.3767,21 27,23.3766 27,26L 22,26.0001 Z M 44.7499,34C 44.75,34 34.75,33 35,53.5L 38.25,54.25C 38.25,54.25 38.75,46.75 40.75,42.75L 40.75,55.25C 40.75,55.25 44.5,57 48.5,56.9686C 52.5,56.9371 56,55.25 56,55.25L 55.9999,42.75C 57.9999,46.75 58.5,54.25 58.5,54.25L 61.75,53.5C 62,33 52,34 52,34L 44.7499,34 Z M 43,27C 43,29.7614 45.2386,32 48,32C 50.7614,32 53,29.7614 53,27C 53,24.2386 50.7614,22 48,22C 45.2386,22 43,24.2386 43,27 Z "/>
-                                </Grid>
-                            </Border>
+                            <Grid Grid.Row="1">
+                                <TextBlock></TextBlock>
+                            </Grid>
+                            <Grid Grid.Row="2" Background="#eeeeee" Opacity="0.8" >
+                                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+                                    <mui:ModernButton HorizontalAlignment="Center" Margin="15,0,0,0"  Command="{Binding CaptureCmd}"
+                                                  EllipseDiameter="30" 
+                                                  EllipseStrokeThickness="3" 
+                                                  ToolTip="抓拍"
+                                                  IconWidth="30" 
+                                                  IconHeight="30"  
+                                                  IconData="F1 M 24,31C 24,32.1046 23.3284,33 22.5,33C 21.6716,33 21,32.1046 21,31C 21,29.8955 21.6716,29 22.5,29C 23.3284,29 24,29.8955 24,31 Z M 73,38C 73,57.33 57.33,73 38,73C 18.67,73 3,57.33 3,38C 3,18.67 18.67,3.00002 38,3.00002C 57.3299,3.00002 73,18.6701 73,38 Z M 22,26.0001C 19.2386,26.0001 17,28.2387 17,31.0001L 17,45.0001C 17,47.7615 19.2386,50.0001 22,50.0001L 33.2316,50.0001C 33.3923,48.5774 33.6626,46.7702 34.1154,44.8522C 31.1907,44.2177 29,41.6147 29,38.5C 29,34.9102 31.9101,32 35.5,32C 37.2666,32 38.8686,32.7048 40.0402,33.8485C 41.1646,32.9855 42.468,32.3696 43.9792,32.1075C 42.4693,30.9173 41.5,29.0718 41.5,27C 41.5,25.8018 41.8242,24.6792 42.3897,23.7154C 41.5176,22.1415 39.8181,21 38,21L 32,21C 29.3767,21 27,23.3766 27,26L 22,26.0001 Z M 44.7499,34C 44.75,34 34.75,33 35,53.5L 38.25,54.25C 38.25,54.25 38.75,46.75 40.75,42.75L 40.75,55.25C 40.75,55.25 44.5,57 48.5,56.9686C 52.5,56.9371 56,55.25 56,55.25L 55.9999,42.75C 57.9999,46.75 58.5,54.25 58.5,54.25L 61.75,53.5C 62,33 52,34 52,34L 44.7499,34 Z M 43,27C 43,29.7614 45.2386,32 48,32C 50.7614,32 53,29.7614 53,27C 53,24.2386 50.7614,22 48,22C 45.2386,22 43,24.2386 43,27 Z " ></mui:ModernButton>
+                                    <mui:ModernButton HorizontalAlignment="Center" Margin="15,0,0,0" Command="{Binding CancleCmd}"
+                                                  EllipseDiameter="30" 
+                                                  EllipseStrokeThickness="3" 
+                                                  ToolTip="取消"
+                                                  IconWidth="30" 
+                                                  IconHeight="30"  
+                                                  IconData="F1 M 38,19C 48.4934,19 57,27.5066 57,38C 57,48.4934 48.4934,57 38,57C 27.5066,57 19,48.4934 19,38C 19,27.5066 27.5066,19 38,19 Z M 38,23.75C 35.2116,23.75 32.6102,24.5509 30.4134,25.9352L 50.0648,45.5866C 51.4491,43.3898 52.25,40.7884 52.25,38C 52.25,30.13 45.87,23.75 38,23.75 Z M 23.75,38C 23.75,45.8701 30.1299,52.25 38,52.25C 40.7884,52.25 43.3897,51.4491 45.5865,50.0649L 25.9351,30.4136C 24.5509,32.6103 23.75,35.2117 23.75,38 Z " ></mui:ModernButton>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-
-                    </Grid>
-                </GroupBox>
+                    </Border>
+                </Grid>
             </Grid>
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition ></RowDefinition>
                     <RowDefinition ></RowDefinition>
+
                 </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="身份证信息" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="0.5,1,0.5,1">
-                    <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <TextBlock Text="证件类型" Width="60" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
-                            <ComboBox  Width="180" Height="25" SelectedIndex="0">
-                                <ComboBoxItem>二代身份证</ComboBoxItem>
-                                <ComboBoxItem>正式卡</ComboBoxItem>
-                                
-                            </ComboBox>
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <TextBlock Text="证件号码" Width="60" VerticalAlignment="Center"></TextBlock>
-                            <TextBox  Width="180" Height="25"></TextBox>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBlock Text="姓    名" Width="60" VerticalAlignment="Center"></TextBlock>
-                            <TextBox  Width="180" Height="25"></TextBox>
-                        </StackPanel>
-                        <StackPanel Grid.Row="3" Orientation="Horizontal">
-                            <TextBlock Text="性    别" Width="60" VerticalAlignment="Center"></TextBlock>
-                            <RadioButton>男</RadioButton>
-                            <RadioButton>女</RadioButton>
-                        </StackPanel>
-                        <StackPanel Grid.Row="4" Orientation="Horizontal">
-                            <TextBlock Text="住    址" Width="60" VerticalAlignment="Center"></TextBlock>
-                            <TextBox Width="180" Height="25"></TextBox>
-                        </StackPanel>
-                    </Grid>
-                </GroupBox>
-                <Grid Grid.Row="1">
+
+                <Grid >
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <GroupBox Grid.Row="0"  Header="发卡区" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="0.5,1,0.5,1" >
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"></RowDefinition>
-                                <RowDefinition Height="40"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBlock Text="通行证类型" VerticalAlignment="Center"></TextBlock>
-                                <ComboBox  Width="180" Height="25" SelectedIndex="0">
-                                    <ComboBoxItem>临时卡</ComboBoxItem>
-                                    <ComboBoxItem>正式卡</ComboBoxItem>
-                                </ComboBox>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                <TextBlock Text="通行证编号" VerticalAlignment="Center"></TextBlock>
-                                <TextBox  Width="180" Height="25"></TextBox>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Row="1" Header="寄存物品" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="0.5,1,0.5,1">
+                    <TextBlock Text="数据区" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+                    <StackPanel Grid.Row="1" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="证件类型" Width="60" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
+                        <ComboBox  Width="180" Height="25" SelectedIndex="{Binding CardIdType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBoxItem>二代身份证</ComboBoxItem>
+                            <ComboBoxItem>正式卡</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="证件号码" Width="60" VerticalAlignment="Center"></TextBlock>
+                        <TextBox  Width="180" Height="25" Text="{Binding CardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="姓    名" Width="60" VerticalAlignment="Center"></TextBlock>
+                        <TextBox  Width="180" Height="25" Text="{Binding VisitorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="性    别" Width="60" VerticalAlignment="Center"></TextBlock>
+                        <RadioButton IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
+                        <RadioButton IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="住    址" Width="60" VerticalAlignment="Center"></TextBlock>
+                        <TextBox Width="180" Height="25" Text="{Binding VisitorAddr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBlock Text="寄存物品" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
-                                <ComboBox  Height="22" Width="100" SelectedIndex="0" >
-                                    <ComboBoxItem>无</ComboBoxItem>
-                                    <ComboBoxItem>包</ComboBoxItem>
-                                    <ComboBoxItem>箱子</ComboBoxItem>
-                                    <ComboBoxItem>笔记本</ComboBoxItem>
-                                    <ComboBoxItem>手机</ComboBoxItem>
-                                    <ComboBoxItem>U盘</ComboBoxItem>
-                                    <ComboBoxItem>其他</ComboBoxItem>
-                                </ComboBox>
-                            </StackPanel>
-                           
-                        </Grid>
-
-
-                    </GroupBox>
+                    <Border Grid.Row="1" Grid.RowSpan="5" Margin="0,0,2,2" CornerRadius="3" BorderBrush="#808080" BorderThickness="1"></Border>
                 </Grid>
 
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="发卡区" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+                    <StackPanel Grid.Row="1" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="通行证类型" VerticalAlignment="Center"></TextBlock>
+                        <ComboBox  Width="180" Height="25" SelectedIndex="{Binding PassCardType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBoxItem>临时卡</ComboBoxItem>
+                            <ComboBoxItem>正式卡</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="通行证编号" VerticalAlignment="Center"></TextBlock>
+                        <TextBox  Width="180" Height="25" Text="{Binding PassCardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
+
+                    <TextBlock Text="携带物品" Margin="5,0,5,0" FontWeight="Bold" FontSize="14"  Grid.Row="3" ></TextBlock>
+                    <StackPanel Grid.Row="4" Margin="5,0,5,0" Orientation="Horizontal">
+                        <TextBlock Text="寄存物品" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
+                        <ComboBox  Height="22" Width="100" SelectedIndex="0" >
+                            <ComboBoxItem>无</ComboBoxItem>
+                            <ComboBoxItem>包</ComboBoxItem>
+                            <ComboBoxItem>箱子</ComboBoxItem>
+                            <ComboBoxItem>笔记本</ComboBoxItem>
+                            <ComboBoxItem>手机</ComboBoxItem>
+                            <ComboBoxItem>U盘</ComboBoxItem>
+                            <ComboBoxItem>其他</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" Grid.RowSpan="2" Margin="0,0,2,2" CornerRadius="3" BorderBrush="#808080" BorderThickness="1"></Border>
+
+                    <Border Grid.Row="4" Grid.RowSpan="2" Margin="0,0,2,1" CornerRadius="3" BorderBrush="#808080" BorderThickness="1"></Border>
+
+                </Grid>
             </Grid>
 
             <Grid Grid.Column="2">
-
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition ></RowDefinition>
+                    <RowDefinition ></RowDefinition>
                 </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="近期来访信息" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="0.5,1,1,1">
 
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="暂存待办" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="0.5,1,1,1">
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="来访者信息" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
+                    <Border Grid.Row="1" Margin="0,0,0,2" CornerRadius="3" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="1">
+                        <DataGrid Margin="0" x:Name="list"  ItemsSource="{Binding Visitors}"
+                               AutoGenerateColumns="False" 
+                        CanUserSortColumns="False"  IsReadOnly="True"
+                        CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
+                        CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="姓名" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"   Binding="{Binding vt_name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="证件号码" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_NO}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="证件类型" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_type,Converter={StaticResource CardTypeConverter}}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="单位" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_department}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_employee}"></DataGridTextColumn>
 
-                </GroupBox>
-                
+                                <DataGridTemplateColumn Width="*">
+                                    <DataGridTemplateColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock  Text="操作" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.HeaderTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0" >
+                                                <mui:ModernButton HorizontalAlignment="Center" Margin="0" CommandParameter="{Binding .}"  Command="app:DeleteCommands.DeleteCmd"
+                                                  EllipseStrokeThickness="1" 
+                                                  ToolTip="删除"
+                                                  IconData="F1 M 25.3333,23.75L 50.6667,23.75C 51.5411,23.75 51.8541,27.3125 51.8541,27.3125L 24.1458,27.3125C 24.1458,27.3125 24.4589,23.75 25.3333,23.75 Z M 35.625,19.7917L 40.375,19.7917C 40.8122,19.7917 41.9583,20.9378 41.9583,21.375C 41.9583,21.8122 40.8122,22.9584 40.375,22.9584L 35.625,22.9584C 35.1878,22.9584 34.0416,21.8122 34.0416,21.375C 34.0416,20.9378 35.1878,19.7917 35.625,19.7917 Z M 27.7083,28.5L 48.2916,28.5C 49.1661,28.5 49.875,29.2089 49.875,30.0834L 48.2916,53.8334C 48.2916,54.7078 47.5828,55.4167 46.7083,55.4167L 29.2917,55.4167C 28.4172,55.4167 27.7083,54.7078 27.7083,53.8334L 26.125,30.0834C 26.125,29.2089 26.8339,28.5 27.7083,28.5 Z M 30.0833,31.6667L 30.4792,52.25L 33.25,52.25L 32.8542,31.6667L 30.0833,31.6667 Z M 36.4167,31.6667L 36.4167,52.25L 39.5833,52.25L 39.5833,31.6667L 36.4167,31.6667 Z M 43.1458,31.6667L 42.75,52.25L 45.5208,52.25L 45.9167,31.6667L 43.1458,31.6667 Z " ></mui:ModernButton>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="暂存待办" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
+                    <Border Grid.Row="1" CornerRadius="3" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="1">
+                        <DataGrid Margin="0" x:Name="waitList"  
+                        ItemsSource="{Binding PauseVisitors}"
+                               AutoGenerateColumns="False" 
+                        CanUserSortColumns="False"  IsReadOnly="True"
+                        CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
+                        CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False"
+                        bav:CommandBehavior.Event="SelectedCellsChanged" 
+                        bav:CommandBehavior.Command="{Binding SelectedCmd}"
+                        bav:CommandBehavior.CommandParameter="{Binding Path=SelectedItem,ElementName=waitList}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="姓名" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"   Binding="{Binding vt_name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="证件号码" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_NO}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="证件类型" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_type,Converter={StaticResource CardTypeConverter}}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="单位" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_department}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_employee}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+
+                    <TextBlock Text="近期来访信息" FontWeight="Bold" FontSize="14" Grid.Row="2"></TextBlock>
+                    <Border Grid.Row="3" Margin="0,0,0,1" CornerRadius="3" BorderBrush="{StaticResource GroupBoxBorder}" BorderThickness="1">
+                        <DataGrid Margin="0"
+                               AutoGenerateColumns="False" 
+                        CanUserSortColumns="False"  IsReadOnly="True"
+                        CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
+                        CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="来访时间" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_in_time}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="离开时间" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_out_time}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="被访人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_employee}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+
+
+
             </Grid>
 
 
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
-                    <Button Content="添加" Height="30" Width="80" Margin="10,0,10,0"></Button>
-                    <Button Content="清空" Height="30" Width="80" Margin="10,0,10,0"></Button>
-                    <Button Content="保存" Height="30" Width="80" Margin="10,0,10,0"  Command="mui:LinkCommands.NavigateLink"
-                            CommandParameter="/Pages/Test/Introduction.xaml"></Button>
+                    <Button Content="添加" Command="{Binding AddCmd}" Height="28" Width="80" Margin="10,0,10,0"></Button>
+                    <Button Content="暂存" Command="{Binding SaveTempCmd}" Height="28" Width="80" Margin="10,0,10,0"></Button>
+                    <Button Content="提交" IsEnabled="{Binding EnableSubmit,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Command="{Binding SubmitCmd}" Height="28" Width="80" Margin="10,0,10,0"  ></Button>
+                    <Button Content="清空" Command="{Binding ClearCmd}" Height="28" Width="80" Margin="10,0,10,0"></Button>
                 </StackPanel>
             </Grid>
         </Grid>

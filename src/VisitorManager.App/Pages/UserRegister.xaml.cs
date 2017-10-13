@@ -19,9 +19,17 @@ namespace VisitorManager.App.Pages
     /// </summary>
     public partial class UserRegister : UserControl
     {
+        private UserRegisterViewModel _viewModel;
         public UserRegister()
         {
             InitializeComponent();
+            this._viewModel = new UserRegisterViewModel(this.displayImage);
+            this.DataContext = _viewModel;
+        }
+
+        private void UserRegister_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
         }
     }
 }

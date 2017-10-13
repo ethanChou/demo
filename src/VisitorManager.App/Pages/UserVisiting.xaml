@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="VisitorManager.App.Pages.UserVisiting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:VisitorManager.App.Pages.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,15" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"></RowDefinition>
+
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="查询方式" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
+                <ComboBox  Height="28" Width="90" MaxDropDownHeight="150" SelectedIndex="{Binding StatusIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="正在访问"></ComboBoxItem>
+                    <ComboBoxItem Content="已经离开"></ComboBoxItem>
+                    <ComboBoxItem Content="逾期未还"></ComboBoxItem>
+                    <ComboBoxItem Content="暂存待办"></ComboBoxItem>
+                    <ComboBoxItem Content="等待进入"></ComboBoxItem>
+                    <ComboBoxItem Content="所有记录"></ComboBoxItem>
+                </ComboBox>
+                
+                <TextBlock Text="被访单位" VerticalAlignment="Center" Margin="10,0,5,0"></TextBlock>
+                <ComboBox  Height="28" Width="87" ItemsSource="{Binding Departments}" SelectedIndex="{Binding DepartmentIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
+
+                <TextBlock Text="被访人员" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
+                <ComboBox  Height="28" Width="90" ItemsSource="{Binding Employees}" SelectedIndex="{Binding EmployeeIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
+
+
+                <Button Content="查询" Command="{Binding SearchCmd}" Height="28" Width="80" Margin="10,0,10,0"></Button>
+                <Button Content="清空" Command="{Binding ClearCmd}" Height="28" Width="80" Margin="10,0,10,0"></Button>
+
+            </StackPanel>
+        </Grid>
+        
+        <controls:ImageListBox Grid.Row="1" DateTemplateName="DisplayItemTemplate" ItemsSource="{Binding Visistors}"></controls:ImageListBox> 
+    </Grid>
+</UserControl>

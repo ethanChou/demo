@@ -15,21 +15,15 @@ using System.Windows.Shapes;
 namespace VisitorManager.App.Pages
 {
     /// <summary>
-    /// UserSearch.xaml 的交互逻辑
+    /// UserVisiting.xaml 的交互逻辑
     /// </summary>
-    public partial class UserSearch : UserControl
+    public partial class UserVisiting : UserControl
     {
-        public UserSearch()
+        public UserVisiting()
         {
             InitializeComponent();
-            this.IsVisibleChanged += UserSearch_IsVisibleChanged;
+            UserVisitingViewModel.Single = new UserVisitingViewModel();
+            this.DataContext = UserVisitingViewModel.Single;
         }
-
-        void UserSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Console.WriteLine(e.NewValue);
-        }
-
-      
     }
 }
