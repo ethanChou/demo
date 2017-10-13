@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="VisitorManager.App.Pages.Introduction"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="375" d:DesignWidth="446">
+    <Grid Style="{StaticResource ContentRoot}">
+        <ScrollViewer>
+            <StackPanel >
+                <TextBlock Text="MODERN UI FOR WPF" Style="{StaticResource Heading1}" Margin="0,0,0,8"/>
+                <mui:BBCodeBlock BBCode="关于来访登记的需求补充：
+1、  对于进入大楼的来访人员，目前4S需要在B网上进行申请，并持审批条到门卫室登记。日前，我向谭科长建议，在B网端作二维码，在门卫室找码，相关信息进入来访登记系统。谭科长决定，在明年升级时，增加这个功能。
+2、  目前门卫值班人员，不大可能进行流畅的文字输入工作，他们能做的，就是按照操作流程，见审批条（或访客打电话由内部接访人确认）——放上身份证采集信息——拍照采集现场照片——放上临时卡授权，然后访客进入单位。所有文字操作，原则上取消。
+3、  采集了身份证信息后，还是需要拍照，拍照是任何一个进入单位的访客必须进行的操作。
+4、  基于上述原因，访客的单位信息没有进行登记，也不需要登记（谭科长在B网审批端去要求）。
+5、  对于多人模式，由于不录入访客单位信息，整个过程变得非常简单。
+6、  软件审批，暂时不做，放到明年升级中去。
+7、  来访人员进入，有两种模式，一种是计划好的，经过审批，持审批条前来，门卫室即行办理；一些是临时决定前来，来访人员找谁，是否确实，需要采用电话录音记录。
+ 
+ 
+" Margin="0,0,0,32" />
+                <TextBlock Text="APPEARANCE" Style="{StaticResource Heading2}" />
+                <mui:BBCodeBlock BBCode="关于人像复核仪的需求补充
+1、外来人员离开办公大楼时，不再到武警处刷卡确认。改由软件采集访客刷大楼两个出门读卡器之一的信息、和来访登记处的销单信息作业外来人员离开的依据，进行统计。（这是谭科长明确的）。
+" Margin="0,0,0,32"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
