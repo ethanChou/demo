@@ -9,7 +9,7 @@
     <SolidColorBrush x:Key="ButtonBorder" Color="#cccccc" />
     <SolidColorBrush x:Key="ButtonBorderHover" Color="#cccccc" />
     <SolidColorBrush x:Key="ButtonBorderPressed" Color="{DynamicResource AccentColor}" />
-    <SolidColorBrush x:Key="ButtonText" Color="#333333" />
+    <SolidColorBrush x:Key="ButtonText" Color="Black" />
     <SolidColorBrush x:Key="ButtonTextHover" Color="#333333" />
     <SolidColorBrush x:Key="ButtonTextPressed" Color="#ffffff" />
     <SolidColorBrush x:Key="ButtonTextDisabled" Color="#a1a1a1" />

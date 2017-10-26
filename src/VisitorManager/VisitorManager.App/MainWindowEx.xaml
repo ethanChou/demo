@@ -1,0 +1,29 @@
+﻿<app:DemoWindow x:Class="VisitorManager.App.MainWindowEx"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:VisitorManager.App"
+        xmlns:pages="clr-namespace:VisitorManager.App.Pages"
+        Title="传达室管理系统" Height="800" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource MainWindowStyle}" ShowMaxButton="False" >
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Assets/backImg.png"></ImageBrush>
+        </Grid.Background>
+        <Grid x:Name="visitors" Visibility="{Binding VisitorVis,Mode=TwoWay}">
+            <pages:UserVisiting></pages:UserVisiting>
+        </Grid>
+        <Grid x:Name="regiseter" Visibility="{Binding RegisterVis,Mode=TwoWay}">
+            <pages:UserRegister></pages:UserRegister>
+        </Grid>
+        <Grid x:Name="exit" Visibility="{Binding ExitVis,Mode=TwoWay}">
+            <pages:UserLeave></pages:UserLeave>
+        </Grid>
+        <Grid x:Name="statistic" Visibility="{Binding StatisticVis,Mode=TwoWay}">
+            <pages:UserStatistic></pages:UserStatistic>
+        </Grid>
+        <Grid x:Name="search" Visibility="{Binding SearchVis,Mode=TwoWay}">
+            <pages:UserSearch></pages:UserSearch>
+        </Grid>
+    </Grid>
+</app:DemoWindow>

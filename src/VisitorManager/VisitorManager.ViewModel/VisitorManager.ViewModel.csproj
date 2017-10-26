@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5EF87016-0994-4394-97AC-82D76581E7E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VisitorManager.ViewModel</RootNamespace>
+    <AssemblyName>VisitorManager.ViewModel</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\lib\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Windows.Shell">
+      <HintPath>..\lib\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\lib\System.Data.SQLite.DLL</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\IDispatcher.cs" />
+    <Compile Include="Base\KeyValueConfig.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="Common\CardTypeConverter.cs" />
+    <Compile Include="Common\Commands.cs" />
+    <Compile Include="Common\DataManager.cs" />
+    <Compile Include="Common\TimerFormatConverter.cs" />
+    <Compile Include="Common\VisitorStatusToEnableConverter.cs" />
+    <Compile Include="Common\NegateConverter.cs" />
+    <Compile Include="Common\DbUtil.cs" />
+    <Compile Include="Common\JsonUtil.cs" />
+    <Compile Include="Common\VisitorStatusConverter.cs" />
+    <Compile Include="Common\WindowMoveBehavior.cs" />
+    <Compile Include="Common\ImageUtil.cs" />
+    <Compile Include="Model\Adrelation.cs" />
+    <Compile Include="Model\Blacklist.cs" />
+    <Compile Include="Model\Department.cs" />
+    <Compile Include="Model\Employee.cs" />
+    <Compile Include="Model\TempCard.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\VisitingList.cs" />
+    <Compile Include="Model\Visitor.cs" />
+    <Compile Include="SDK\IDCard\IdCardSDK.cs" />
+    <Compile Include="SDK\IDCard\IdCardThread.cs" />
+    <Compile Include="Base\DelegateCommand.cs" />
+    <Compile Include="Base\ViewModelBase.cs" />
+    <Compile Include="ViewModel\UserLeaveViewModel.cs" />
+    <Compile Include="ViewModel\UserVisitingViewModel.cs" />
+    <Compile Include="ViewModel\UserRegisterViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Libs\IDSDK\BY618_108.dll" />
+    <Content Include="Libs\IDSDK\logDll.dll" />
+    <Content Include="Libs\IDSDK\sdtapi.dll" />
+    <Content Include="Libs\IDSDK\WltRS.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
+      <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
+      <Name>WPF.Extend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FirstFloor.ModernUI.WPF4\FirstFloor.ModernUI.WPF4.csproj">
+      <Project>{a0ea4572-2726-4585-8e17-3a81a0eafa61}</Project>
+      <Name>FirstFloor.ModernUI.WPF4</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video.DirectShow\Video.DirectShow.csproj">
+      <Project>{26cd2ce7-ff63-4669-83b0-7d9c8f3408ee}</Project>
+      <Name>Video.DirectShow</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video\Video.csproj">
+      <Project>{809725dc-6502-4732-a51c-deb7fea12975}</Project>
+      <Name>Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

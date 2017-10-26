@@ -30,6 +30,77 @@
         </Setter>
     </Style>
 
+
+    <LinearGradientBrush x:Key="OpacityBrush" StartPoint="0,0" EndPoint="0,1" >
+
+        <GradientStop Color="#22000000" Offset="0" />
+
+        <GradientStop Color="#44000000" Offset="0.8" />
+
+
+    </LinearGradientBrush>
+    
+    <!--控件模板，Key为必需，并且设定目标类型为RadioButton-->
+    <Style x:Key="TabRadioStyle" TargetType="RadioButton">
+        <Setter Property="IsThreeState" Value="True"></Setter>
+        <Setter Property="Background" Value="Black"></Setter>
+        <Setter Property="Foreground" Value="#8a8a8a"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="Width" Value="140"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <!--选中状态：粗边框-->
+                        <Border x:Name="border" Margin="0,0,1,0" BorderThickness="0,0,0,0"  Padding="0">
+                            <Border x:Name="inerborder" Background="Transparent">
+                                <!--内部的文字内容绑定了RadioButton的Content属性-->
+                                <ContentControl Content="{TemplateBinding ContentControl.Content}" Margin="0" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                            </Border>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter Property="Opacity"  Value="1"></Setter>
+                            <Setter TargetName="border" Property="Background"   Value="{DynamicResource OpacityBrush}"></Setter>
+                            <Setter TargetName="inerborder" Property="Background"  Value="{DynamicResource PressRadioButtonBrush}"></Setter>
+                            <Setter  Property="Foreground"  Value="#ffAd36"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="false">
+                            <Setter Property="Opacity"  Value="1"></Setter>
+                        </Trigger>
+                       
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                            <Setter  Property="Foreground"  Value="#ffAd36"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                            <Setter TargetName="border" Property="Background"  Value="#1e1e1e"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="TabButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="8"/>
+        <Setter Property="Padding" Value="4"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value=".7" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value=".4" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="AlertButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="8"/>
@@ -126,9 +197,9 @@
         <Setter Property="BorderBrush"
                 Value="{DynamicResource ButtonBorder}"/>
         <Setter Property="BorderThickness"
-                Value="1"/>
+                Value="0"/>
         <Setter Property="Foreground"
-                Value="{DynamicResource ButtonText}"/>
+                Value="White"/>
         <Setter Property="HorizontalContentAlignment"
                 Value="Center"/>
         <Setter Property="VerticalContentAlignment"
@@ -141,6 +212,7 @@
                     <Border Name="Chrome"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                        CornerRadius="2"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         SnapsToDevicePixels="true">
                         <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}"
@@ -152,6 +224,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}"/>
+                            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />

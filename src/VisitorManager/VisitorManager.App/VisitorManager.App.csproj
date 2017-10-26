@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{90A13B86-5A04-4B54-A58E-2CD73ED94E94}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VisitorManager.App</RootNamespace>
+    <AssemblyName>VisitorManager.App</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\VisitorManager\lib\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\WorkSpace\JQ\VIA\lib\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\IntToVisibilityConverter.cs" />
+    <Compile Include="Common\CommonTreeViewItemModel.cs" />
+    <Compile Include="MainWindowEx.xaml.cs">
+      <DependentUpon>MainWindowEx.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window\CaptureWindow.xaml.cs">
+      <DependentUpon>CaptureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window\DemoWindow.cs" />
+    <Compile Include="Pages\Controls\ImageListBox.xaml.cs">
+      <DependentUpon>ImageListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controls\ImageListBoxItemTemplateSizeConvert.cs" />
+    <Compile Include="Pages\UserLeave.xaml.cs">
+      <DependentUpon>UserLeave.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UserSearch.xaml.cs">
+      <DependentUpon>UserSearch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UserStatistic.xaml.cs">
+      <DependentUpon>UserStatistic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UserVisiting.xaml.cs">
+      <DependentUpon>UserVisiting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Assets\ModernUI.HelloKitty.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ModernUI.Love.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ModernUI.Snowflakes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Images.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindowEx.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\CaptureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\DemoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Pages\Controls\ImageListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SystemConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UserLeave.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UserRegister.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UserSearch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UserStatistic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UserVisiting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Pages\SystemConfig.xaml.cs">
+      <DependentUpon>SystemConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UserRegister.xaml.cs">
+      <DependentUpon>UserRegister.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FirstFloor.ModernUI.WPF4\FirstFloor.ModernUI.WPF4.csproj">
+      <Project>{a0ea4572-2726-4585-8e17-3a81a0eafa61}</Project>
+      <Name>FirstFloor.ModernUI.WPF4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
+      <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
+      <Name>WPF.Extend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VisitorManager.ViewModel\VisitorManager.ViewModel.csproj">
+      <Project>{5ef87016-0994-4394-97ac-82d76581e7e6}</Project>
+      <Name>VisitorManager.ViewModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video.DirectShow\Video.DirectShow.csproj">
+      <Project>{26cd2ce7-ff63-4669-83b0-7d9c8f3408ee}</Project>
+      <Name>Video.DirectShow</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video\Video.csproj">
+      <Project>{809725dc-6502-4732-a51c-deb7fea12975}</Project>
+      <Name>Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\defaultPic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Man.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Statistic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Register.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SearchBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ClearBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SubmitBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SaveTempBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CaptureBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ConfirmBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CancleBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\WaitPic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\FaceRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Tab.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ParamSet1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\TreePerson.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\TreeDepart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\backImg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\captureH.png" />
+    <Resource Include="Assets\captureN.png" />
+    <Resource Include="Assets\captureP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitH.png" />
+    <Resource Include="Assets\ExitN.png" />
+    <Resource Include="Assets\ExitP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteH.png" />
+    <Resource Include="Assets\DeleteN.png" />
+    <Resource Include="Assets\DeleteP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CheckedH.png" />
+    <Resource Include="Assets\CheckedN.png" />
+    <Resource Include="Assets\CheckedP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Find.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CloseH.png" />
+    <Resource Include="Assets\CloseN.png" />
+    <Resource Include="Assets\CloseP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddH.png" />
+    <Resource Include="Assets\AddN.png" />
+    <Resource Include="Assets\AddP.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
