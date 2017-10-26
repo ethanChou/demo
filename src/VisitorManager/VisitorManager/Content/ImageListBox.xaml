@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="VisitorManager.Content.ImageListBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:common="clr-namespace:VisitorManager.ViewModel.Common;assembly=VisitorManager.ViewModel"
+             xmlns:visitorManager="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
+             xmlns:mbexd="http://wpfextend.com/"
+             xmlns:content="clr-namespace:VisitorManager.Content"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <common:TimerFormatConverter x:Key="TimerFormatConverter"></common:TimerFormatConverter>
+        <common:VisitorStatusConverter x:Key="VisitorStatusConverter"></common:VisitorStatusConverter>
+
+        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="Transparent" Opacity="1"/>
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#353535" Opacity="1"/>
+
+        <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="Transparent"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#b3a174"/>
+
+        <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="Transparent"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#b3a174"/>
+
+        <content:ImageListBoxItemTemplateSizeConvert x:Key="sizeConverter" />
+        <content:ImageListBoxItemHeightConvert x:Key="HeightSizeConverter" />
+
+      
+        <DataTemplate x:Key="DisplayItemTemplate" >
+            <Grid  Margin="2" 
+                   Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ListBox}}, ConverterParameter=4,Converter={StaticResource sizeConverter}}" 
+                   Height="{Binding Path=ActualHeight,RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ListBox}}, ConverterParameter=3,Converter={StaticResource HeightSizeConverter}}" >
+                <Border Margin="0"  BorderThickness="0" BorderBrush="{DynamicResource Item.MouseOver.Border}" CornerRadius="0">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" Grid.RowSpan="2">
+                            <Image Stretch="Fill" Source="{Binding Path=vt_identify_imgurl}"></Image>
+                        </Grid>
+                        <StackPanel Grid.Column="1" Margin="3,0,0,0" Orientation="Vertical">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"></Setter>
+                                    <Setter Property="Foreground" Value="White"></Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <StackPanel Orientation="Vertical" >
+                                <TextBlock Text="姓名:" ></TextBlock>
+                                <TextBlock Margin="15,0,0,0"  Text="{Binding vt_name}" ></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" >
+                                <TextBlock Text="证件号码:"></TextBlock>
+                                <TextBlock  Margin="15,0,0,0" Text="{Binding vt_identify_NO}"></TextBlock>
+                            </StackPanel>
+                            <StackPanel  Orientation="Vertical">
+                                <TextBlock Text="来访单号:"></TextBlock>
+                                <TextBlock  Margin="15,0,0,0" Text="{Binding vt_visitinglist_id}"></TextBlock>
+                            </StackPanel>
+                            <StackPanel  Orientation="Vertical">
+                                <TextBlock Text="访问状态:"></TextBlock>
+                                <TextBlock Margin="15,0,0,0" Text="{Binding vt_status,Converter={StaticResource VisitorStatusConverter}}" ></TextBlock>
+                            </StackPanel>
+                            <StackPanel  Orientation="Vertical">
+                                <TextBlock Text="登记时间:" ></TextBlock>
+                                <TextBlock Margin="15,0,0,0" Text="{Binding vt_in_time,Converter={StaticResource TimerFormatConverter}}" ></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Background="Black" Opacity="0.8">
+                            <mbexd:SimpleButton Command="{x:Static visitorManager:GotoCommands.NavigateLink}" CommandParameter="{Binding}" Normal="{StaticResource ExitN}"
+                                                Hover="{StaticResource ExitH}"
+                                                Pressed="{StaticResource ExitP}" Width="25" Height="25" ToolTip="退卡离开" Margin="3,0,3,0" ></mbexd:SimpleButton>
+                            <mbexd:SimpleButton Command="{x:Static visitorManager:VisitorDeleteCommands.DeleteCmd}" CommandParameter="{Binding }" Normal="{StaticResource DeleteN}"
+                                                Hover="{StaticResource DeleteH}"
+                                                Pressed="{StaticResource DeleteP}" Width="25" Height="25" ToolTip="删除" Margin="0,0,3,0" ></mbexd:SimpleButton>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+
+        <Style x:Key="ImageListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Item.MouseOver.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" Margin="20,10,20,10" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="0" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Accent}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Accent}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+    </UserControl.Resources>
+    <Grid>
+        <ListBox Grid.IsSharedSizeScope="True" Margin="0" Name="lsPricture" ItemContainerStyle="{DynamicResource ImageListBoxItemStyle}" ItemTemplate="{StaticResource DisplayItemTemplate}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"  SnapsToDevicePixels="True">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Background="{Binding Control.Background}" Margin="0" >
+                    </WrapPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
+</UserControl>

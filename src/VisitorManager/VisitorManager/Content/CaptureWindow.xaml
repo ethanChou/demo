@@ -1,0 +1,96 @@
+﻿<Window x:Class="VisitorManager.Content.CaptureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:visitorManager="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
+        Title="Window1" Height="443" Width="716"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        
+        Style="{StaticResource NoresizeWindow}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Background="#373839">
+            <i:Interaction.Behaviors>
+                <visitorManager:WindowMoveBehavior></visitorManager:WindowMoveBehavior>
+            </i:Interaction.Behaviors>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="抓拍图片" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="18" FontFamily="{DynamicResource DefaultFontFamily}" Foreground="White"></TextBlock>
+            <Button  x:Name="Close" Command="{Binding CloseCmd}" Grid.Column="2" Style="{DynamicResource SystemCloseButton}" >
+                <Button.Content>
+                    <Grid Width="13"  Height="12" RenderTransform="1,0,0,1,0,1">
+                        <Path Data="M0,0 L8,7 M8,0 L0,7 Z" Width="8" Height="7" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1.5"  />
+                    </Grid>
+                </Button.Content>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="1" Background="#222222">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="视频窗口" Foreground="White"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="抓拍图片" Foreground="White"></TextBlock>
+
+
+            <Grid Grid.Column="0" Grid.Row="1" Margin="1" >
+                <Grid.Background>
+                    <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
+                </Grid.Background>
+                <Image x:Name="videoShow" Margin="2" >
+                </Image>
+            </Grid>
+
+            <Grid Grid.Column="1" Grid.Row="1" Margin="1" >
+                <Grid.Background>
+                    <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
+                </Grid.Background>
+                <Image x:Name="picShow" Margin="2" Source="{Binding CaptureImageSrc}" >
+                </Image>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2" Background="#222222">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <Button Command="{Binding CaptureCmd}" Height="28" Width="80" Margin="10,0,10,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/CaptureBtn.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="抓拍" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding ConfirmCmd}" Height="28" Width="80" Margin="10,0,10,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/ConfirmBtn.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="确定" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding CancelCmd}" Height="28" Width="80" Margin="10,0,10,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/CancleBtn.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="取消" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
