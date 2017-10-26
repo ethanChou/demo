@@ -1,0 +1,89 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\defaultPic.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DefaultImage" />
+    
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteRN" />
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteRP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteRH" />
+
+    
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteN" />
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="DeleteH" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ExitN" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ExitH" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ExitP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CloseN" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CloseH" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CloseP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\AddN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="AddN" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\AddH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="AddH" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Assets\AddP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="AddP" />
+
+</ResourceDictionary>
