@@ -73,6 +73,8 @@
   <ItemGroup>
     <Compile Include="Base\IDispatcher.cs" />
     <Compile Include="Base\KeyValueConfig.cs" />
+    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\IntToVisibilityConverter.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Common\CardTypeConverter.cs" />
     <Compile Include="Common\Commands.cs" />
@@ -136,10 +138,6 @@
     <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
       <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
       <Name>WPF.Extend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FirstFloor.ModernUI.WPF4\FirstFloor.ModernUI.WPF4.csproj">
-      <Project>{a0ea4572-2726-4585-8e17-3a81a0eafa61}</Project>
-      <Name>FirstFloor.ModernUI.WPF4</Name>
     </ProjectReference>
     <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video.DirectShow\Video.DirectShow.csproj">
       <Project>{26cd2ce7-ff63-4669-83b0-7d9c8f3408ee}</Project>

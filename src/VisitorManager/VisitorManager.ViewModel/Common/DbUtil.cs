@@ -8,7 +8,7 @@ using System.Text;
 using Dapper;
 using VisitorManager.Model;
 
-namespace VisitorManager.Common
+namespace VisitorManager.ViewModel.Common
 {
     public class DbUtil
     {

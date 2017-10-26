@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5EF87016-0994-4394-97AC-82D76581E7E6}</ProjectGuid>
+    <ProjectGuid>{F60E412C-7EB1-42BC-B4C2-2C24F3BB4FE8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VisitorManager</RootNamespace>
@@ -13,10 +13,9 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -34,22 +33,33 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>App.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>..\lib\Microsoft.Windows.Shell.dll</HintPath>
+    <Reference Include="AForge.Controls">
+      <HintPath>..\lib\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video">
+      <HintPath>..\lib\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>..\lib\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.77.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\System.Data.SQLite.DLL</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -65,19 +75,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Base\IDispatcher.cs" />
-    <Compile Include="Base\KeyValueConfig.cs" />
-    <Compile Include="Common\JsonUtil.cs" />
-    <Compile Include="Common\WindowMoveBehavior.cs" />
-    <Compile Include="Common\ImageUtil.cs" />
-    <Compile Include="SDK\IDCard\IdCardSDK.cs" />
-    <Compile Include="SDK\IDCard\IdCardThread.cs" />
-    <Compile Include="View\Controls\NumberBox.cs" />
-    <Compile Include="View\Controls\SimpleWindow.cs" />
-    <Compile Include="View\RegisterWindow.xaml.cs">
-      <DependentUpon>RegisterWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Assets\Generic.xaml">
+    <Page Include="Content\CaptureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\ImageListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\UserLeave.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\UserSearch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\UserRegister.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\UserStatistic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\UserVisiting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -89,16 +115,38 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Base\DelegateCommand.cs" />
-    <Compile Include="Base\ViewModelBase.cs" />
+    <Compile Include="Content\CaptureWindow.xaml.cs">
+      <DependentUpon>CaptureWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Content\ImageListBox.xaml.cs">
+      <DependentUpon>ImageListBox.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Content\ImageListBoxItemTemplateSizeConvert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Content\UserLeave.xaml.cs">
+      <DependentUpon>UserLeave.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\UserSearch.xaml.cs">
+      <DependentUpon>UserSearch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\UserRegister.xaml.cs">
+      <DependentUpon>UserRegister.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\UserStatistic.xaml.cs">
+      <DependentUpon>UserStatistic.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Content\UserVisiting.xaml.cs">
+      <DependentUpon>UserVisiting.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\RegisterWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -125,26 +173,155 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="App.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libs\IDSDK\BY618_108.dll" />
-    <Content Include="Libs\IDSDK\logDll.dll" />
-    <Content Include="Libs\IDSDK\sdtapi.dll" />
-    <Content Include="Libs\IDSDK\WltRS.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FirstFloor.ModernUI.WPF4\FirstFloor.ModernUI.WPF4.csproj">
-      <Project>{a0ea4572-2726-4585-8e17-3a81a0eafa61}</Project>
-      <Name>FirstFloor.ModernUI.WPF4</Name>
+    <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
+      <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
+      <Name>WPF.Extend</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VisitorManager.ViewModel\VisitorManager.ViewModel.csproj">
+      <Project>{5ef87016-0994-4394-97ac-82d76581e7e6}</Project>
+      <Name>VisitorManager.ViewModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AddP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\backImg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CancleBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CaptureBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\captureH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\captureN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\captureP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CheckedH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CheckedN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CheckedP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ClearBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CloseH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CloseN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\CloseP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ConfirmBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\defaultPic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteRH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteRN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\DeleteRP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ExitP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\FaceRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Find.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Man.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ParamSet1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Register.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SaveTempBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SearchBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Statistic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\SubmitBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Tab.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\TreeDepart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\TreePerson.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\WaitPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

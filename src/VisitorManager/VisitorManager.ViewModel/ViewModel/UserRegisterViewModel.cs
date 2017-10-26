@@ -11,9 +11,9 @@ using System.Text;
 using System.Windows;
 using AForge.Video.DirectShow;
 using System.Windows.Input;
-using VisitorManager.Common;
 using VisitorManager.Model;
 using FirstFloor.ModernUI.Windows.Controls;
+using VisitorManager.ViewModel.Common;
 using WPF.Extend;
 using Image = System.Windows.Controls.Image;
 
@@ -79,9 +79,6 @@ namespace VisitorManager
             Items = Bind(nodes);
 
             DeleteCommands.DeleteCmd = new DelegateCommand(DeleteVisitorCommand);
-
-
-
         }
 
         public Visibility DefaultVis
@@ -246,11 +243,12 @@ namespace VisitorManager
         {
             get
             {
-                return DataManager.WaitingVisitors;
+                return new ObservableCollection<Visitor>();
+                //return DataManager.WaitingVisitors;
             }
             set
             {
-                DataManager.WaitingVisitors = value;
+               // DataManager.WaitingVisitors = value;
             }
         }
 
@@ -258,11 +256,12 @@ namespace VisitorManager
         {
             get
             {
-                return DataManager.PauseVisitors;
+                return new ObservableCollection<Visitor>();
+               // return DataManager.PauseVisitors;
             }
             set
             {
-                DataManager.PauseVisitors = value;
+               // DataManager.PauseVisitors = value;
             }
         }
 

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Windows.Navigation;
-using VisitorManager.Common;
 using VisitorManager.Model;
 using System.Windows.Threading;
 using System.Threading;
+using VisitorManager.ViewModel.Common;
 
 namespace VisitorManager
 {

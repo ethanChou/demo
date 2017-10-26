@@ -7,8 +7,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using WPF.Extend;
-using VisitorManager.Common;
 using VisitorManager.Model;
+using VisitorManager.ViewModel.Common;
 
 namespace VisitorManager
 {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using VisitorManager.Common;
 using VisitorManager.Model;
+using VisitorManager.ViewModel.Common;
 
 namespace VisitorManager
 {

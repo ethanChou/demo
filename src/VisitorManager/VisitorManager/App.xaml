@@ -5,9 +5,58 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-                <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml" />
-                <ResourceDictionary Source="Assets/Generic.xaml" />
+
+                <ResourceDictionary Source="Images.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/WPF.Extend;component/Generic.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontFamily" Value="微软雅黑"></Setter>
+                    </Style>
+                    <Style x:Key="ContentCenterStyle"  
+               TargetType="{x:Type TextBlock}">
+                        <Setter Property="HorizontalAlignment"  
+                    Value="Center" />
+                        <Setter Property="VerticalAlignment"  
+                    Value="Center" />
+                    </Style>
+
+                    <ImageBrush x:Key="PressRadioButtonBrush" ImageSource="Assets/Tab.png"></ImageBrush>
+                    <Style x:Key="NoresizeWindow" TargetType="{x:Type Window}">
+                        <Setter Property="AllowsTransparency" Value="true"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="ResizeMode" Value="NoResize"/>
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="ShowInTaskbar" Value="false"/>
+                        <Setter Property="WindowStyle" Value="None"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Window}">
+                                    <Grid Margin="10">
+                                        <Rectangle Fill="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"  
+                               RadiusX="3" RadiusY="3">
+                                            <Rectangle.Effect>
+                                                <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
+                                            </Rectangle.Effect>
+                                        </Rectangle>
+                                        <Border Background="{TemplateBinding Background}"  
+                            BorderBrush="{TemplateBinding BorderBrush}"  
+                            BorderThickness="{TemplateBinding BorderThickness}"  
+                            Padding="{TemplateBinding Margin}"  
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  
+                            CornerRadius="5">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+
+                    <SolidColorBrush x:Key="BorderColor" Color="#353535" />
+                    <SolidColorBrush x:Key="ThemeColor" Color="#fFa927"></SolidColorBrush>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
