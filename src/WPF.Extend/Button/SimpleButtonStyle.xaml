@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WPF.Extend">
+
+    <Style TargetType="{x:Type local:SimpleButton}">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SimpleButton}">
+                    <Border Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="true">
+                        <Grid>
+                            <Image Name="normalImage" Stretch="Fill" Source="{TemplateBinding Normal}" ></Image>
+                            <Image Name="hoveImage" Stretch="Fill" Source="{TemplateBinding Hover}" Visibility="Collapsed" ></Image>
+                            <Image Name="pressedImage" Stretch="Fill" Source="{TemplateBinding Pressed}" Visibility="Collapsed"></Image>
+                            <Image Name="disableImage" Stretch="Fill" Source="{TemplateBinding Disabled}" Visibility="Collapsed"></Image>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="normalImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="hoveImage" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="pressedImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="disableImage" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="normalImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="hoveImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="pressedImage" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="disableImage" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="normalImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="hoveImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="pressedImage" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="disableImage" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

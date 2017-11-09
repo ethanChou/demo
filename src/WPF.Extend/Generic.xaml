@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Button/SimpleButtonStyle.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="Button/SimpleRadioButtonStyle.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="Message/MsgBoxStyle.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="DocmentViewer/DocumentViewer.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="DocmentViewer/ToolBar.xaml"></ResourceDictionary>
+     
+        
+        <ResourceDictionary Source="ModernUI/Button.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/Calendar.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/ContextMenu.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/ComboBox.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/Converters.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/DataGrid.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/DatePicker.xaml"></ResourceDictionary>
+
+        <ResourceDictionary Source="ModernUI/Label.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/ListBox.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/ListView.xaml"></ResourceDictionary>
+
+        <ResourceDictionary Source="ModernUI/ModernUI.Dark.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/ModernUI.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/MenuItem.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/RadioButton.xaml"></ResourceDictionary>
+        
+        <ResourceDictionary Source="ModernUI/ScrollBar.xaml"></ResourceDictionary>
+        
+    
+     
+        <ResourceDictionary Source="ModernUI/Slider.xaml"></ResourceDictionary>
+      
+        <ResourceDictionary Source="ModernUI/ToolTip.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/TextBox.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/TextBlock.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ModernUI/TreeView.xaml"></ResourceDictionary>
+
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
