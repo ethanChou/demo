@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VisitorManager.ViewModel;
 
 namespace VisitorManager.Content
 {
@@ -22,14 +23,6 @@ namespace VisitorManager.Content
         public UserSearch()
         {
             InitializeComponent();
-            this.IsVisibleChanged += UserSearch_IsVisibleChanged;
         }
-
-        void UserSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Console.WriteLine(e.NewValue);
-        }
-
-      
     }
 }

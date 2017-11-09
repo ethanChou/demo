@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VisitorManager.ViewModel;
 
 namespace VisitorManager.Content
 {
@@ -22,15 +23,6 @@ namespace VisitorManager.Content
         public UserLeave()
         {
             InitializeComponent();
-            var m = new UserLeaveViewModel();
-            
-            this.DataContext = m;
-            this.Loaded += (sender, arg) =>
-            {
-                m.Loaded();
-            };
         }
-
-      
     }
 }

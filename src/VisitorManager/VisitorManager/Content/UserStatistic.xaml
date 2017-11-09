@@ -5,65 +5,55 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1024">
-    <UserControl.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#787878"></Setter>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"></Setter>
-        </Style>
-    </UserControl.Resources>
+
     <Grid Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="2"></RowDefinition>
+
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="年份选择" Width="60"  VerticalAlignment="Center"></TextBlock>
-            <ComboBox Height="30" Width="150">
-                <ComboBoxItem>2016</ComboBoxItem>
-                <ComboBoxItem>2017</ComboBoxItem>
-                <ComboBoxItem>2018</ComboBoxItem>
-                <ComboBoxItem>2019</ComboBoxItem>
-                <ComboBoxItem>2020</ComboBoxItem>
-                <ComboBoxItem>2021</ComboBoxItem>
-                <ComboBoxItem>2022</ComboBoxItem>
-                <ComboBoxItem>2023</ComboBoxItem>
-            </ComboBox>
-            <TextBlock Text="月份选择" Width="60"  VerticalAlignment="Center"></TextBlock>
-            <ComboBox Height="30" Width="150">
-                <ComboBoxItem>1</ComboBoxItem>
-                <ComboBoxItem>2</ComboBoxItem>
-                <ComboBoxItem>3</ComboBoxItem>
-                <ComboBoxItem>4</ComboBoxItem>
-                <ComboBoxItem>5</ComboBoxItem>
-                <ComboBoxItem>6</ComboBoxItem>
-                <ComboBoxItem>7</ComboBoxItem>
-                <ComboBoxItem>8</ComboBoxItem>
-                <ComboBoxItem>9</ComboBoxItem>
-                <ComboBoxItem>10</ComboBoxItem>
-                <ComboBoxItem>11</ComboBoxItem>
-                <ComboBoxItem>12</ComboBoxItem>
-            </ComboBox>
-            <TextBlock Text="至" Width="20"  VerticalAlignment="Center"></TextBlock>
-            <ComboBox Height="30" Width="150">
-                <ComboBoxItem>1</ComboBoxItem>
-                <ComboBoxItem>2</ComboBoxItem>
-                <ComboBoxItem>3</ComboBoxItem>
-                <ComboBoxItem>4</ComboBoxItem>
-                <ComboBoxItem>5</ComboBoxItem>
-                <ComboBoxItem>6</ComboBoxItem>
-                <ComboBoxItem>7</ComboBoxItem>
-                <ComboBoxItem>8</ComboBoxItem>
-                <ComboBoxItem>9</ComboBoxItem>
-                <ComboBoxItem>10</ComboBoxItem>
-                <ComboBoxItem>11</ComboBoxItem>
-                <ComboBoxItem>12</ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
-        <Grid Grid.Row="1">
-            <DocumentViewer Background="White">
-                
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,5,0" Height="40" BorderThickness="1"  Background="#2b2b2b" BorderBrush="#343434">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="年份选择" Width="60"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+
+
+                <ComboBox  Width="120" Height="25" SelectedIndex="0"  Margin="2,0,5,0" Text="{Binding Year,Mode=TwoWay}" ItemsSource="{Binding YearDatas}"  MaxDropDownHeight="150"></ComboBox>
+
+
+                <TextBlock Text="起始月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <ComboBox  SelectedIndex="0" Height="25" Width="100" Text="{Binding BeginMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
+
+                </ComboBox>
+
+
+
+                <TextBlock Text="结束月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <ComboBox SelectedIndex="11" Height="25" Width="100" Text="{Binding EndMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
+
+                </ComboBox>
+
+                <Button Command="{Binding StartCmd}"  Height="30" Width="100" Margin="15,0,15,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
+                            <Image Source="../Image/Statis.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="统计" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <!--Style="{DynamicResource SimpleDocmentViewerStyle}"-->
+            <DocumentViewer x:Name="dv" Style="{DynamicResource SimpleDocmentViewerStyle}"  Background="#131313" Document="{Binding DataView}" >
+
             </DocumentViewer>
-            
         </Grid>
     </Grid>
 </UserControl>

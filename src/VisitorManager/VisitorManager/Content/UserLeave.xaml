@@ -1,25 +1,14 @@
 ﻿<UserControl x:Class="VisitorManager.Content.UserLeave"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-              xmlns:bav="http://commandbehaviors.com/"
-             xmlns:app="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
-             xmlns:common="clr-namespace:VisitorManager.ViewModel.Common;assembly=VisitorManager.ViewModel"
+             xmlns:vm="clr-namespace:VisitorManager.ViewModel;assembly=VisitorManager.ViewModel"
              xmlns:behaviors="clr-namespace:WPF.Extend.Behaviors;assembly=WPF.Extend"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1024">
-    <UserControl.Resources>
-        <common:CardTypeConverter x:Key="CardTypeConverter"></common:CardTypeConverter>
-        <common:PassCardTypeConverter x:Key="PassCardTypeConverter"></common:PassCardTypeConverter>
-        <common:VisitorStatusConverter x:Key="VisitorStatusConverter"></common:VisitorStatusConverter>
-        <common:VisitorStatusToEnableConverter x:Key="VisitorStatusToEnableConverter"></common:VisitorStatusToEnableConverter>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#787878"></Setter>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"></Setter>
-        </Style>
-    </UserControl.Resources>
+
     <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="2"></RowDefinition>
@@ -28,7 +17,7 @@
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="190"></ColumnDefinition>
+            <ColumnDefinition Width="0"></ColumnDefinition>
             <ColumnDefinition Width="400*"></ColumnDefinition>
             <ColumnDefinition Width="400*"></ColumnDefinition>
             <ColumnDefinition Width="250*"></ColumnDefinition>
@@ -41,11 +30,7 @@
             </Grid.RowDefinitions>
             <TextBlock Text="来访者照片" FontWeight="Bold" FontSize="14"></TextBlock>
             <Border  Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,5,2,0" >
-                <Grid >
-                    <Grid.Background>
-                        <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
-                    </Grid.Background>
-
+                <Grid Background="{StaticResource FaceRectBrush}">
                     <Image Source="{Binding CaptureImage,Mode=TwoWay}" Margin="3"></Image>
                 </Grid>
             </Border>
@@ -64,10 +49,7 @@
                     BorderBrush="{DynamicResource BorderColor}" 
                     Margin="1,5,2,0" 
                     >
-                <Grid >
-                    <Grid.Background>
-                        <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
-                    </Grid.Background>
+                <Grid Background="{StaticResource FaceRectBrush}">
                     <Image Source="{Binding CardImage,Mode=TwoWay}" Margin="3"></Image>
                 </Grid>
             </Border>
@@ -88,6 +70,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <TextBlock Text="姓名" Width="60"  VerticalAlignment="Center"></TextBlock>
@@ -99,11 +82,11 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Orientation="Horizontal">
                         <TextBlock Text="被访单位" Width="60" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Text="{Binding Department}" Margin="0" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding Department,Converter={StaticResource IDConverter},ConverterParameter=0}" Margin="0" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <TextBlock Text="被访人员" Width="60" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Text="{Binding Emploayee}" Margin="0" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding Emploayee,Converter={StaticResource IDConverter},ConverterParameter=1}" Margin="0" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Row="4" Orientation="Horizontal">
                         <TextBlock Text="访问时间" Width="60" VerticalAlignment="Center"></TextBlock>
@@ -113,20 +96,28 @@
                         <TextBlock Text="来访单号" Width="60" VerticalAlignment="Center"></TextBlock>
                         <TextBlock Text="{Binding VisitinglistId}" Margin="0" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
+                    <StackPanel Grid.Row="6" Orientation="Horizontal">
+                        <TextBlock Text="存放物品" Width="60" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding ObjectStr}" Margin="0" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
                 </Grid>
-
             </Border>
-
-
         </Grid>
-
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Command="{Binding LeaveCmd}" Height="28" Width="80" Margin="10,0,10,0">
+                <Button Command="{Binding LeaveCmd}" CommandParameter="0" Height="28" Width="120" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" >
-                            <Image Source="../Assets/ExitBtn.png" Height="20" Margin="0"></Image>
-                            <TextBlock Text="离开" Margin="5,2" Foreground="White" VerticalAlignment="Center"></TextBlock>
+                            <Image Source="../Image/ExitBtn.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="卡归还离开" Margin="2,2" Foreground="White" VerticalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding LeaveCmd}" CommandParameter="1" Height="28" Width="120" Margin="10,0,10,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="../Image/ExitBtn.png" Height="20" Margin="0"></Image>
+                            <TextBlock Text="卡丢失离开" Margin="2,2" Foreground="White" VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
                     </Button.Content>
                 </Button>
@@ -140,31 +131,46 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Text="来访者列表" FontWeight="Bold" FontSize="14"></TextBlock>
-            <Border Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" Margin="5" BorderThickness="1">
-                <DataGrid  AutoGenerateColumns="False"  VerticalAlignment="Top" Margin="0,0,0,2" ItemsSource="{Binding FellowVisitors}"
-                  CanUserSortColumns="False"  IsReadOnly="False"
-                  CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
-                  CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False" 
-                  SelectedIndex="{Binding SelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   >
+            <Border Grid.Row="1"  CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" Margin="5" BorderThickness="1">
+                <DataGrid x:Name="dg"
+                          HeadersVisibility="Column"
+                          AutoGenerateColumns="False"  
+                          VerticalAlignment="Top"
+                          Margin="0,0,0,2" 
+                          ItemsSource="{Binding FellowVisitors}"
+                 
+                          CanUserSortColumns="False"  IsReadOnly="False"
+                 
+                          CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
+                  
+                          CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0"  CanUserAddRows="False">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{x:Static vm:UserLeaveCommands.SelectedCmd}" CommandParameter="{Binding Path=SelectedValue,ElementName=dg}"></i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="选择" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox Style="{StaticResource SimpleCheckBoxStyle}" HorizontalAlignment="Center" IsEnabled="{Binding vt_status,Converter={StaticResource VisitorStatusToEnableConverter}}" >
-                                        <behaviors:CommandBehaviorCollection.Behaviors>
-                                            <behaviors:BehaviorBinding Event="Checked" Command="app:ComboxCheckedCommands.CheckedCmd" CommandParameter="{Binding .}"/>
-                                            <behaviors:BehaviorBinding Event="Unchecked" Command="app:ComboxCheckedCommands.UnCheckedCmd" CommandParameter="{Binding .}"/>
-                                        </behaviors:CommandBehaviorCollection.Behaviors>
+                                    <CheckBox Style="{StaticResource SimpleCheckBoxStyle}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" IsEnabled="{Binding Vt_status,Converter={StaticResource VisitorStatusToEnableConverter}}" >
+                                        <!--<behaviors:CommandBehaviorCollection.Behaviors>
+
+                                            <behaviors:BehaviorBinding Event="Checked" Command="vm:UserLeaveCommands.CheckedCmd" CommandParameter="{Binding .}"/>
+                                            <behaviors:BehaviorBinding Event="Unchecked" Command="vm:UserLeaveCommands.UnCheckedCmd" CommandParameter="{Binding .}"/>
+                                        </behaviors:CommandBehaviorCollection.Behaviors>-->
                                     </CheckBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="姓名" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding vt_name}" />
-                        <DataGridTextColumn Header="证件类型" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding vt_identify_type,Converter={StaticResource CardTypeConverter}}" />
-                        <DataGridTextColumn Header="证件号码" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding vt_identify_NO}" />
-                        <DataGridTextColumn Header="通行证类型" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding tmpcard_type,Converter={StaticResource PassCardTypeConverter}}" />
-                        <DataGridTextColumn Header="通行证编号" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding tmpcard_id}" />
-                        <DataGridTextColumn Header="访问状态" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*"  Binding="{Binding vt_status,Converter={StaticResource VisitorStatusConverter}}" />
+                        <DataGridTextColumn Header="姓名" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding Vt_name}" />
+                        <DataGridTextColumn Header="证件类型" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding Vt_identify_type,Converter={StaticResource CardTypeConverter}}" />
+                        <DataGridTextColumn Header="证件号码" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding Vt_identify_no}" />
+                        <DataGridTextColumn Header="通行证编号" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*" Binding="{Binding Tmpcard_no}" />
+                        <DataGridTextColumn Header="访问状态" IsReadOnly="True"  ElementStyle="{StaticResource ContentCenterStyle}"  Width="50*"  Binding="{Binding Vt_status,Converter={StaticResource VisitorStatusConverter}}" />
+                        <DataGridTextColumn Header="单位" IsReadOnly="True" ElementStyle="{StaticResource ContentCenterStyle}" Width="50*" Binding="{Binding Vt_visit_department_id,Converter={StaticResource IDConverter},ConverterParameter=0}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="人员" IsReadOnly="True" ElementStyle="{StaticResource ContentCenterStyle}" Width="50*"  Binding="{Binding Vt_visit_employee_id,Converter={StaticResource IDConverter},ConverterParameter=1}"></DataGridTextColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -197,11 +203,11 @@
                 </StackPanel>
             </Border>
 
-            
+
             <Button Grid.Row="3"  Height="28" Width="80" Margin="0,5,0,0">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
-                        <Image Source="../Assets/Find.png" Height="18" Margin="0"></Image>
+                        <Image Source="../Image/Find.png" Height="18" Margin="0"></Image>
                         <TextBlock Text="查找" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
                     </StackPanel>
                 </Button.Content>

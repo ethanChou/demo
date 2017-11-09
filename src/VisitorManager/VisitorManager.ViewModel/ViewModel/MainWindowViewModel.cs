@@ -4,16 +4,138 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using ThriftCommon;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+       
+
+        internal IContextWindow MainWindow { get; set; }
+
+        public MainWindowViewModel(IContextWindow window)
         {
             Singleton = this;
+            MainWindow = window;
+
+            TabExitSource = (ImageSource)Application.Current.Resources["Man"];
+
+            IDCardManager.Start();
+            FreshCardManager.Start();
+            ThriftManager.Start();
+
         }
 
+
+        public void Init(UserLeaveViewModel lvm, UserRegisterViewModel rvm, UserVisitingViewModel vvm, UserSearchViewModel svm, UserStatisticViewModel stvm)
+        {
+            LeaveVM = lvm;
+            RegisterVM = rvm;
+            VistingVM = vvm;
+            SearchVM = svm;
+            StatisticVM = stvm;
+
+            IDCardManager.RecevierCallback += IDCardDataRecevied;
+            FreshCardManager.MessageReceived += FreshCardReceived;
+
+            UserLeaveCommands.Selected = new Action<object>(LeaveVM.SelectedCommand);
+            UserLeaveCommands.Leave = new Action<object>(VisitroLeave);
+
+            UserRegisterCommands.PeerUserAdded += (t) =>
+            {
+                RegisterVM.AddPeerVisitor(t);
+                TabCommand(1);
+            };
+            UserRegisterCommands.WaitUsersDeleted += (t) =>
+            {
+                RegisterVM.DeleteWaitVisitor(t);
+            };
+            UserRegisterCommands.TempUsersDeleted += (t) =>
+            {
+                RegisterVM.DeleteTempVisitor(t);
+            };
+
+            UserSearchCommands.ViewCmd = new DelegateCommand(SearchVM.ViewVisitor);
+
+            UserVisitingCommands.Delete += VistingVM.VisitorDeleted;
+        }
+
+        /// <summary>
+        /// 员工卡
+        /// </summary>
+        /// <param name="message"></param>
+        private void FreshCardReceived(string message)
+        {
+            VisitorFreshCardMessage data = message.Deserialize<VisitorFreshCardMessage>();
+            if (data != null)
+            {
+                if (data.cardholder_type == CardHolderType.Tmproty)
+                {
+                    var vtor = VistingVM.ExistsCard(data.card_no);
+                    //临时卡正在使用
+                    if (vtor != null)
+                    {
+                        LeaveVM.VisitorLeave(vtor);
+                        TabCommand(2);
+                    }
+                    else
+                    {
+                        RegisterVM.UpdateTempCardId(data.card_no);
+                        TabCommand(1);
+                    }
+                }
+                else
+                {
+                    //正式卡
+                    var vtor = VistingVM.ExistsCard(data.card_no, false);
+                    if (vtor == null)
+                    {
+                        RegisterVM.FreshCardReceived(data);
+                        TabCommand(1);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 刷身份证卡，产生消息，更新
+        /// </summary>
+        /// <param name="data"></param>
+        private void IDCardDataRecevied(IDCardData data)
+        {
+            if (data != null)
+            {
+                var vtor = VistingVM.ExistsCard(data.IdCardNO, false);
+                if (vtor == null)
+                {
+                    RegisterVM.IDCardRecevied(data);
+                    TabCommand(1);
+                }
+                else {
+                    LeaveVM.VisitorLeave(vtor);
+                    TabCommand(2);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 首页访问用户离开
+        /// </summary>
+        /// <param name="arg"></param>
+        private void VisitroLeave(object arg)
+        {
+            Visitor v = arg as Visitor;
+
+            if (v != null)
+            {
+                LeaveVM.VisitorLeave(v);
+                TabCommand(2);
+            }
+        }
+
+        #region MainWindow
         public static MainWindowViewModel Singleton { get; set; }
         private bool _isCheckedVisitor = true;
         private bool _isCheckedRegister = false;
@@ -21,8 +143,8 @@ namespace VisitorManager
         private bool _isCheckedStatis = false;
         private bool _isCheckedSearch = false;
 
-        private Visibility _visitorVis= Visibility.Visible;
-        private Visibility _registerVis= Visibility.Collapsed;
+        private Visibility _visitorVis = Visibility.Visible;
+        private Visibility _registerVis = Visibility.Collapsed;
         private Visibility _exitVis = Visibility.Collapsed;
         private Visibility _statisticVis = Visibility.Collapsed;
         private Visibility _searchVis = Visibility.Collapsed;
@@ -51,7 +173,6 @@ namespace VisitorManager
             {
                 _registerVis = value;
                 NotifyChange("RegisterVis");
-                
             }
         }
 
@@ -62,7 +183,7 @@ namespace VisitorManager
             {
                 _exitVis = value;
                 NotifyChange("ExitVis");
-                
+
             }
         }
 
@@ -103,7 +224,7 @@ namespace VisitorManager
             {
                 _isCheckedRegister = value;
                 NotifyChange("IsCheckedRegister");
-                
+
             }
         }
 
@@ -114,7 +235,7 @@ namespace VisitorManager
             {
                 _isCheckedLeave = value;
                 NotifyChange("IsCheckedLeave");
-                
+
             }
         }
 
@@ -125,7 +246,7 @@ namespace VisitorManager
             {
                 _isCheckedStatis = value;
                 NotifyChange("IsCheckedStatis");
-                
+
             }
         }
 
@@ -136,14 +257,16 @@ namespace VisitorManager
             {
                 _isCheckedSearch = value;
                 NotifyChange("IsCheckedSearch");
-                
+
             }
         }
+
+
 
         private void TabCommand(object arg)
         {
             int index = int.Parse(arg.ToString());
-            if (index==0)
+            if (index == 0)
             {
                 VisitorVis = Visibility.Visible;
                 RegisterVis = Visibility.Collapsed;
@@ -151,6 +274,7 @@ namespace VisitorManager
                 StatisticVis = Visibility.Collapsed;
                 SearchVis = Visibility.Collapsed;
                 IsCheckedVisitor = true;
+                RegisterVM.ClearVisitingId();
             }
 
             if (index == 1)
@@ -172,6 +296,8 @@ namespace VisitorManager
                 StatisticVis = Visibility.Collapsed;
                 SearchVis = Visibility.Collapsed;
                 IsCheckedLeave = true;
+                RegisterVM.ClearVisitingId();
+
             }
 
             if (index == 3)
@@ -182,6 +308,8 @@ namespace VisitorManager
                 StatisticVis = Visibility.Visible;
                 SearchVis = Visibility.Collapsed;
                 IsCheckedStatis = true;
+                RegisterVM.ClearVisitingId();
+
             }
 
             if (index == 4)
@@ -192,6 +320,161 @@ namespace VisitorManager
                 StatisticVis = Visibility.Collapsed;
                 SearchVis = Visibility.Visible;
                 IsCheckedSearch = true;
+                RegisterVM.ClearVisitingId();
+
+            }
+        }
+
+        ImageSource _tabVisitingSource;
+        ImageSource _tabRegisterSource;
+        ImageSource _tabExitSource;
+        ImageSource _tabSearchSource;
+        ImageSource _tabStatisticSource;
+
+        public ImageSource TabVisitingSource
+        {
+            get
+            {
+                return _tabVisitingSource;
+            }
+
+            set
+            {
+                _tabVisitingSource = value;
+                NotifyChange("TabVisitingSource");
+
+            }
+        }
+
+        public ImageSource TabRegisterSource
+        {
+            get
+            {
+                return _tabRegisterSource;
+            }
+
+            set
+            {
+                _tabRegisterSource = value;
+                NotifyChange("TabRegisterSource");
+
+            }
+        }
+
+        public ImageSource TabExitSource
+        {
+            get
+            {
+                return _tabExitSource;
+            }
+
+            set
+            {
+                _tabExitSource = value;
+                NotifyChange("TabExitSource");
+
+            }
+        }
+
+        public ImageSource TabSearchSource
+        {
+            get
+            {
+                return _tabSearchSource;
+            }
+
+            set
+            {
+                _tabSearchSource = value;
+                NotifyChange("TabSearchSource");
+
+            }
+        }
+
+        public ImageSource TabStatisticSource
+        {
+            get
+            {
+                return _tabStatisticSource;
+            }
+
+            set
+            {
+                _tabStatisticSource = value;
+                NotifyChange("TabStatisticSource");
+
+            }
+        }
+        #endregion
+
+        private UserLeaveViewModel _leaveVM;
+        private UserRegisterViewModel _registerVM;
+        private UserSearchViewModel _searchVM;
+        private UserStatisticViewModel _statisticVM;
+        private UserVisitingViewModel _vistingVM;
+
+        public UserLeaveViewModel LeaveVM
+        {
+            get
+            {
+                return _leaveVM;
+            }
+
+            set
+            {
+                _leaveVM = value;
+            }
+        }
+
+        public UserRegisterViewModel RegisterVM
+        {
+            get
+            {
+                return _registerVM;
+            }
+
+            set
+            {
+                _registerVM = value;
+            }
+        }
+
+        public UserVisitingViewModel VistingVM
+        {
+            get
+            {
+                return _vistingVM;
+            }
+
+            set
+            {
+                _vistingVM = value;
+            }
+        }
+
+        public UserStatisticViewModel StatisticVM
+        {
+            get
+            {
+                return _statisticVM;
+            }
+
+            set
+            {
+                _statisticVM = value;
+            }
+        }
+
+        public UserSearchViewModel SearchVM
+        {
+            get
+            {
+                return _searchVM;
+            }
+
+            set
+            {
+                _searchVM = value;
             }
         }
     }

@@ -14,11 +14,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using WPF.Extend;
 using PixelFormat = System.Windows.Media.PixelFormat;
 using Rectangle = System.Windows.Shapes.Rectangle;
+using VisitorManager.ViewModel;
 
 namespace VisitorManager.Content
 {
@@ -31,10 +33,11 @@ namespace VisitorManager.Content
         private Bitmap _currentImage;
 
         private WriteableBitmapSource _wbSource;
-
+        private DispatcherTimer _drawTimer;
         private FilterInfoCollection _videoDevices;
         private VideoCaptureDevice _videoSource;
-
+        private VideoCapabilities capabilty;
+        private bool _isChecked = true;
         public CaptureWindow()
         {
             InitializeComponent();
@@ -46,38 +49,58 @@ namespace VisitorManager.Content
         {
             try
             {
+                _drawTimer = new DispatcherTimer();
+                _drawTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
+                _drawTimer.Tick += _drawTimer_Tick;
+
                 this._videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
                 if (_videoSource == null && _videoDevices.Count > 0)
                 {
                     _videoSource = new VideoCaptureDevice(_videoDevices[0].MonikerString);
-                    VideoCapabilities capabilty = _videoSource.VideoCapabilities[0];
+                    capabilty = _videoSource.VideoCapabilities[0];
 
                     if (_wbSource == null)
                     {
                         this._wbSource = new WriteableBitmapSource();
                         if (this._wbSource.SetupSurface(capabilty.FrameSize.Width, capabilty.FrameSize.Height, FrameFormat.RGB24))
                         {
-                            this.videoShow.Dispatcher.Invoke(new Action(() =>
-                            {
-                                this.videoShow.Source = this._wbSource.ImageSource;
-                            }));
+                            this.videoShow.Source = this._wbSource.ImageSource;
                         }
                         else
                         {
-                            throw new Exception("WriteableBitmapSource不支持该种帧格式：");
+                            MsgBox.Show("WriteableBitmapSource不支持该种帧格式.");
                         }
                     }
-
 
                     _videoSource.NewFrame += VideoSource_NewFrame;
                     _videoSource.PlayingFinished += VideoSource_PlayingFinished;
                     _videoSource.VideoSourceError += _videoSource_VideoSourceError;
                     _videoSource.Start();
+                    _drawTimer.Start();
+                }
+
+                else
+                {
+                    MsgBox.Show("未发现摄像头.");
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        void _drawTimer_Tick(object sender, EventArgs e)
+        {
+            if (_currentImage == null) return;
+
+            lock (_lock)
+            {
+
+                if (IsChecked) IsChecked = false;
+                BitmapData data = _currentImage.LockBits(new System.Drawing.Rectangle(0, 0, _currentImage.Width, _currentImage.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                this._wbSource.Render(data.Scan0);
+                _currentImage.UnlockBits(data);
             }
         }
 
@@ -91,38 +114,22 @@ namespace VisitorManager.Content
             Debug.WriteLine(reason.ToString());
         }
 
+        bool _isCapture = false;
         private static object _lock = new object();
-        private bool _isStop = false;
         private void VideoSource_NewFrame(object sender, NewFrameEventArgs e)
         {
             try
             {
-
-                if (_isStop) return;
-
-                Debug.WriteLine("New Frame");
-                if (_defaultVis == Visibility.Visible) _defaultVis = Visibility.Collapsed;
-
-
                 lock (_lock)
                 {
                     if (_currentImage != null) _currentImage.Dispose();
                     _currentImage = (Bitmap)e.Frame.Clone();
                 }
-
-                BitmapData data = e.Frame.LockBits(new System.Drawing.Rectangle(0, 0, e.Frame.Width, e.Frame.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-
-                this._wbSource.Render(data.Scan0);
-
-
-                e.Frame.UnlockBits(data);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("NewFrame:" + ex.ToString());
             }
-            Debug.WriteLine("New Frame End");
         }
 
         private ICommand _closeCmd;
@@ -132,19 +139,6 @@ namespace VisitorManager.Content
             get { return _closeCmd ?? (_closeCmd = new DelegateCommand(CloseCommand)); }
         }
 
-        private void CloseCommand(object arg)
-        {
-            _isStop = true;
-            this.videoShow.Source = null;
-
-            _videoSource.Stop();
-
-            this.DialogResult = false;
-
-            if (_currentImage != null) _currentImage.Dispose();
-            this.Close();
-        }
-
         private ICommand _captureCmd;
 
         public ICommand CaptureCmd
@@ -152,37 +146,12 @@ namespace VisitorManager.Content
             get { return _captureCmd ?? (_captureCmd = new DelegateCommand(CaptureCommand)); }
         }
 
-        private string _captureImageSrc = "";
-        private void CaptureCommand(object arg)
+
+        private ICommand _reCaptureCmd;
+
+        public ICommand ReCaptureCmd
         {
-            lock (_lock)
-            {
-                if (_currentImage != null)
-                {
-                    string tmpsrc = string.Format("{0}\\VisitorLib\\capture\\{1}.jpg", "D:", DateTime.Now.ToFileTime());
-                    string v = Path.GetDirectoryName(tmpsrc);
-                    if (!Directory.Exists(v))
-                    {
-                        Directory.CreateDirectory(v);
-                    }
-                    _currentImage.Save(tmpsrc, ImageFormat.Jpeg);
-                    CaptureImageSrc = tmpsrc;
-                }
-
-            }
-        }
-
-        private ICommand _cancelCmd;
-
-        public ICommand CancelCmd
-        {
-            get { return _cancelCmd ?? (_cancelCmd = new DelegateCommand(CancelCommand)); }
-        }
-
-
-        private void CancelCommand(object arg)
-        {
-            CloseCommand(arg);
+            get { return _reCaptureCmd ?? (_reCaptureCmd = new DelegateCommand(ReCaptureCommand)); }
         }
 
         private ICommand _confirmCmd;
@@ -207,18 +176,77 @@ namespace VisitorManager.Content
             }
         }
 
-        private void ConfirmCommand(object arg)
+        protected override void OnClosed(EventArgs e)
         {
-            _isStop = true;
+            base.OnClosed(e);
+            try
+            {
+                if (_drawTimer.IsEnabled)
+                    _drawTimer.Stop();
+                if (_videoSource != null && _videoSource.IsRunning)
+                    _videoSource.Stop();
+            }
+            catch
+            { }
+        }
+
+        private string _captureImageSrc = "";
+        private void CaptureCommand(object arg)
+        {
+            _drawTimer.Stop();
+        }
+
+        private void ReCaptureCommand(object arg)
+        {
+            _drawTimer.Start();
+        }
+
+        private void CloseCommand(object arg)
+        {
+            this._drawTimer.Stop();
             this.videoShow.Source = null;
+            if (_videoSource != null) this._videoSource.Stop();
 
-            _videoSource.Stop();
+            this.DialogResult = false;
 
-            this.DialogResult = true;
-            if (_currentImage != null) _currentImage.Dispose();
+            if (_currentImage != null) lock (_lock)
+                {
+                    _currentImage.Dispose();
+                }
             this.Close();
         }
 
+        private void ConfirmCommand(object arg)
+        {
+            try
+            {
+                this._drawTimer.Stop();
+                this.videoShow.Source = null;
+                if (_videoSource != null) this._videoSource.Stop();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            if (_currentImage != null)
+            {
+                var imgBytes = PicUtil.BitmapToBytes(_currentImage);
+                var url = ThriftManager.UploadImg2Bimg(imgBytes);
+                CaptureImageSrc = url;
+            }
+            _isCapture = false;
+            _drawTimer.Stop();
+
+            this.DialogResult = true;
+            if (_currentImage != null) lock (_lock)
+                {
+                    _currentImage.Dispose();
+                }
+            this.Close();
+        }
+
+        #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -235,5 +263,16 @@ namespace VisitorManager.Content
         {
             get { return CaptureImageSrc; }
         }
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                _isChecked = value;
+                NotifyChange("IsChecked");
+            }
+        }
+        #endregion
     }
 }

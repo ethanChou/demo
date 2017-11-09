@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VisitorManager</RootNamespace>
     <AssemblyName>VisitorManager</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -23,15 +24,20 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge.Controls">
@@ -43,9 +49,17 @@
     <Reference Include="AForge.Video.DirectShow">
       <HintPath>..\lib\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
+    <Reference Include="CodeReason.Reports, Version=0.5.0.0, Culture=neutral, PublicKeyToken=74fc60a060db7911, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\CodeReason.Reports.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -75,11 +89,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Resource Include="Image\Statis.png" />
+    <Resource Include="Image\ZoomInD.png" />
+    <Resource Include="Image\ZoomInH.png" />
+    <Resource Include="Image\ZoomInN.png" />
+    <Resource Include="Image\ZoomInP.png" />
+    <Resource Include="Image\ZoomOutD.png" />
+    <Resource Include="Image\ZoomOutH.png" />
+    <Resource Include="Image\ZoomOutN.png" />
+    <Resource Include="Image\ZoomOutP.png" />
+    <Resource Include="Image\CopyD.png" />
+    <Resource Include="Image\CopyH.png" />
+    <Resource Include="Image\CopyN.png" />
+    <Resource Include="Image\CopyP.png" />
+    <Resource Include="Image\PrintD.png" />
+    <Resource Include="Image\PrintH.png" />
+    <Resource Include="Image\PrintN.png" />
+    <Resource Include="Image\PrintP.png" />
+    <Resource Include="Image\PeerH.png" />
+    <Resource Include="Image\PeerN.png" />
+    <Resource Include="Image\PeerP.png" />
+    <Resource Include="Image\MateH.png" />
+    <Resource Include="Image\MateN.png" />
+    <Resource Include="Image\MateP.png" />
+    <Resource Include="Image\App.png" />
+    <Resource Include="Image\InfoH.png" />
+    <Resource Include="Image\InfoN.png" />
+    <Resource Include="Image\InfoP.png" />
     <Page Include="Content\CaptureWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Content\ImageListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -103,6 +148,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Content\VisitorInfoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="app.ico" />
+    <Content Include="Doc\SimpleReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Page Include="Images.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,8 +182,8 @@
       <DependentUpon>ImageListBox.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Content\ImageListBoxItemTemplateSizeConvert.cs">
-      <SubType>Code</SubType>
+    <Compile Include="Content\Splash.xaml.cs">
+      <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\UserLeave.xaml.cs">
       <DependentUpon>UserLeave.xaml</DependentUpon>
@@ -142,6 +201,9 @@
     <Compile Include="Content\UserVisiting.xaml.cs">
       <DependentUpon>UserVisiting.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Content\VisitorInfoWindow.xaml.cs">
+      <DependentUpon>VisitorInfoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -162,10 +224,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Doc\SimpleStat.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Doc\SimpleStat.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -173,6 +242,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\WPF.Extend.Controls\WPF.Extend.Controls.csproj">
+      <Project>{343f577e-6388-442c-b725-2ea6893ab221}</Project>
+      <Name>WPF.Extend.Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
       <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
       <Name>WPF.Extend</Name>
@@ -183,145 +256,58 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\AddBtn.png" />
+    <Resource Include="Image\AddBtn.png" />
+    <Resource Include="Image\AddH.png" />
+    <Resource Include="Image\AddN.png" />
+    <Resource Include="Image\AddP.png" />
+    <Resource Include="Image\backImg.png" />
+    <Resource Include="Image\CancleBtn.png" />
+    <Resource Include="Image\CaptureBtn.png" />
+    <Resource Include="Image\captureH.png" />
+    <Resource Include="Image\captureN.png" />
+    <Resource Include="Image\captureP.png" />
+    <Resource Include="Image\CheckedH.png" />
+    <Resource Include="Image\CheckedN.png" />
+    <Resource Include="Image\CheckedP.png" />
+    <Resource Include="Image\ClearBtn.png" />
+    <Resource Include="Image\CloseH.png" />
+    <Resource Include="Image\CloseN.png" />
+    <Resource Include="Image\CloseP.png" />
+    <Resource Include="Image\ConfirmBtn.png" />
+    <Resource Include="Image\defaultPic.png" />
+    <Resource Include="Image\DeleteH.png" />
+    <Resource Include="Image\DeleteN.png" />
+    <Resource Include="Image\DeleteP.png" />
+    <Resource Include="Image\DeleteRH.png" />
+    <Resource Include="Image\DeleteRN.png" />
+    <Resource Include="Image\DeleteRP.png" />
+    <Resource Include="Image\Exit.png" />
+    <Resource Include="Image\ExitBtn.png" />
+    <Resource Include="Image\ExitH.png" />
+    <Resource Include="Image\ExitN.png" />
+    <Resource Include="Image\ExitP.png" />
+    <Resource Include="Image\Export.png" />
+    <Resource Include="Image\FaceRect.png" />
+    <Resource Include="Image\Find.png" />
+    <Resource Include="Image\Logo.png" />
+    <Resource Include="Image\Man.png" />
+    <Resource Include="Image\ParamSet1.png" />
+    <Resource Include="Image\Print.png" />
+    <Resource Include="Image\Register.png" />
+    <Resource Include="Image\SaveTempBtn.png" />
+    <Resource Include="Image\Search.png" />
+    <Resource Include="Image\SearchBtn.png" />
+    <Resource Include="Image\Statistic.png" />
+    <Resource Include="Image\SubmitBtn.png" />
+    <Resource Include="Image\Tab.png" />
+    <Resource Include="Image\TreeDepart.png" />
+    <Resource Include="Image\TreePerson.png" />
+    <Resource Include="Image\WaitPic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\AddH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\AddN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\AddP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\backImg.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CancleBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CaptureBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\captureH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\captureN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\captureP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CheckedH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CheckedN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CheckedP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ClearBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CloseH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CloseN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\CloseP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ConfirmBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\defaultPic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteRH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteRN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\DeleteRP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Exit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ExitBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ExitH.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ExitN.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ExitP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Export.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\FaceRect.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Find.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Man.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ParamSet1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Print.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Register.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\SaveTempBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\SearchBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Statistic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\SubmitBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Tab.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\TreeDepart.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\TreePerson.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\WaitPic.png" />
+    <Resource Include="Image\CalenderH.png" />
+    <Resource Include="Image\CalenderN.png" />
+    <Resource Include="Image\CalenderP.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

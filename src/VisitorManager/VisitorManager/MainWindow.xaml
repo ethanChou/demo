@@ -1,12 +1,12 @@
 ﻿<Window x:Class="VisitorManager.MainWindow"
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:visitorManager="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
+        xmlns:vm="clr-namespace:VisitorManager.ViewModel;assembly=VisitorManager.ViewModel"
         xmlns:content="clr-namespace:VisitorManager.Content"
         Title="传达室管理系统" Height="800" Width="1366"
         WindowStartupLocation="CenterScreen"
+        Icon="app.ico"
         >
     <Window.Style>
         <Style TargetType="Window">
@@ -21,7 +21,8 @@
         </Style>
     </Window.Style>
     <Window.Resources>
-        
+
+        <!--控件模板，Key为必需，并且设定目标类型为RadioButton-->
         <Style x:Key="TabRadioStyle" TargetType="RadioButton">
             <Setter Property="IsThreeState" Value="True"></Setter>
             <Setter Property="Background" Value="Black"></Setter>
@@ -34,10 +35,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <Grid>
-
+                            <!--选中状态：粗边框-->
                             <Border x:Name="border" Margin="0,0,1,0" BorderThickness="0,0,0,0"  Padding="0">
                                 <Border x:Name="inerborder" Background="Transparent">
-
+                                    <!--内部的文字内容绑定了RadioButton的Content属性-->
                                     <ContentControl Content="{TemplateBinding ContentControl.Content}" Margin="0" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
                                 </Border>
                             </Border>
@@ -47,7 +48,7 @@
                                 <Setter Property="Opacity"  Value="1"></Setter>
                                 <Setter TargetName="border" Property="Background"   Value="{DynamicResource OpacityBrush}"></Setter>
                                 <Setter TargetName="inerborder" Property="Background"  Value="{DynamicResource PressRadioButtonBrush}"></Setter>
-                                <Setter  Property="Foreground"  Value="#ffAd36"></Setter>
+                                <Setter Property="Foreground"  Value="#ffAd36"></Setter>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="false">
                                 <Setter Property="Opacity"  Value="1"></Setter>
@@ -67,7 +68,7 @@
             </Setter>
         </Style>
 
-
+        
     </Window.Resources>
     <Grid>
 
@@ -86,23 +87,28 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Background="#1f1f1f">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="240"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition Width="200"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <i:Interaction.Behaviors>
-                            <visitorManager:WindowMoveBehavior></visitorManager:WindowMoveBehavior>
+                            <vm:WindowMoveBehavior></vm:WindowMoveBehavior>
                         </i:Interaction.Behaviors>
 
                         <StackPanel Orientation="Horizontal" Grid.Column="0">
-                            <Path Width="40" Margin="8,0,6,0" Height="38" Stretch="Fill" Fill="#FFFFFF" Data="F1 M 42,50L 47,45L 47,50L 42,50 Z M 47,19L 47,26.355C 51.7937,29.2418 55,34.4965 55,40.5C 55,49.6127 47.6127,57 38.5,57C 35.911,57 33.4613,56.4037 31.2807,55.341L 32.5585,52.6256C 34.3514,53.5058 36.368,54 38.5,54C 45.9558,54 52,47.9559 52,40.5C 52,36.2656 50.0505,32.4865 47,30.0114L 47,42L 42,37L 42,28L 36,41L 42,41L 42,38.5L 46.9999,43.5L 42,48.5L 42,46L 34,46L 29,57L 23,57L 37.9954,27.0093C 30.7733,27.2747 25,33.2131 25,40.5C 25,42.6708 25.5124,44.722 26.4228,46.5391L 24.8803,49.8169C 23.0631,47.1657 22,43.957 22,40.5C 22,31.3873 29.3873,24 38.5,24L 39.4855,24.0289L 42,19L 47,19 Z "/>
-                            <TextBlock  FontWeight="Bold" FontSize="26" VerticalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" Text="传达室管理系统" Margin="1,5,5,5" >
+                            <Image Source="Image/App.png" Margin="4,0,4,0" Width="40" Height="40"></Image>
+                            
+                            <!--<Path Width="40" Margin="8,0,6,0" Height="38" Stretch="Fill" Fill="#FFFFFF" Data="F1 M 42,50L 47,45L 47,50L 42,50 Z M 47,19L 47,26.355C 51.7937,29.2418 55,34.4965 55,40.5C 55,49.6127 47.6127,57 38.5,57C 35.911,57 33.4613,56.4037 31.2807,55.341L 32.5585,52.6256C 34.3514,53.5058 36.368,54 38.5,54C 45.9558,54 52,47.9559 52,40.5C 52,36.2656 50.0505,32.4865 47,30.0114L 47,42L 42,37L 42,28L 36,41L 42,41L 42,38.5L 46.9999,43.5L 42,48.5L 42,46L 34,46L 29,57L 23,57L 37.9954,27.0093C 30.7733,27.2747 25,33.2131 25,40.5C 25,42.6708 25.5124,44.722 26.4228,46.5391L 24.8803,49.8169C 23.0631,47.1657 22,43.957 22,40.5C 22,31.3873 29.3873,24 38.5,24L 39.4855,24.0289L 42,19L 47,19 Z "/>-->
+
+                            <!--<Path Width="41.2035" Height="41.1667" Margin="8,0,6,0" Stretch="Fill" Fill="#FFFFFF" Data="F1 M 54.8392,24.4749C 55.3507,24.2457 55.8111,24.1311 56.2202,24.1311C 56.6172,24.1311 56.966,24.2232 57.2668,24.4073C 57.5675,24.5915 57.8171,24.8339 58.0156,25.1347L 58.4575,26.1536L 58.6017,27.2737C 58.6017,29.6143 58.4667,31.8014 58.1966,33.8351C 57.9266,35.8688 57.5522,37.7644 57.0734,39.5218C 56.5947,41.2793 56.0289,42.8997 55.3763,44.383C 54.7236,45.8663 54.0167,47.232 53.2556,48.4801C 52.4946,49.7281 51.6925,50.8636 50.8496,51.8866C 50.0067,52.9095 49.1556,53.8302 48.2963,54.6486C 45.2682,57.5252 41.8351,59.6285 37.9969,60.9583C 34.1505,59.6285 30.7174,57.5252 27.6976,54.6486C 26.4086,53.421 25.1463,51.9633 23.9105,50.2754C 22.6748,48.5875 21.5751,46.6244 20.6114,44.3861C 19.6478,42.1478 18.8713,39.616 18.2821,36.7905C 17.6929,33.965 17.3982,30.7928 17.3982,27.2737L 17.5609,26.1413L 18.0397,25.1439C 18.2504,24.8493 18.5123,24.613 18.8253,24.435C 19.1383,24.257 19.4933,24.168 19.8902,24.168C 20.2871,24.168 20.7106,24.2703 21.1608,24.4749C 22.196,24.9495 23.1484,25.2851 24.0179,25.4815C 24.8875,25.6779 25.6925,25.7761 26.4332,25.7761C 27.4193,25.7761 28.3052,25.6298 29.0909,25.3372C 29.8765,25.0447 30.5987,24.6743 31.2575,24.2263L 33.0805,22.787L 34.7009,21.3476L 36.2906,20.2336C 36.8266,19.939 37.3954,19.7917 37.9969,19.7917C 38.6107,19.7917 39.1866,19.939 39.7247,20.2336L 41.3175,21.3476L 42.9471,22.787L 44.7701,24.2263C 45.4227,24.6743 46.1419,25.0447 46.9275,25.3372C 47.7132,25.6298 48.5991,25.7761 49.5852,25.7761C 50.3258,25.7761 51.1279,25.6779 51.9913,25.4815C 52.8546,25.2851 53.804,24.9495 54.8392,24.4749 Z M 30,38C 30,40.6466 31.2851,42.993 33.2654,44.4492L 35,38.75L 30.4363,35.3873C 30.1536,36.2061 30,37.0851 30,38 Z M 38,46C 39.7591,46 41.3855,45.4323 42.7061,44.47L 38,41.25L 33.2938,44.47C 34.6144,45.4323 36.2409,46 38,46 Z M 46,38C 46,37.1356 45.8629,36.3033 45.6093,35.5235L 41,38.75L 42.7345,44.4493C 44.7148,42.993 46,40.6466 46,38 Z M 40,35.25L 45.5148,35.25C 44.4033,32.2134 41.5037,30.0386 38.0911,30.0005L 40,35.25 Z M 36,35.25L 37.9089,30.0005C 34.4963,30.0386 31.5967,32.2134 30.4852,35.25L 36,35.25 Z "/>-->
+
+                            <TextBlock  FontWeight="Bold" FontSize="22" VerticalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" Text="来访登记管理系统" Margin="5,5,5,5" >
                                 <TextBlock.Foreground>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Color="White" Offset="0"/>
-                                        <GradientStop Color="White" Offset="0.5"/>
-                                        <GradientStop Color="#A5A5A5" Offset="0.51"/>
-                                        <GradientStop Color="#A5A5A5" Offset="1"/>
+                                        <GradientStop Color="#ffffff" Offset="0"/>
+                                        <GradientStop Color="#bdbdbd" Offset="0.5"/>
+                                        <GradientStop Color="#959595" Offset="0.51"/>
+                                        <GradientStop Color="#757575" Offset="1"/>
                                     </LinearGradientBrush>
                                 </TextBlock.Foreground>
                             </TextBlock>
@@ -112,40 +118,55 @@
                             <RadioButton IsChecked="{Binding IsCheckedVisitor,Mode=TwoWay}" Style="{StaticResource TabRadioStyle}" Command="{Binding TabCmd}" CommandParameter="0"  >
                                 <RadioButton.Content>
                                     <StackPanel Orientation="Vertical"  Background="Transparent">
-                                        <Image Width="30" Height="30" Margin="0,5,0,0" Source="/Assets/Man.png"></Image>
-                                        <TextBlock TextAlignment="Center" Text="来访人员" Width="120" Margin="0,3,0,0" VerticalAlignment="Center"></TextBlock>
+                                        <!--<Image Width="30" Height="30" Margin="0,5,0,0" Source="/Image/Man.png"></Image>-->
+                                        <Grid Width="30" Height="30" Margin="0,5,0,0">
+                                            <Path Stretch="Fill" Fill="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Data="M513.066667 896.5824c-341.856 0-382.257067-38.4-384.292267-40.437333 30.523733-79.4176 72.96-93.672533 113.6576-101.8176 48.836267-8.145067 101.742933-26.472533 128.196267-40.727467l26.453333-14.254933c0 0 0-34.6176 2.0352-57.0176 34.592 24.437333 71.2192 38.690133 111.9168 38.690133s77.3248-14.254933 111.9168-38.690133l0 57.0176 28.488533 14.254933c26.453333 14.254933 79.36 32.5824 128.196267 40.727467 42.7328 8.145067 85.2672 22.4 115.7888 101.8176C897.4592 856.145067 854.922667 896.5824 513.066667 896.5824zM317.7216 369.454933c0-138.472533 65.115733-241.8432 195.3472-241.8432s195.3472 101.333333 195.3472 241.8432c0 114.037333-87.498667 252.509867-195.3472 252.509867S317.7216 483.490133 317.7216 369.454933zM956.6656 835.7824c-40.6976-103.854933-109.8816-128.290133-164.823467-136.437333-46.801067-8.145067-91.569067-24.437333-111.9168-34.6176l0-73.309867c50.871467-61.090133 85.463467-144.5824 85.463467-219.927467C765.390933 200.437333 681.960533 64 513.066667 64c-166.858667 0-252.322133 138.472533-252.322133 307.490133 0 75.345067 32.5568 156.8 83.428267 217.890133l0 75.345067c-20.347733 10.1824-65.115733 26.472533-111.9168 34.6176-54.941867 10.1824-124.125867 34.6176-164.823467 136.437333-6.1056 18.327467-4.0704 36.654933 6.1056 52.945067C114.235733 947.7824 334.001067 960 511.0336 960s394.762667-12.2176 437.495467-71.272533C960.736 872.437333 962.7712 852.072533 956.6656 835.7824z" ></Path>
+                                        </Grid>
+                                        <TextBlock Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" TextAlignment="Center" Text="来访人员" Width="120" Margin="0,3,0,0" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
                                 </RadioButton.Content>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding IsCheckedRegister,Mode=TwoWay}" Style="{StaticResource TabRadioStyle}" Command="{Binding TabCmd}" CommandParameter="1">
                                 <RadioButton.Content>
                                     <StackPanel Orientation="Vertical" Background="Transparent">
-                                        <Image  Width="30" Height="30" Margin="0,5,0,0" Source="/Assets/Register.png"></Image>
-                                        <TextBlock Text="来访登记"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
+                                        <!--<Image  Width="30" Height="30" Margin="0,5,0,0" Source="/Image/Register.png"></Image>-->
+                                        <Grid Width="30" Height="30" Margin="0,5,0,0" >
+                                            <Path Stretch="Fill"  Fill="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Data="M772.608 45.056c5.12 1.024 10.24 2.048 15.36 3.584 52.224 15.872 81.92 52.224 92.672 104.448 3.072 15.36 3.072 31.232 4.096 48.128-22.016 3.072-42.496 5.632-64 8.192v-30.72c-0.512-15.872-5.12-29.696-15.36-41.984-12.8-15.872-29.696-23.552-50.688-23.552H245.76c-36.864 0-73.728 0-110.592 0.512-34.304 0-61.952 26.112-64.512 60.416 0 3.584-0.512 6.656-0.512 10.24v643.072c0 8.704 1.024 17.92 3.584 26.112 8.704 28.16 32.256 44.544 61.952 44.544h339.456c92.672 0 184.832-0.512 277.504 0.512 42.496 0.512 67.584-34.816 67.584-67.072v-182.784-9.728c20.48-2.56 40.96-5.632 62.464-8.192 0 2.56 0.512 5.12 0.512 7.168 0 63.488 0.512 126.976 0 190.976-0.512 47.616-17.92 87.04-56.832 115.712-15.36 11.264-32.256 17.92-51.2 20.992-1.024 0-2.048 1.024-3.072 1.536H119.296c-0.512-0.512-1.024-1.024-2.048-1.024-54.272-9.216-86.528-42.496-103.424-93.184-3.072-8.704-4.096-18.432-6.144-27.648V167.424c1.024-5.12 2.048-10.24 3.072-14.848 12.288-51.2 40.96-87.552 93.184-102.912 5.12-1.536 10.24-2.56 15.36-3.584 218.112-1.024 435.712-1.024 653.312-1.024z M1017.856 369.152c-5.12 7.168-9.728 15.36-15.36 22.016-12.288 13.824-25.088 27.648-37.888 41.472-38.4-41.984-75.776-82.944-114.176-124.416 15.872-17.408 31.232-34.304 47.104-50.688 9.728-10.24 26.112-9.728 35.84 0.512 26.112 28.16 52.224 56.32 77.824 84.992 3.072 3.072 4.608 7.68 6.656 11.776v14.336zM824.32 334.848c38.912 42.496 77.312 83.968 115.712 125.952-15.36 16.896-30.72 33.792-46.08 50.176-73.216 79.872-146.432 159.744-219.648 239.104-2.048 2.56-6.144 4.608-9.216 4.608-35.84 0.512-71.68 0-108.032 0-1.024 0-2.56-0.512-4.096-0.512v-49.664c0-22.528 0-45.568 0.512-68.096 0-3.072 1.536-7.168 3.584-9.728L821.248 337.92c1.024-0.512 1.536-1.536 3.072-3.072z m-169.984 243.2c-13.312 14.336-26.112 28.16-38.4 41.984-1.024 1.024-1.536 2.048-1.536 3.072-1.536 10.752-3.072 20.992-4.608 31.744h35.328c-1.024 12.8-1.536 25.6-2.56 38.912 11.264-1.024 21.504-1.536 31.744-2.56 1.024 0 2.56-1.024 3.072-1.536 13.312-14.336 26.624-28.672 39.424-43.52-20.992-23.04-41.472-45.056-62.464-68.096z m29.696-8.704c1.536-1.024 4.608-3.072 7.168-5.632 46.592-50.688 93.184-101.376 139.776-152.576 5.632-6.144 6.144-12.288 1.536-16.896-4.608-4.608-9.216-3.584-15.36 3.584-46.08 50.688-92.672 100.864-138.752 151.552-2.048 2.048-3.584 4.608-4.608 7.168-2.048 6.144 2.56 12.288 10.24 12.8zM452.096 318.464H181.248c-15.872 0-26.112-6.656-31.744-19.968-5.632-13.312-2.56-30.208 8.192-38.912 5.12-4.608 12.8-6.144 19.456-8.704 1.536-0.512 3.584 0 5.12 0 180.224 0 359.936 0.512 540.16-0.512 26.112 0 40.96 24.576 32.768 47.104-5.12 14.336-15.872 21.504-33.28 21.504-90.112-0.512-180.224-0.512-269.824-0.512zM378.88 454.144h197.12c14.336 0 24.576 5.632 30.72 17.92 6.656 13.312 5.12 26.112-3.584 37.888-5.12 7.168-12.8 11.264-21.504 11.776-2.048 0-4.608 0.512-6.656 0.512-130.56 0-261.632-0.512-392.192 0-27.648 0-40.96-25.088-33.792-46.592 4.608-13.824 15.872-22.016 31.232-22.016 66.048 0.512 132.096 0.512 198.656 0.512zM274.944 727.552H180.224c-19.968 0-33.28-13.824-33.792-33.792 0-19.968 13.312-34.816 32.768-34.816 63.488 0 126.976-0.512 190.464 0 19.968 0 33.28 15.36 32.768 35.328-0.512 19.456-14.336 32.768-33.792 32.768-30.72 0.512-61.952 0.512-93.696 0.512z" ></Path>
+                                        </Grid>
+                                        <TextBlock Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Text="来访登记"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
                                 </RadioButton.Content>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding IsCheckedLeave,Mode=TwoWay}" Style="{StaticResource TabRadioStyle}" Command="{Binding TabCmd}" CommandParameter="2">
                                 <RadioButton.Content>
                                     <StackPanel Orientation="Vertical" Background="Transparent">
-                                        <Image Width="30" Height="30" Margin="0,5,0,0" Source="/Assets/Exit.png"></Image>
-                                        <TextBlock Text="访问离开" Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
+                                        <!--<Image Width="30" Height="30" Margin="0,5,0,0" Source="/Image/Exit.png"></Image>-->
+                                        <Grid Width="30" Height="30" Margin="0,5,0,0">
+                                            <Path Stretch="Fill" Fill="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Data="M752.033996 325.412123c0-11.467367 4.351456-22.934733 13.207949-31.637645a44.692013 44.692013 0 0 1 63.326484 0l182.146832 182.249219a44.692013 44.692013 0 0 1 0 63.377678l-182.146832 182.249219a44.692013 44.692013 0 0 1-76.432046-31.740033c0-11.569754 4.351456-23.03712 13.105562-31.740032l105.663592-105.714786H311.973803a44.794401 44.794401 0 1 1 0-89.588801h558.931734l-105.817173-105.714786a45.050369 45.050369 0 0 1-13.054368-31.740033z m125.014773 659.066417a39.52146 39.52146 0 0 1-39.419073 39.52146H70.954331c-39.060717 0-70.954331-31.740032-70.954331-70.954331V70.979928C0 31.91921 31.740032 0.025597 70.954331 0.025597h766.675365a39.52146 39.52146 0 1 1 0 78.991726H102.284814a23.549056 23.549056 0 0 0-23.549056 23.549056v818.841645c0 13.003175 10.648269 23.549056 23.549056 23.549056H837.527309c21.808474 0 39.52146 17.661792 39.52146 39.52146z" ></Path>
+                                        </Grid>
+                                        <TextBlock Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Text="访问离开" Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
                                 </RadioButton.Content>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding IsCheckedSearch,Mode=TwoWay}" Style="{StaticResource TabRadioStyle}" Command="{Binding TabCmd}" CommandParameter="4">
                                 <RadioButton.Content>
                                     <StackPanel Orientation="Vertical">
-                                        <Image Width="30" Height="30" Margin="0,5,0,0" Source="/Assets/Search.png"></Image>
-                                        <TextBlock Text="用户查询"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
+                                        <!--<Image Width="30" Height="30" Margin="0,5,0,0" Source="/Image/Search.png"></Image>-->
+                                        <Grid Width="30" Height="30" Margin="0,5,0,0">
+                                            <Path Stretch="Fill"  Fill="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Data="M229.83609 177.191812l461.985567 0 0 57.748052-461.985567 0 0-57.748052ZM228.296527 293.255001l461.985567 0 0 57.748052-461.985567 0 0-57.748052ZM114.341142 60.754415l692.976619 0 0 461.984413 57.748052 0 0-461.984413c0-31.893094-25.854958-57.748052-57.748052-57.748052l-692.976619 0c-31.893094 0-57.748052 25.854958-57.748052 57.748052l0 808.472722c0 31.893094 25.854958 57.748052 57.748052 57.748052l404.236361 0 0-57.748052-404.236361 0L114.341142 60.754415zM229.451488 524.241432l0 57.748052 140.452501 0c0-20.068603 2.939376-39.447694 8.386172-57.748052L229.451488 524.241432zM465.562482 408.745329 228.296527 408.745329l0 57.748052 175.543682 0C420.103216 443.180492 441.148916 423.454913 465.562482 408.745329zM902.807629 873.522437 770.391347 742.678057c30.443618-35.382231 48.851387-81.416668 48.851387-131.75449 0-111.626984-90.492352-202.11818-202.117026-202.11818-111.625829 0-202.11818 90.491197-202.11818 202.11818 0 111.624674 90.492352 202.11818 202.11818 202.11818 40.412086 0 78.049957-11.867225 109.631211-32.298485l135.217063 133.613977c11.275885 11.275885 29.557763 11.275885 40.833647 0C914.082359 903.0802 914.082359 884.799477 902.807629 873.522437zM472.754424 610.923567c0-79.73389 64.638549-144.370129 144.371284-144.370129 79.73158 0 144.368974 64.636239 144.368974 144.370129 0 79.73158-64.637394 144.370129-144.368974 144.370129C537.392973 755.293696 472.754424 690.655147 472.754424 610.923567z" ></Path>
+                                        </Grid>
+                                        <TextBlock Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Text="用户查询"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
                                 </RadioButton.Content>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding IsCheckedStatis,Mode=TwoWay}"  Style="{StaticResource TabRadioStyle}" Command="{Binding TabCmd}" CommandParameter="3">
                                 <RadioButton.Content>
                                     <StackPanel Orientation="Vertical" Background="Transparent">
-                                        <Image Width="30" Height="30" Margin="0,5,0,0" Source="/Assets/Statistic.png"></Image>
-                                        <TextBlock Text="用户统计"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
+                                        <!--<Image Width="30" Height="30" Margin="0,5,0,0" Source="/Image/Statistic.png"></Image>-->
+                                        <Grid Width="30" Height="30" Margin="0,5,0,0">
+                                            <Path Stretch="Fill"  Fill="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Data="M932 848H792V400c0-30.9-25.1-56-56-56H624V232c0-30.9-25.1-56-56-56H456c-30.9 0-56 25.1-56 56v336H288c-30.9 0-56 25.1-56 56v224H120V148c0-15.5-12.5-28-28-28s-28 12.5-28 28v700c0 30.9 25.1 56 56 56h812c15.5 0 28-12.5 28-28s-12.5-28-28-28z m-644 0V624h112v224H288z m168 0V232h112v616H456z m168 0V400h112v448H624z" ></Path>
+                                        </Grid>
+                                        <TextBlock Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContentControl}}" Text="用户统计"  Margin="0,3,0,0" TextAlignment="Center" Width="120" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
                                 </RadioButton.Content>
                             </RadioButton>
@@ -191,23 +212,24 @@
                     </Grid>
                     <Grid Grid.Row="1" >
                         <Grid.Background>
-                            <ImageBrush ImageSource="/Assets/backImg.png"></ImageBrush>
+                            <ImageBrush ImageSource="{StaticResource backImg}"></ImageBrush>
                         </Grid.Background>
                         <Grid x:Name="visitors" Visibility="{Binding VisitorVis,Mode=TwoWay}">
-                            <content:UserVisiting></content:UserVisiting>
+                            <!--<content:UserVisiting DataContext="{Binding VistingVM}"></content:UserVisiting>-->
                         </Grid>
                         <Grid x:Name="regiseter" Visibility="{Binding RegisterVis,Mode=TwoWay}">
-                            <content:UserRegister></content:UserRegister>
+                            <!--<content:UserRegister DataContext="{Binding RegisterVM}"></content:UserRegister>-->
                         </Grid>
                         <Grid x:Name="exit" Visibility="{Binding ExitVis,Mode=TwoWay}">
-                            <content:UserLeave></content:UserLeave>
+                            <!--<content:UserLeave DataContext="{Binding LeaveVM}"></content:UserLeave>-->
                         </Grid>
                         <Grid x:Name="statistic" Visibility="{Binding StatisticVis,Mode=TwoWay}">
-                            <content:UserStatistic></content:UserStatistic>
+                            <!--<content:UserStatistic DataContext="{Binding StatisticVM}"></content:UserStatistic>-->
                         </Grid>
                         <Grid x:Name="search" Visibility="{Binding SearchVis,Mode=TwoWay}">
-                            <content:UserSearch></content:UserSearch>
+                            <!--<content:UserSearch DataContext="{Binding SearchVM}"></content:UserSearch>-->
                         </Grid>
+                        <content:Splash x:Name="Splash"></content:Splash>
                     </Grid>
                 </Grid>
             </Border>

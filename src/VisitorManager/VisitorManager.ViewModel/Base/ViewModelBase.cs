@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

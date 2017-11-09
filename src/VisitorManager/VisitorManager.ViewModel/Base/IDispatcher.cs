@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public interface IDispatcher
     {
-        Dispatcher Dispatcher { get; set; }
+        Dispatcher Dispatcher { get; }
     }
 
-    public interface IWindowBase
+
+    public interface IWindowBase : IDispatcher
     {
         bool? DialogResult { get; set; }
-
-        Dispatcher Dispatcher { get; }
 
         Window Owner { get; set; }
 
@@ -28,7 +28,17 @@ namespace VisitorManager
         bool? ShowDialog();
     }
 
-    public interface ICaptureWindow : IWindowBase
+    public interface IContextWindow : IWindowBase
+    {
+        object DataContext { get; set; }
+    }
+
+    public interface INotifyWindow : IContextWindow, INotifyPropertyChanged
+    {
+
+    }
+
+    public interface ICaptureWindow : IContextWindow
     {
         string CaptureImagePath { get; }
     }

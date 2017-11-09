@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager.Model
+namespace VisitorManager.ViewModel
 {
-    public class Employee
+    public class EmployeeDto
     {
         public string emp_id { get; set; }
         public string emp_NO { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager.Model
+namespace VisitorManager.ViewModel
 {
     public enum VisitorStatus
     {
@@ -32,7 +32,7 @@ namespace VisitorManager.Model
     /// <summary>
     /// 来访者信息
     /// </summary>
-    public class Visitor : ViewModelBase
+    public class VisitorDto : ViewModelBase
     {
         public string vt_id { get; set; }
         public string vt_name { get; set; }
@@ -64,13 +64,13 @@ namespace VisitorManager.Model
         /// 访问单位id,可为空
         /// </summary>
         public string vt_visit_department_id { get; set; }
-        public string vt_visit_department { get; set; }
+
 
         /// <summary>
         /// 被访问人员id,可为空
         /// </summary>
         public string vt_visit_employee_id { get; set; }
-        public string vt_visit_employee { get; set; }
+     
 
         /// <summary>
         /// 来访单编号
@@ -78,9 +78,9 @@ namespace VisitorManager.Model
         public string vt_visitinglist_id { get; set; }
 
 
-        public Visitor Clone()
+        public VisitorDto Clone()
         {
-            Visitor v = new Visitor();
+            VisitorDto v = new VisitorDto();
             v.vt_id = vt_id;
             v.vt_address = vt_address;
             v.vt_identify_imgurl = vt_identify_imgurl;

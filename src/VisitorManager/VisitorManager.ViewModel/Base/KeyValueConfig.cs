@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     /// <summary>
     /// 配置信息类，负责读取配置文件，读写配置信息，和更新配置文件

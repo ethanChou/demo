@@ -1,87 +1,283 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\defaultPic.png"
+    <ImageBrush  x:Key="FaceRectBrush"  ImageSource="/VisitorManager;component/Image/FaceRect.png"></ImageBrush>
+
+    <ImageBrush x:Key="PressRadioButtonBrush" ImageSource="/VisitorManager;component/Image/Tab.png"></ImageBrush>
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\Man.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="Man" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\Register.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="Register" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\Exit.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="Exit" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\Search.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="Search" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\Statistic.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="Statistic" />
+    
+    
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomOutN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomOutN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomOutH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomOutH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomOutP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomOutP" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomOutD.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomOutD" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomInN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomInN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomInH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomInH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomInP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomInP" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ZoomInD.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ZoomInD" />
+    
+    
+    <BitmapImage UriSource="/VisitorManager;component/Image\PrintN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PrintN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\PrintH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PrintH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\PrintP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PrintP" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\PrintD.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PrintD" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\CopyN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CopyN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\CopyH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CopyH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\CopyP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CopyP" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\CopyD.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CopyD" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\MateN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="MateN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\MateH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="MateH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\MateP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="MateP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\PeerN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PeerN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\PeerH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PeerH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\PeerP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="PeerP" />
+
+    
+    <BitmapImage UriSource="/VisitorManager;component/Image\InfoN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="InfoN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\InfoH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="InfoH" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\InfoP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="InfoP" />
+    
+    <BitmapImage UriSource="/VisitorManager;component/Image\AddBtn.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="AddBtn" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\SaveTempBtn.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="SaveTempBtn" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\SubmitBtn.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="SubmitBtn" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\ClearBtn.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="ClearBtn" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\defaultPic.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DefaultImage" />
-    
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRN.png"
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\TreeDepart.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="TreeDepart" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\TreePerson.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="TreePerson" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\backImg.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="backImg" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteRN.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteRN" />
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRP.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteRP.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteRP" />
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteRH.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteRH.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteRH" />
 
-    
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteN.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\CalenderN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CalenderN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\CalenderP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CalenderP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\CalenderH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CalenderH" />
+
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteN.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteN" />
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteP.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteP.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteP" />
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\DeleteH.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\DeleteH.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="DeleteH" />
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitN.png"
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\captureN.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CaptureN" />
+    <BitmapImage UriSource="/VisitorManager;component/Image\captureP.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CaptureP" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\captureH.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="CaptureH" />
+
+    <BitmapImage UriSource="/VisitorManager;component/Image\ExitN.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="ExitN" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitH.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\ExitH.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="ExitH" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\ExitP.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\ExitP.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="ExitP" />
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseN.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\CloseN.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="CloseN" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseH.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\CloseH.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="CloseH" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\CloseP.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\CloseP.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="CloseP" />
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\AddN.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\AddN.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="AddN" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\AddH.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\AddH.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="AddH" />
 
 
-    <BitmapImage UriSource="/VisitorManager;component/Assets\AddP.png"
+    <BitmapImage UriSource="/VisitorManager;component/Image\AddP.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"
                  x:Key="AddP" />

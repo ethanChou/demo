@@ -1,172 +1,14 @@
 ﻿<UserControl x:Class="VisitorManager.Content.UserRegister"
-              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:app="clr-namespace:VisitorManager;assembly=VisitorManager.ViewModel"
-            
+             xmlns:vm="clr-namespace:VisitorManager.ViewModel;assembly=VisitorManager.ViewModel"
              xmlns:mbexd="http://wpfextend.com/"
-        
-             xmlns:common="clr-namespace:VisitorManager.ViewModel.Common;assembly=VisitorManager.ViewModel"
+             xmlns:cmbexd="http://complex.wpfextend.com/"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1080">
-    <UserControl.Resources>
-        <common:NegateConverter x:Key="NegeateConverter"></common:NegateConverter>
-        <common:CardTypeConverter x:Key="CardTypeConverter"></common:CardTypeConverter>
-        <common:IntToVisibilityConverter x:Key="IntToVisibilityConverter"></common:IntToVisibilityConverter>
-        <common:IntConverter x:Key="IntConverter"></common:IntConverter>
-
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#787878"></Setter>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"></Setter>
-        </Style>
-
-        <Style x:Key="CaptureButton" TargetType="ButtonBase" >
-            <Setter Property="Background" Value="Transparent"></Setter>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ButtonBase}">
-                        <Border Name="Chrome"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                CornerRadius="0"
-                                SnapsToDevicePixels="true">
-                            <Image Name="showImage" Source="../Assets/captureN.png" ></Image>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="showImage" Property="Source" Value="../Assets/captureH.png"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="showImage" Property="Source" Value="../Assets/captureP.png"/>
-
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-
-        <DataTemplate x:Key="WaitVisitorTemplate" >
-            <Grid x:Name="grid" Margin="0" Height="80" >
-                <Border Margin="0" 
-                        Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType={x:Type ListBoxItem}},Converter={StaticResource IntConverter}}"
-                        BorderThickness="0" BorderBrush="#313131" CornerRadius="0">
-                    <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"></RowDefinition>
-                            <RowDefinition Height="20"></RowDefinition>
-                            <RowDefinition Height="20"></RowDefinition>
-                            <RowDefinition Height="20"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-
-                            <ColumnDefinition Width="30"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-
-                        <mbexd:SimpleButton Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Normal="{StaticResource DeleteRN}"
-                                            Hover="{StaticResource DeleteRH}"
-                                            Pressed="{StaticResource DeleteRP}" Width="20" Height="20"></mbexd:SimpleButton>
-
-                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock  Margin="2"  Text="姓名" Foreground="{StaticResource ThemeColor}"></TextBlock>
-                            <TextBlock  Margin="2"  Text="{Binding vt_name}"></TextBlock>
-                        </StackPanel>
-
-
-
-                        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Orientation="Horizontal">
-                            <TextBlock Margin="2"  Text="证件号码" Foreground="{StaticResource ThemeColor}"></TextBlock>
-                            <TextBlock Margin="2"  Text="{Binding vt_identify_NO}"></TextBlock>
-                        </StackPanel>
-
-                        <StackPanel Grid.Row="2" Grid.ColumnSpan="1" Orientation="Horizontal">
-                            <TextBlock Margin="2"  Text="被访单位" Foreground="{StaticResource ThemeColor}"></TextBlock>
-                            <TextBlock  Margin="2" Text="{Binding vt_visit_department}"></TextBlock>
-                        </StackPanel>
-                        <StackPanel Grid.Row="3" Grid.ColumnSpan="1" Orientation="Horizontal">
-                            <TextBlock Margin="2"  Text="被访人员" Foreground="{StaticResource ThemeColor}"></TextBlock>
-                            <TextBlock  Margin="2" Text="{Binding vt_visit_employee}"></TextBlock>
-                        </StackPanel>
-
-
-                    </Grid>
-                </Border>
-            </Grid>
-            <DataTemplate.Triggers>
-                <!--<EventTrigger RoutedEvent="Mouse.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation BeginTime="0:0:0.6" Duration="0:0:0.3" Storyboard.TargetName="grid"   Storyboard.TargetProperty="Height" To="60"></DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Mouse.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation BeginTime="0:0:0.6" Duration="0:0:0.3" Storyboard.TargetName="grid" Storyboard.TargetProperty="Height" To="30"></DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>-->
-
-            </DataTemplate.Triggers>
-        </DataTemplate>
-
-        <Style x:Key="WaitVisitorListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="#313131"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border x:Name="Bd" Margin="1" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="0" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <!--<Setter Property="Background" TargetName="Bd" Value="{DynamicResource Item.MouseOver.Background}"/>-->
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="#454545"/>
-                            </MultiTrigger>
-                            <!--<MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-                            </MultiTrigger>-->
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>-->
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ThemeColor}"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-    </UserControl.Resources>
-
+             d:DesignHeight="700" d:DesignWidth="1350">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2"></RowDefinition>
@@ -177,15 +19,15 @@
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="155"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="160"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="190"></ColumnDefinition>
-                <ColumnDefinition Width="450"></ColumnDefinition>
+                <ColumnDefinition Width="210"></ColumnDefinition>
+                <ColumnDefinition Width="450*"></ColumnDefinition>
                 <ColumnDefinition Width="10"></ColumnDefinition>
-                <ColumnDefinition Width="450"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="450*"></ColumnDefinition>
+                <ColumnDefinition Width="160*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Row="0" Grid.RowSpan="2">
@@ -196,211 +38,263 @@
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="42"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="被访信息" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
-                        <Border Grid.Row="1" Margin="5,5,5,0"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+
+                        <TextBlock Text="被访信息" Margin="5,0,0,0" Foreground="#787878" FontWeight="Bold" FontSize="14"></TextBlock>
+
+                        <Border Grid.Row="1" Margin="5,3,3,0" Height="25" VerticalAlignment="Center" BorderThickness="1" Background="#2b2b2b"  BorderBrush="#343434">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock  VerticalAlignment="Center" Width="65" Foreground="#787878" Text="当前选择"/>
+                                <TextBlock  VerticalAlignment="Center" Visibility="{Binding DeleteSelectedNodeBtnVis,Mode=TwoWay}"  Text="{Binding CurrentNode,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+
+                                </TextBlock>
+                                <mbexd:SimpleButton Command="{Binding DeleteSelectedNodeCmd}" Visibility="{Binding DeleteSelectedNodeBtnVis,Mode=TwoWay}" 
+                                        Normal="{StaticResource CloseN}"
+                                        Hover="{StaticResource CloseH}"
+                                        Pressed="{StaticResource CloseP}" Width="22" Height="18" VerticalAlignment="Center"></mbexd:SimpleButton>
+
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="2" Margin="5,3,3,0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
                             <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="65"></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="被访单位" Foreground="#787878" VerticalAlignment="Center" Margin="2,0,2,0"></TextBlock>
-                                <ComboBox Grid.Column="1"  Height="25"  Margin="2,0,5,0" ItemsSource="{Binding Departments}" SelectedIndex="{Binding DepartmentIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
+                                <ComboBox Grid.Column="1" Width="130" Height="25"  Margin="0,0,5,0" ItemsSource="{Binding NodesCollection}" SelectedIndex="{Binding NodesCollection.Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MaxDropDownHeight="150"></ComboBox>
                             </Grid>
                         </Border>
-                        <Border Grid.Row="2" Margin="5,5,5,0" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+
+                        <Border Grid.Row="3" Margin="5,3,3,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
                             <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="65"></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="被访人员" Foreground="#787878" VerticalAlignment="Center" Margin="2,0,2,0"></TextBlock>
-                                <ComboBox Grid.Column="1" Height="25" Margin="2,0,5,0"  ItemsSource="{Binding Employees}" SelectedIndex="{Binding EmployeeIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
-                            </Grid>
-                        </Border>
-                        <Border Grid.Row="3" Margin="5,5,5,0"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
-                            <Grid >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="65"></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="联系方式" Foreground="#787878" VerticalAlignment="Center" Margin="2,0,2,0"></TextBlock>
-                                <TextBox Grid.Column="1"  Height="25" Margin="2,0,5,0"  ></TextBox>
+                                <ComboBox Grid.Column="1" Width="130" SelectedValue="{Binding CurrentNodeCbx,Mode=OneWayToSource}" Height="25" Margin="0,0,5,0"  ItemsSource="{Binding NodesCollection.Childrens,Mode=OneWay}" SelectedIndex="{Binding NodesCollection.IndexForChilds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
                             </Grid>
                         </Border>
 
-                        <Grid Grid.Row="4">
-                            <Grid.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type app:TreeNode}" ItemsSource="{Binding Nodes}">
-                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
-                                        <Image Source="../Assets/TreeDepart.png" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter}}" Width="16" Height="16" />
-                                        <Image Source="../Assets/TreePerson.png" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter},ConverterParameter=inverse}" Width="16" Height="16" />
-                                        <TextBlock Text="{Binding Name}" Margin="3,0,0,0" ToolTip="{Binding Name}" Tag="{Binding}"/>
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
-                            </Grid.Resources>
-                            <Border BorderThickness="1" Margin="5,5,5,0" BorderBrush="#343434">
-                                <TreeView Name="TreeView" ItemsSource="{Binding Items,Mode=TwoWay}" Background="Transparent"/>
-                            </Border>
+                        <Border Grid.Row="4" Margin="5,5,2,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="{StaticResource Accent}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="50"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Style="{DynamicResource SearchTextBoxStyle}" Foreground="White" Tag="请输入" CaretBrush="White" VerticalContentAlignment="Center"  BorderThickness="0" Background="Transparent" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="KeyUp">
+                                            <vm:TargetKeyUpAction TargetName="TreeView"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBox>
+                                <Button Grid.Column="1" Style="{StaticResource SearchButton}" >
+                                    <Button.Content>
+                                        <Path Width="25" Height="25" Stretch="Fill" Fill="{StaticResource Accent}" Data="F1 M 42.5,22C 49.4036,22 55,27.5964 55,34.5C 55,41.4036 49.4036,47 42.5,47C 40.1356,47 37.9245,46.3435 36,45.2426L 26.9749,54.2678C 25.8033,55.4393 23.9038,55.4393 22.7322,54.2678C 21.5607,53.0962 21.5607,51.1967 22.7322,50.0251L 31.7971,40.961C 30.6565,39.0755 30,36.8644 30,34.5C 30,27.5964 35.5964,22 42.5,22 Z M 42.5,26C 37.8056,26 34,29.8056 34,34.5C 34,39.1944 37.8056,43 42.5,43C 47.1944,43 51,39.1944 51,34.5C 51,29.8056 47.1944,26 42.5,26 Z "/>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+
+
+                        <Grid Grid.Row="5" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+
+                            <TextBlock Text="组织结构" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
+                            <Grid Grid.Row="1">
+                                <Grid.Resources>
+                                    <HierarchicalDataTemplate DataType="{x:Type vm:TreeNode}" ItemsSource="{Binding Nodes}">
+                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,2" >
+                                            <Image Source="{StaticResource TreeDepart}" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter}}" Width="16" Height="16" />
+                                            <Image Source="{StaticResource TreePerson}" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter},ConverterParameter=inverse}" Width="16" Height="16" />
+                                            <TextBlock Text="{Binding Name}"  Margin="3,0,0,0" ToolTip="{Binding Name}" />
+
+                                            <TextBlock Text="{Binding Tag,Converter={StaticResource TelephoneConverter}}" Foreground="Red" Margin="0,0,0,0" ToolTip="{Binding Tag}"/>
+
+                                        </StackPanel>
+                                    </HierarchicalDataTemplate>
+                                </Grid.Resources>
+                                <Border BorderThickness="1" Margin="5,5,5,0" BorderBrush="#343434">
+                                    <TreeView Name="TreeView" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding Items,Mode=TwoWay}" Tag="{Binding SrcItems}"  Background="Transparent">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectedItemChanged">
+                                                <i:InvokeCommandAction Command="{Binding SelectedTreeNodeCmd}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TreeView}}, Path=SelectedValue}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TreeView>
+                                </Border>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Border>
             </Grid>
 
             <!--证件照片-->
-            <Grid Grid.Column="1" Grid.Row="0">
+            <Grid Grid.Row="0" Grid.Column="1" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"></RowDefinition>
-                    <RowDefinition Height="290"></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="180"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Text="证件照片" FontWeight="Bold" FontSize="14"></TextBlock>
+                <TextBlock Text="证件照片" FontWeight="Bold" Foreground="#787878" FontSize="14"></TextBlock>
                 <Border Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}"  CornerRadius="3" Margin="0,0,2,2">
-                    <Grid>
-                        <Grid.Background>
-                            <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
-                        </Grid.Background>
-                        <Image ></Image>
+                    <Grid Background="{StaticResource FaceRectBrush}">
+
+                        <!--<Image Margin="3" Source="http://192.168.0.17:6551/DownLoadFile?filename=LOC:03/data/20171026/13/9e78617bdab326e0c47771380a821ca2_1" ></Image>-->
+                        <Image Margin="3" Source="{Binding CardImgPath,Mode=TwoWay}"  Stretch="Uniform"></Image>
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="数据区" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
-                    <StackPanel Grid.Row="1" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="证件类型" Width="65" Margin="5,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
-                        <ComboBox  Width="150" Height="22" SelectedIndex="{Binding CardIdType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <ComboBoxItem>二代身份证</ComboBoxItem>
-                            <ComboBoxItem>正式卡</ComboBoxItem>
-                        </ComboBox>
-                        <TextBlock Text="证件号码" Width="65" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <TextBox  Width="150" Height="22" Text="{Binding CardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <Border Grid.Row="2" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="18"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="数据区" Margin="5,0,5,0"  Foreground="#787878"  FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+                        <Border Grid.Row="1" Margin="0" Height="35" VerticalAlignment="Center"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Grid VerticalAlignment="Center" Margin="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                    <ColumnDefinition Width="*" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="姓名" Margin="5,0,0,0"  Foreground="#787878"  VerticalAlignment="Center"></TextBlock>
+                                <Grid Grid.Column="1" x:Name="gdName" Margin="2,0,2,0">
+                                    <TextBox Width="{Binding ActualWidth,ElementName=gdName}" VerticalContentAlignment="Center" Height="25" Text="{Binding VisitorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="2" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Grid VerticalAlignment="Center" Margin="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                    <ColumnDefinition Width="90" ></ColumnDefinition>
+                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="证件类型" Margin="5,0,0,0"  Foreground="#787878"   VerticalAlignment="Center"></TextBlock>
+                                <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsIdCardCheck,Mode=TwoWay}">二代身份证</RadioButton>
+                                <RadioButton Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding IsCommonCardCheck,Mode=TwoWay}">正式卡</RadioButton>
+                                <Grid Grid.Column="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"></ColumnDefinition>
+                                        <ColumnDefinition Width="40"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition ></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="性别" Foreground="#787878" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                    <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
+                                    <RadioButton Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
+                                </Grid>
+                            </Grid>
+                        </Border>
 
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="2" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="姓    名" Width="65" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <TextBox  Width="150" Height="25" Text="{Binding VisitorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        <TextBlock Text="性    别" Width="65" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <RadioButton VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
-                        <RadioButton VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
+                        <Border Grid.Row="3" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Grid VerticalAlignment="Center" Margin="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="证件号码"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <Grid Grid.Column="1" x:Name="gdId" Margin="2,0,2,0">
+                                    <TextBox Width="{Binding ActualWidth,ElementName=gdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding CardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                </Grid>
+                            </Grid>
+                        </Border>
 
-                    </StackPanel>
+                        <Border Grid.Row="4" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Grid VerticalAlignment="Center" Margin="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="通行证编号"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <Grid Grid.Column="1" x:Name="tpgdId" Margin="2,0,2,0">
+                                    <TextBox Width="{Binding ActualWidth,ElementName=tpgdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding PassCardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                </Grid>
+                            </Grid>
+                        </Border>
 
-                    <StackPanel Grid.Row="3" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="住    址" Width="65" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <TextBox Width="150" Height="22" Text="{Binding VisitorAddr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="4" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="通行证类型" Width="65" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <ComboBox  Width="150" Height="22" SelectedIndex="{Binding PassCardType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <ComboBoxItem>临时卡</ComboBoxItem>
-                            <ComboBoxItem>正式卡</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="5" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="通行证编号" Width="65" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                        <TextBox  Width="150" Height="22" Text="{Binding PassCardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    </StackPanel>
 
-                    <Border Grid.Row="1" Grid.RowSpan="5" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"></Border>
-                </Grid>
+                    </Grid>
+                </Border>
             </Grid>
 
             <!--来访者照片-->
             <Grid Grid.Column="3" Grid.Row="0" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"></RowDefinition>
-                    <RowDefinition Height="290"></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="180"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="来访者照片" FontWeight="Bold" FontSize="14"></TextBlock>
+                <TextBlock Text="来访者照片" Foreground="#787878" FontWeight="Bold" FontSize="14"></TextBlock>
                 <Border Grid.Row="1" BorderBrush="{DynamicResource BorderColor}"  BorderThickness="1" CornerRadius="3" Margin="0,0,2,2">
-                    <Grid Margin="0,0,0,0" >
-                        <Grid.Background>
-                            <ImageBrush ImageSource="../Assets/FaceRect.png"></ImageBrush>
-                        </Grid.Background>
-                        <Image x:Name="displayImage" Source="{Binding CaptureImageSrc,Mode=TwoWay}" Margin="3" Stretch="UniformToFill"></Image>
+                    <Grid Margin="0,0,0,0" Background="{StaticResource FaceRectBrush}">
 
-                        <Button Command="{Binding CaptureCmd}" Style="{StaticResource CaptureButton}"  Width="48" ToolTip="抓拍" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Image x:Name="displayImage" Source="{Binding CaptureImageSrc,Mode=TwoWay}" Margin="3" Stretch="Uniform"></Image>
 
-                        </Button>
+                        <mbexd:SimpleButton Command="{Binding CaptureCmd}" 
+                                            Width="48" Height="48"
+                                            Normal="{StaticResource CaptureN}"
+                                            Pressed="{StaticResource CaptureP}"
+                                            Hover="{StaticResource CaptureH}"
+                                            ToolTip="抓拍" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+
+                        </mbexd:SimpleButton>
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition Height="20"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="携带物品" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+                <Border Grid.Row="2" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
 
-                    <StackPanel Grid.Row="1" Margin="5,0,5,0" Orientation="Horizontal">
-                        <TextBlock Text="寄存物品" VerticalAlignment="Center" Margin="5,0,5,0"></TextBlock>
-                        <ComboBox x:Name="objCbx" Height="22" Width="100" SelectedIndex="0" >
-                            <ComboBoxItem>无</ComboBoxItem>
-                            <ComboBoxItem>包</ComboBoxItem>
-                            <ComboBoxItem>箱子</ComboBoxItem>
-                            <ComboBoxItem>笔记本</ComboBoxItem>
-                            <ComboBoxItem>手机</ComboBoxItem>
-                            <ComboBoxItem>U盘</ComboBoxItem>
-                            <ComboBoxItem>其他</ComboBoxItem>
-                        </ComboBox>
-                        <mbexd:SimpleButton Command="{Binding AddObjectCmd}" ToolTip="添加" Margin="10,0,0,0" CommandParameter="{Binding Path=Text,ElementName=objCbx}"
-                            Normal="{StaticResource AddN}"
-                            Hover="{StaticResource AddH}"
-                            Pressed="{StaticResource AddP}" Width="25" Height="25"></mbexd:SimpleButton>
-                    </StackPanel>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="18"></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="18"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="2" Grid.RowSpan="2" Margin="5,1,5,3" Background="#343434">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="25*"/>
-                            <ColumnDefinition Width="419*"/>
-                        </Grid.ColumnDefinitions>
-                        <ItemsControl ItemsSource="{Binding Belongings,Mode=TwoWay}" Grid.ColumnSpan="2" >
-                            <ItemsControl.Template>
-                                <ControlTemplate>
-                                    <ScrollViewer x:Name="ScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Padding="{TemplateBinding Padding}">
-                                        <ItemsPresenter />
-                                    </ScrollViewer>
-                                </ControlTemplate>
-                            </ItemsControl.Template>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Height="30" VerticalAlignment="Center"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Margin="0,0,5,0" Orientation="Horizontal" >
-                                        <TextBlock Text="{Binding ObjectName}" Foreground="White" FontSize="16" TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                                        <mbexd:SimpleButton Command="{Binding DeleteObjCmd}"
-                                        Normal="{StaticResource CloseN}"
-                                        Hover="{StaticResource CloseH}"
-                                        Pressed="{StaticResource CloseP}" Width="25" Height="20" VerticalAlignment="Center" ></mbexd:SimpleButton>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <TextBlock Text="携带物品" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+
+                        <Border Grid.Row="1" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Border x:Name="pt" Margin="2,0,2,0" >
+                                <cmbexd:MultiComboBox Height="25" 
+                                    Width="{Binding ActualWidth,ElementName=pt}" 
+                                    Text="{Binding ObjectStr,Mode=TwoWay}"  
+                                    IsEditable="True" 
+                                    ItemsSource="{Binding ObjectList}" 
+                                    cmbexd:ControlAttachProperty.Label="" 
+                                    cmbexd:ControlAttachProperty.Watermark="请选择寄存物品" Style="{StaticResource ClearButtonMultiComboBox}">
+                                </cmbexd:MultiComboBox>
+                            </Border>
+                        </Border>
+
+                        <TextBlock Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"  Text="来访单编号" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" FontSize="14"></TextBlock>
+                        <Border Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="3" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <TextBlock VerticalAlignment="Center" Text="{Binding VisitinglistId,Mode=TwoWay}"></TextBlock>
+                        </Border>
+
 
                     </Grid>
-
-                    <Border Grid.Row="1" Grid.RowSpan="5" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"></Border>
-                </Grid>
+                </Border>
             </Grid>
 
             <!--来访者信息-->
@@ -409,19 +303,27 @@
                     <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Text="来访者信息" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
-                <Border Grid.Row="1" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
-                    <DataGrid Margin="0" x:Name="list"  ItemsSource="{Binding Visitors}"
-                               AutoGenerateColumns="False" 
-                        CanUserSortColumns="False"  IsReadOnly="True"
-                        CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
-                        CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False">
+                <TextBlock Text="来访者信息" Foreground="#787878" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
+                <Border Grid.Row="1" Margin="0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                    <DataGrid Margin="0" x:Name="list"  
+                              HeadersVisibility="Column"
+                              ItemsSource="{Binding WaitVisitors}"
+                              AutoGenerateColumns="False" 
+                              CanUserSortColumns="False"  
+                              IsReadOnly="True"
+                              CanUserResizeColumns="False" 
+                              CanUserResizeRows="False"  
+                              SelectionMode="Single"
+                              CanUserReorderColumns="False" 
+                              AlternationCount="2"  
+                              RowHeaderWidth="0" 
+                              CanUserAddRows="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="姓名" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"   Binding="{Binding vt_name}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="证件号码" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_NO}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="证件类型" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_identify_type,Converter={StaticResource CardTypeConverter}}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="单位" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_department}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_employee}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="姓名" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"   Binding="{Binding Vt_name}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="证件号码" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding Vt_identify_no}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="证件类型" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding Vt_identify_type,Converter={StaticResource CardTypeConverter}}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="被访单位" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding Vt_visit_department_id,Converter={StaticResource IDConverter},ConverterParameter=0}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="被访人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding Vt_visit_employee_id,Converter={StaticResource IDConverter},ConverterParameter=1}"></DataGridTextColumn>
 
                             <DataGridTemplateColumn Width="*">
                                 <DataGridTemplateColumn.HeaderTemplate>
@@ -433,8 +335,11 @@
                                     <DataTemplate>
                                         <Grid Margin="0" >
 
-                                            <mbexd:SimpleButton HorizontalAlignment="Center" Margin="0" CommandParameter="{Binding .}" 
-                                                                Command="app:DeleteCommands.DeleteCmd"
+                                            <mbexd:SimpleButton Normal="{DynamicResource DeleteN}"
+                                                                Hover="{DynamicResource DeleteH}"
+                                                                Pressed="{DynamicResource DeleteP}"
+                                                                HorizontalAlignment="Center" Margin="0" CommandParameter="{Binding .}" 
+                                                                Command="vm:UserRegisterCommands.DeleteWaitUserCmd" Width="25" Height="25"
                                                                 ToolTip="删除"
                                                                 ></mbexd:SimpleButton>
                                         </Grid>
@@ -447,6 +352,7 @@
                 </Border>
             </Grid>
 
+            <!--暂存待办-->
             <Grid Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Margin="5,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"></RowDefinition>
@@ -455,10 +361,26 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="暂存待办" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
-                <Border Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                <TextBlock Text="暂存待办" Foreground="#787878" FontWeight="Bold" FontSize="14" Grid.Row="0"></TextBlock>
 
-                    <ListBox ItemTemplate="{StaticResource WaitVisitorTemplate}" ItemContainerStyle="{StaticResource WaitVisitorListBoxItemStyle}" ItemsSource="{Binding PauseVisitors}">
+                <Border Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                    <ListBox 
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ItemsSource="{Binding TemporaryVisitors,Mode=TwoWay}" 
+                        ItemTemplate="{DynamicResource RegisterTemporaryVisitorTemplate}" 
+                        ItemContainerStyle="{DynamicResource RegisterTemporaryVisitorListBoxItemStyle}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SelectedCmd}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBox}}, Path=SelectedValue}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                        <!--<i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SelectedCmd}" CommandParameter="{Binding}"></i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>-->
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel >
@@ -469,30 +391,33 @@
                 </Border>
 
 
-                <TextBlock Text="近期来访信息" FontWeight="Bold" FontSize="14" Grid.Row="2"></TextBlock>
+                <TextBlock Text="近期来访信息" Foreground="#787878" FontWeight="Bold" FontSize="14" Grid.Row="2"></TextBlock>
                 <Border Grid.Row="3" Margin="0,0,0,1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
-                    <DataGrid Margin="0"
-                               AutoGenerateColumns="False" 
-                        CanUserSortColumns="False"  IsReadOnly="True"
-                        CanUserResizeColumns="True" CanUserResizeRows="False"  SelectionMode="Single"
-                        CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="来访时间" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_in_time}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="离开时间" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_out_time}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="被访人员" Width="1*" ElementStyle="{StaticResource ContentCenterStyle}"  Binding="{Binding vt_visit_employee}"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <ListBox 
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ItemsSource="{Binding RecentlyVisitors,Mode=TwoWay}" 
+                        ItemTemplate="{DynamicResource RegisterRecentlyVisitorTemplate}" 
+                        ItemContainerStyle="{DynamicResource RegisterTemporaryVisitorListBoxItemStyle}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel >
+                                </StackPanel>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
                 </Border>
             </Grid>
         </Grid>
 
 
+        <!--操作-->
         <Grid Grid.Row="2">
             <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Center">
                 <Button Command="{Binding AddCmd}" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/AddBtn.png" Height="18" Margin="0"></Image>
+                            <Image Source="{StaticResource AddBtn}" Height="18" Margin="0"></Image>
                             <TextBlock Text="添加" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
                         </StackPanel>
                     </Button.Content>
@@ -500,7 +425,7 @@
                 <Button Command="{Binding SaveTempCmd}" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/SaveTempBtn.png" Height="18" Margin="0"></Image>
+                            <Image Source="{StaticResource SaveTempBtn}" Height="18" Margin="0"></Image>
                             <TextBlock Text="暂存" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
                         </StackPanel>
                     </Button.Content>
@@ -508,7 +433,7 @@
                 <Button  IsEnabled="{Binding EnableSubmit,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Command="{Binding SubmitCmd}" Height="28" Width="80" Margin="10,0,10,0"  >
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/SubmitBtn.png" Height="18" Margin="0"></Image>
+                            <Image Source="{StaticResource SubmitBtn}" Height="18" Margin="0"></Image>
                             <TextBlock Text="提交" Foreground="White" VerticalAlignment="Center" Margin="5,2"></TextBlock>
                         </StackPanel>
                     </Button.Content>
@@ -516,7 +441,7 @@
                 <Button Command="{Binding ClearCmd}" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/ClearBtn.png" Height="18" Margin="0"></Image>
+                            <Image Source="{StaticResource ClearBtn}" Height="18" Margin="0"></Image>
                             <TextBlock Text="清空" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
                         </StackPanel>
                     </Button.Content>
@@ -525,5 +450,5 @@
         </Grid>
     </Grid>
 
-  
+
 </UserControl>

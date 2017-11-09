@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager.Model
+namespace VisitorManager.ViewModel
 {
-    public class TempCard
+    public class TempCardDto
     {
         public string tc_id { get; set; }
         public string tc_NO { get; set; }

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace VisitorManager.ViewModel.Common
+namespace VisitorManager.ViewModel
 {
     public class TimerFormatConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            DateTime dt = (DateTime)value;
+            DateTime dt = new DateTime((long)(value)); 
 
             return dt.ToString("yyyy-MM-dd HH:mm:ss");
         }

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
-    class IdCardSDK
+
+    class IDCardSDK
     {
         /// <summary>
         ///  1、打开通讯端口

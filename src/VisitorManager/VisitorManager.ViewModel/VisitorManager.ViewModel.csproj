@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VisitorManager.ViewModel</RootNamespace>
     <AssemblyName>VisitorManager.ViewModel</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -24,15 +24,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -42,12 +44,48 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge.Video">
+      <HintPath>..\lib\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>..\lib\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.NMS">
+      <HintPath>..\LenelDataServer\bin\Debug\Apache.NMS.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.NMS.ActiveMQ">
+      <HintPath>..\LenelDataServer\bin\Debug\Apache.NMS.ActiveMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="AsyncIO">
+      <HintPath>..\lib\AsyncIO.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeReason.Reports">
+      <HintPath>..\lib\CodeReason.Reports.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\lib\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelReport">
+      <HintPath>..\lib\NPOI\ExcelReport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windows.Shell">
       <HintPath>..\lib\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.9.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NetMQ">
+      <HintPath>..\lib\NetMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
@@ -66,6 +104,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Thrift, Version=0.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LenelDataServer\bin\Debug\Thrift.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -73,12 +115,27 @@
   <ItemGroup>
     <Compile Include="Base\IDispatcher.cs" />
     <Compile Include="Base\KeyValueConfig.cs" />
+    <Compile Include="Common\Comparable.cs" />
+    <Compile Include="Common\VisitorFreshCardMessage.cs" />
+    <Compile Include="Common\TreeNode.cs" />
+    <Compile Include="Common\MySqlHelper.cs" />
+    <Compile Include="Manage\ThriftLocalProxy.cs" />
+    <Compile Include="Common\IDConverter.cs" />
+    <Compile Include="Common\ImageListBoxItemHeightConvert.cs" />
+    <Compile Include="Manage\FreshCardManager.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\FluidMoveBehavior.cs" />
+    <Compile Include="Common\ImageListBoxItemTemplateSizeConvert.cs" />
+    <Compile Include="Common\LocalConfig.cs" />
+    <Compile Include="Common\Method.cs" />
+    <Compile Include="Common\TargetKeyUpAction.cs" />
     <Compile Include="Common\IntToVisibilityConverter.cs" />
+    <Compile Include="Manage\IDCardManager.cs" />
+    <Compile Include="ViewModel\UserSearchViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Common\CardTypeConverter.cs" />
     <Compile Include="Common\Commands.cs" />
-    <Compile Include="Common\DataManager.cs" />
+    <Compile Include="Manage\ThriftManager.cs" />
     <Compile Include="Common\TimerFormatConverter.cs" />
     <Compile Include="Common\VisitorStatusToEnableConverter.cs" />
     <Compile Include="Common\NegateConverter.cs" />
@@ -86,20 +143,13 @@
     <Compile Include="Common\JsonUtil.cs" />
     <Compile Include="Common\VisitorStatusConverter.cs" />
     <Compile Include="Common\WindowMoveBehavior.cs" />
-    <Compile Include="Common\ImageUtil.cs" />
-    <Compile Include="Model\Adrelation.cs" />
-    <Compile Include="Model\Blacklist.cs" />
-    <Compile Include="Model\Department.cs" />
-    <Compile Include="Model\Employee.cs" />
-    <Compile Include="Model\TempCard.cs" />
-    <Compile Include="Model\User.cs" />
-    <Compile Include="Model\VisitingList.cs" />
-    <Compile Include="Model\Visitor.cs" />
-    <Compile Include="SDK\IDCard\IdCardSDK.cs" />
-    <Compile Include="SDK\IDCard\IdCardThread.cs" />
+    <Compile Include="Common\PicUtil.cs" />
+    <Compile Include="SDK\IDCard\IDCardSDK.cs" />
+    <Compile Include="SDK\IDCard\IDCardInfoExtractor.cs" />
     <Compile Include="Base\DelegateCommand.cs" />
     <Compile Include="Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\UserLeaveViewModel.cs" />
+    <Compile Include="ViewModel\UserStatisticViewModel.cs" />
     <Compile Include="ViewModel\UserVisitingViewModel.cs" />
     <Compile Include="ViewModel\UserRegisterViewModel.cs" />
   </ItemGroup>
@@ -139,13 +189,9 @@
       <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
       <Name>WPF.Extend</Name>
     </ProjectReference>
-    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video.DirectShow\Video.DirectShow.csproj">
-      <Project>{26cd2ce7-ff63-4669-83b0-7d9c8f3408ee}</Project>
-      <Name>Video.DirectShow</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Tools\AForge.NET Framework-2.2.5\Sources\Video\Video.csproj">
-      <Project>{809725dc-6502-4732-a51c-deb7fea12975}</Project>
-      <Name>Video</Name>
+    <ProjectReference Include="..\ThriftCommon\ThriftCommon.csproj">
+      <Project>{59c9fd3e-2761-4f87-858e-e5151c42f3a4}</Project>
+      <Name>ThriftCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

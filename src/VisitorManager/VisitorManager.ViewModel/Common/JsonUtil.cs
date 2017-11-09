@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public static class JsonUtil
     {

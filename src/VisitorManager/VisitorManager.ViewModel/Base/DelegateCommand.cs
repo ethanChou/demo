@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     /// <summary>
     /// 可以传递委托的命令

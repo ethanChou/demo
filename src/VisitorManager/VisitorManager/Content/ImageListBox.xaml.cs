@@ -42,6 +42,21 @@ namespace VisitorManager.Content
             }
         }
 
+
+
+        public DataTemplate ImageItemTemplate
+        {
+            get { return (DataTemplate)GetValue(ImageItemTemplateProperty); }
+            set { SetValue(ImageItemTemplateProperty, value); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly DependencyProperty ImageItemTemplateProperty =
+            DependencyProperty.Register("ImageItemTemplate", typeof(DataTemplate), typeof(ImageListBox), new PropertyMetadata(new PropertyChangedCallback(ImageItemTemplateChanged)));
+
+
         public string DateTemplateName
         {
             get { return (string)GetValue(DateTemplateNameProperty); }
@@ -59,6 +74,23 @@ namespace VisitorManager.Content
             if (box != null)
             {
                 box.UpdateDateTemplate(e.NewValue);
+            }
+        }
+
+        private static void ImageItemTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ImageListBox box = d as ImageListBox;
+            if (box != null)
+            {
+                box.UpdateImageItemTemplate(e.NewValue);
+            }
+        }
+
+        private void UpdateImageItemTemplate(object obj)
+        {
+            if (obj != null)
+            {
+                lsPricture.ItemTemplate =(DataTemplate) obj;
             }
         }
 

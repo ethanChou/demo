@@ -1,104 +1,101 @@
-﻿using AForge.Video;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using AForge.Video.DirectShow;
 using System.Windows.Input;
-using VisitorManager.Model;
-using FirstFloor.ModernUI.Windows.Controls;
-using VisitorManager.ViewModel.Common;
+using NLog;
+using ThriftCommon;
 using WPF.Extend;
-using Image = System.Windows.Controls.Image;
+using System.Text.RegularExpressions;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public class UserRegisterViewModel : ViewModelBase
     {
-        private ObservableCollection<BelongObject> _belongings = new ObservableCollection<BelongObject>();
-        private ObservableCollection<Visitor> _visitors = new ObservableCollection<Visitor>();
-        private ObservableCollection<Visitor> _waitvisitors = new ObservableCollection<Visitor>();
-        public Type CaptureWindowType { get; set; }
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly MainWindowViewModel MainVM;
+        /// <summary>
+        /// 等待进入
+        /// </summary>
+        private ObservableCollection<Visitor> _waitVisitors;
+        /// <summary>
+        /// 近期采访记录
+        /// </summary>
+        private ObservableCollection<Visitor> _recentlyVisitors;
+        /// <summary>
+        /// 暂存待办
+        /// </summary>
+        private ObservableCollection<Visitor> _temporaryVisitors;
 
-        private System.Threading.ManualResetEvent _pauseEvent = new System.Threading.ManualResetEvent(false);
-        private Visibility _defaultVis = Visibility.Visible;
+        private TreeNode _currentNode;
+        private List<string> _objectList = new List<string>();
+        private string _objectStr;
         private List<TreeNode> _items;
         private ICommand _captureCmd;
-        private ICommand _cancleCmd;
         private ICommand _addCmd;
         private ICommand _saveTempCmd;
         private ICommand _submitCmd;
         private ICommand _clearCmd;
         private ICommand _selectedCmd;
-        private int _departmentIndex = -1;
-        private int _employeeIndex = -1;
-        private string _captureImageSrc;
+        private ICommand _selectedTreeNodeCmd;
+        private static readonly string DefaultImageSrc = AppDomain.CurrentDomain.BaseDirectory + "Image\\Msg\\TransparentImg.png";
+        private bool _isIDCardCheck = true;
+        private bool _isCommonCardCheck = false;
+        private string _captureImageSrc = DefaultImageSrc;
+        private List<TreeNode> _srcItems;
+        private TreeNodeCollection _nodesCollection = new TreeNodeCollection();
+        private string _visitinglistID = "";
+        private bool _isShowVisitinglistId = false;
+        private string _visitingListId;
 
         #region 身份证信息
 
-        private int _cardIdType = 0;
         private string _cardId = "";
         private string _visitorName = "";
-        private string _visitorAddr = "";
         private bool _gender = false;
-
-        #endregion
-
-        #region 发卡区
-
-        private int _passCardType = 0;
-
+        private string _cardImgPath = DefaultImageSrc;
+        /// <summary>
+        /// 临时卡
+        /// </summary>
         private string _passCardId = "";
+
+        private IDispatcher _disp;
 
         #endregion
 
         public UserRegisterViewModel()
-        {
-            Items = new List<TreeNode>();
-            List<TreeNode> nodes = new List<TreeNode>()
-            {
-                new TreeNode { ID = 1, Name = "中国" },
-                new TreeNode { ID = 2, Name = "北京市", ParentID = 1 },
-                new TreeNode { ID = 3, Name = "吉林省", ParentID = 1 },
-                new TreeNode { ID = 4, Name = "上海市", ParentID = 1 },
-                new TreeNode { ID = 5, Name = "海淀区", ParentID = 2 ,Type=1},
-                new TreeNode { ID = 6, Name = "朝阳区", ParentID = 2 ,Type=1},
-                new TreeNode { ID = 7, Name = "大兴区", ParentID = 2,Type=1 },
-                new TreeNode { ID = 8, Name = "白山市", ParentID = 3 },
-                new TreeNode { ID = 9, Name = "长春市", ParentID = 3 },
-                new TreeNode { ID = 10, Name = "抚松县", ParentID = 8,Type=1 },
-                new TreeNode { ID = 11, Name = "靖宇县", ParentID = 8 ,Type=1}
-            };
-            // 绑定树
-            Items = Bind(nodes);
+            : this(null)
+        { }
 
-            DeleteCommands.DeleteCmd = new DelegateCommand(DeleteVisitorCommand);
+        public UserRegisterViewModel(MainWindowViewModel parent)
+        {
+            MainVM = parent;
+
+            _waitVisitors = new ObservableCollection<Visitor>();
+            _recentlyVisitors = new ObservableCollection<Visitor>();
+            _temporaryVisitors = new ObservableCollection<Visitor>();
+
+            _objectList.AddRange(new List<string>() { "包", "箱子", "笔记本", "手机", "U盘", "移动硬盘", "其他" });
+
+            ThriftManager.GetNodes();
+
+            SrcItems = ThriftManager.All;
+            //已经排序过了
+            Items = ThriftManager.Tree;
+            NodesCollection.AddRange(Items);
         }
 
-        public Visibility DefaultVis
-        {
-            get { return _defaultVis; }
-            set
-            {
-                _defaultVis = value;
-                NotifyChange("DefaultVis");
-            }
-        }
+        public Type CaptureWindowType { get; set; }
 
         public ICommand CaptureCmd
         {
             get { return _captureCmd ?? (_captureCmd = new DelegateCommand(CaptureCommand)); }
-        }
-
-        public ICommand CancleCmd
-        {
-            get { return _cancleCmd ?? (_cancleCmd = new DelegateCommand(CancleCommand)); }
         }
 
         public ICommand AddCmd
@@ -116,42 +113,40 @@ namespace VisitorManager
             get { return _submitCmd ?? (_submitCmd = new DelegateCommand(SubmitCommand)); }
         }
 
-
         public ICommand ClearCmd
         {
             get { return _clearCmd ?? (_clearCmd = new DelegateCommand(ClearCommand)); }
         }
 
-        public ObservableCollection<Department> Departments
+        public ICommand SelectedCmd
+        {
+            get { return _selectedCmd ?? (_selectedCmd = new DelegateCommand(SelectedCommand)); }
+        }
+
+        /// <summary>
+        /// 提交按钮是否可用
+        /// </summary>
+        public bool EnableSubmit
         {
             get
             {
-                return DataManager.Departments;
-            }
-            set
-            {
-                DataManager.Departments = value;
-                NotifyChange("Departments");
-            }
-        }
-
-        public ObservableCollection<Employee> Employees
-        {
-            get { return DataManager.Employees; }
-            set
-            {
-                DataManager.Employees = value;
-                NotifyChange("Employees");
+                if (WaitVisitors.Count > 0) return true;
+                return false;
             }
         }
 
         public int CardIdType
         {
-            get { return _cardIdType; }
+            get
+            {
+                return IsIdCardCheck ? 0 : 1;
+            }
+
             set
             {
-                _cardIdType = value;
-                NotifyChange("CardIdType");
+                var v = value;
+                if (v == 0) IsIdCardCheck = true;
+                else IsCommonCardCheck = true;
             }
         }
 
@@ -160,8 +155,33 @@ namespace VisitorManager
             get { return _cardId; }
             set
             {
+                bool f = _cardId == value;
+
                 _cardId = value;
                 NotifyChange("CardId");
+                if (!string.IsNullOrEmpty(_cardId) && !f)
+                {
+                    //刷最新来访信息
+                    var vs = ThriftManager.GetVisitors(
+                        String.Empty, String.Empty, String.Empty,
+                        (IdentifyType)(CardIdType), String.Empty, _cardId, 0, 0,
+                        Status.None,
+                        String.Empty, String.Empty);
+                    try
+                    {
+                        vs.Sort(new TimeComparer(false));
+                        this.MainVM.MainWindow.Dispatcher.Invoke(new Action(() =>
+                        {
+                            RecentlyVisitors.Clear();
+                            vs.ForEach(t => { RecentlyVisitors.Add(t); });
+                        }));
+                    }
+                    catch (Exception)
+                    {
+                        
+                        
+                    }
+                }
             }
         }
 
@@ -172,17 +192,6 @@ namespace VisitorManager
             {
                 _visitorName = value;
                 NotifyChange("VisitorName");
-            }
-        }
-
-        public string VisitorAddr
-        {
-            get { return _visitorAddr; }
-            set
-            {
-                _visitorAddr = value;
-                NotifyChange("VisitorAddr");
-
             }
         }
 
@@ -197,14 +206,10 @@ namespace VisitorManager
             }
         }
 
-        public int PassCardType
+        private string GenderStr
         {
-            get { return _passCardType; }
-            set
-            {
-                _passCardType = value;
-                NotifyChange("PassCardType");
-            }
+            get { return _gender ? "男" : "女"; }
+
         }
 
         public string PassCardId
@@ -214,70 +219,78 @@ namespace VisitorManager
             {
                 _passCardId = value;
                 NotifyChange("PassCardId");
-
             }
         }
 
-        public int DepartmentIndex
+        /// <summary>
+        /// 是否显示来访单编号
+        /// </summary>
+        public bool IsShowVisitinglistId
         {
-            get { return _departmentIndex; }
+            get { return _isShowVisitinglistId; }
             set
             {
-                _departmentIndex = value;
-                NotifyChange("DepartmentIndex");
-
+                _isShowVisitinglistId = value;
+                NotifyChange("IsShowVisitinglistId");
             }
         }
 
-        public int EmployeeIndex
+        /// <summary>
+        /// 来访单号
+        /// </summary>
+        public string VisitinglistId
         {
-            get { return _employeeIndex; }
+            get { return _visitinglistID; }
             set
             {
-                _employeeIndex = value;
-                NotifyChange("EmployeeIndex");
+                _visitinglistID = value;
+
+                IsShowVisitinglistId = !string.IsNullOrEmpty(_visitinglistID);
+
+                NotifyChange("VisitinglistId");
             }
         }
 
-        public ObservableCollection<Visitor> Visitors
+        public List<TreeNode> Items
+        {
+            get { return _items; }
+            set
+            {
+                _items = value;
+                NotifyChange("Items");
+            }
+        }
+
+        public ObservableCollection<Visitor> RecentlyVisitors
         {
             get
             {
-                return new ObservableCollection<Visitor>();
-                //return DataManager.WaitingVisitors;
+                return _recentlyVisitors;
             }
+
             set
             {
-               // DataManager.WaitingVisitors = value;
+                _recentlyVisitors = value;
+                NotifyChange("RecentlyVisitors");
             }
         }
 
-        public ObservableCollection<Visitor> PauseVisitors
+        public string CardImgPath
         {
             get
             {
-                return new ObservableCollection<Visitor>();
-               // return DataManager.PauseVisitors;
+                return _cardImgPath;
             }
+
             set
             {
-               // DataManager.PauseVisitors = value;
+                _cardImgPath = value;
+                if (string.IsNullOrEmpty(_cardImgPath))
+                {
+                    _cardImgPath = DefaultImageSrc;
+                }
+                NotifyChange("CardImgPath");
             }
-        }
-
-        public ICommand SelectedCmd
-        {
-            get { return _selectedCmd ?? (_selectedCmd = new DelegateCommand(SelectedCommand)); }
-        }
-
-        public bool EnableSubmit
-        {
-            get
-            {
-                if (Visitors.Count > 0) return true;
-                return false;
-            }
-
         }
 
         public string CaptureImageSrc
@@ -286,89 +299,382 @@ namespace VisitorManager
             set
             {
                 _captureImageSrc = value;
+                if (string.IsNullOrEmpty(_captureImageSrc))
+                {
+                    _captureImageSrc = DefaultImageSrc;
+                }
                 NotifyChange("CaptureImageSrc");
             }
         }
 
-        /// <summary>
-        /// 绑定树
-        /// </summary>
-        List<TreeNode> Bind(List<TreeNode> nodes)
+        public TreeNodeCollection NodesCollection
         {
-            List<TreeNode> outputList = new List<TreeNode>();
-            for (int i = 0; i < nodes.Count; i++)
+            get
             {
-                if (nodes[i].ParentID == -1)
+                return _nodesCollection;
+            }
+
+            set
+            {
+                _nodesCollection = value;
+            }
+        }
+
+        public ICommand SelectedTreeNodeCmd
+        {
+            get
+            {
+                return _selectedTreeNodeCmd ?? (_selectedTreeNodeCmd = new DelegateCommand(SelectedTreeNodeCommand));
+            }
+        }
+
+        private ICommand _deleteSelectedNodeCmd;
+
+        private TreeNode _currentNodeCbx;
+        public TreeNode CurrentNodeCbx
+        {
+            get { return _currentNodeCbx; }
+            set
+            {
+                _currentNodeCbx = value;
+                if (value != null)
                 {
-                    outputList.Add(nodes[i]);
+                    _currentNode = value;
+                    NotifyChange("CurrentNode");
+                }
+            }
+        }
+
+        public TreeNode CurrentNode
+        {
+            get
+            {
+                return _currentNode;
+            }
+            set
+            {
+                _currentNode = value;
+                NotifyChange("CurrentNode");
+                if (_currentNode == null) return;
+                if (_currentNode.Type == 0) //机构节点
+                {
+                    for (int i = 0; i < this.NodesCollection.Count; i++)
+                    {
+                        if (this.NodesCollection[i].ID == _currentNode.ID)
+                        {
+                            this.NodesCollection.Index = i;
+                            if (this.NodesCollection.Childrens.Count > 0)
+                                this.NodesCollection.IndexForChilds = 0;
+                        }
+                    }
+                }
+                if (_currentNode.Type == 1) //人员节点
+                {
+                    for (int i = 0; i < this.NodesCollection.Count; i++)
+                    {
+                        if (this.NodesCollection[i].ID == _currentNode.ParentID)
+                        {
+                            this.NodesCollection.Index = i;
+                            if (this.NodesCollection.Childrens.Count > 0)
+                            {
+                                for (int j = 0; j < this.NodesCollection.Childrens.Count; j++)
+                                {
+                                    if (this.NodesCollection.Childrens[j].ID == _currentNode.ID)
+                                    {
+                                        this.NodesCollection.IndexForChilds = j;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public ICommand DeleteSelectedNodeCmd
+        {
+            get
+            {
+                return _deleteSelectedNodeCmd ?? (_deleteSelectedNodeCmd = new DelegateCommand(DeleteSelectedNodeCommand));
+            }
+            set
+            {
+                _deleteSelectedNodeCmd = value;
+            }
+        }
+
+        public Visibility DeleteSelectedNodeBtnVis
+        {
+            get
+            {
+                return _deleteSelectedNodeBtnVis;
+            }
+            set
+            {
+                _deleteSelectedNodeBtnVis = value;
+                NotifyChange("DeleteSelectedNodeBtnVis");
+            }
+        }
+
+        public bool IsIdCardCheck
+        {
+            get { return _isIDCardCheck; }
+            set
+            {
+                _isIDCardCheck = value;
+                NotifyChange("IsIdCardCheck");
+            }
+        }
+
+        public bool IsCommonCardCheck
+        {
+            get { return _isCommonCardCheck; }
+            set
+            {
+                _isCommonCardCheck = value;
+                NotifyChange("IsCommonCardCheck");
+
+            }
+        }
+
+        /// <summary>
+        /// 携带物品
+        /// </summary>
+        public List<string> ObjectList
+        {
+            get { return _objectList; }
+            set { _objectList = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ObjectStr
+        {
+            get { return _objectStr; }
+            set
+            {
+                _objectStr = value;
+                NotifyChange("ObjectStr");
+            }
+        }
+
+        /// <summary>
+        /// 绑定框TreeView的Tag上，供数据查询使用
+        /// </summary>
+        public List<TreeNode> SrcItems
+        {
+            get
+            {
+                return _srcItems;
+            }
+
+            set
+            {
+                _srcItems = value;
+            }
+        }
+
+        private Visibility _deleteSelectedNodeBtnVis = Visibility.Collapsed;
+
+        /// <summary>
+        /// 当前添加的Visitor集合
+        /// </summary>
+        public ObservableCollection<Visitor> WaitVisitors
+        {
+            get
+            {
+                return _waitVisitors;
+            }
+            set
+            {
+                _waitVisitors = value;
+            }
+        }
+
+        public ObservableCollection<Visitor> TemporaryVisitors
+        {
+            get
+            {
+                return _temporaryVisitors;
+            }
+            set
+            {
+                _temporaryVisitors = value;
+            }
+        }
+
+        internal void IDCardRecevied(IDCardData data)
+        {
+            if (data == null) return;
+
+            CardIdType = 0;
+            CardId = data.IdCardNO;
+
+            VisitorName = data.Name;
+            CardImgPath = data.BmpPath;
+            Gender = data.Sex == "男" ? true : false;
+
+            var res = ThriftManager.GetBlackList(data.IdCardNO);
+
+            if (res.Count > 0)
+            {
+                _disp.Dispatcher.Invoke(() => { MsgBox.Show("黑名单中出现此人."); });
+            }
+        }
+
+        /// <summary>
+        /// 刷临时卡，更新数据
+        /// </summary>
+        /// <param name="id"></param>
+        internal void UpdateTempCardId(string id)
+        {
+            //临时卡
+            this.PassCardId = id;
+        }
+
+        internal void FreshCardReceived(VisitorFreshCardMessage data)
+        {
+            if (data == null) return;
+
+            if (data.cardholder_type == CardHolderType.Tmproty)
+            {
+                //临时卡
+                this.PassCardId = data.card_no;
+            }
+            else if (data.cardholder_type == CardHolderType.CardHolder)
+            {
+                bool exist = false;
+                TreeNode treeNode = null;
+                for (int i = 0; i < NodesCollection.Count; i++)
+                {
+                    if (NodesCollection[i].ID == data.cardholder.Dept)
+                    {
+                        NodesCollection.Index = i;
+
+                        for (int j = 0; j < NodesCollection.Childrens.Count; j++)
+                        {
+                            if (NodesCollection.Childrens[j].ID == data.cardholder.ID)
+                            {
+                                exist = true;
+                                NodesCollection.IndexForChilds = j;
+                                treeNode = NodesCollection.Childrens[j];
+                                break;
+                            }
+                        }
+                    }
+                }
+                //如果不存在，直接当成idcard使用
+                if (!exist)
+                {
+                    CardIdType = 1;
+                    CardId = data.card_no;
+                    VisitorName = data.cardholder.LastName + data.cardholder.FirstName;
+                    CardImgPath = data.img_url;
+                    Gender = true;
                 }
                 else
                 {
-                    FindDownward(nodes, nodes[i].ParentID).Nodes.Add(nodes[i]);
+                    //如果存在，说明是本单位员工的卡，找到对应的单位，人员选择。
+                    //相当于自动选择被访单位和被访人员
+                    CurrentNode = treeNode;
+                    DeleteSelectedNodeBtnVis = Visibility.Visible;
                 }
             }
-            return outputList;
         }
-        /// <summary>
-        /// 递归向下查找
-        /// </summary>
-        TreeNode FindDownward(List<TreeNode> nodes, int id)
+
+        internal void ClearVisitingId()
         {
-            if (nodes == null) return null;
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                if (nodes[i].ID == id)
-                {
-                    return nodes[i];
-                }
-                TreeNode node = FindDownward(nodes[i].Nodes, id);
-                if (node != null)
-                {
-                    return node;
-                }
-            }
-            return null;
+            VisitinglistId = "";
         }
 
+        /// <summary>
+        /// 添加同行人，需要把来访单好传过来
+        /// </summary>
+        /// <param name="arg"></param>
+        internal void AddPeerVisitor(object arg)
+        {
+            Visitor v = arg as Visitor;
+            if (v != null)
+            {
+                VisitinglistId = v.Vt_vl_id;
+                var res = ThriftManager.GetVisitorLists(VisitinglistId, 0, 0);
+                if (res.Count > 0)
+                {
+                    ObjectStr = res[0].Vl_carryThings;
+                }
+            }
+        }
 
-        private void DeleteVisitorCommand(object arg)
+        /// <summary>
+        /// 删除等待列表里面的Visitor
+        /// </summary>
+        /// <param name="arg"></param>
+        internal void DeleteWaitVisitor(object arg)
         {
             Visitor v = arg as Visitor;
             if (v != null)
             {
                 if (MsgBox.Show("是否立即删除？", "提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    Visitors.Remove(v);
-                    DbUtil.DeleteModel<Visitor>(v, "vt_identify_NO");
+                    WaitVisitors.Remove(v);
                 }
             }
         }
 
+        /// <summary>
+        /// 删除暂存列表里面的Visistor
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void DeleteTempVisitor(object obj)
+        {
+            Visitor v = obj as Visitor;
+            if (v != null)
+            {
+                TemporaryVisitors.Remove(v);
+            }
+        }
+
+        /// <summary>
+        /// 来访单每次的ID,每次都会生成新的一个id。
+        /// </summary>
+        private string GetNewVisitingListID()
+        {
+            DateTime time = DateTime.Now;
+            _visitingListId = time.ToString("yyyyMMddhhMMss");
+            return _visitingListId;
+        }
+
+        /// <summary>
+        /// 选择中暂存列表里面的项，重新编辑
+        /// </summary>
+        /// <param name="arg"></param>
         private void SelectedCommand(object arg)
         {
             Visitor visitor = arg as Visitor;
             if (visitor != null)
             {
-                CardIdType = visitor.vt_identify_type;
-                CardId = visitor.vt_identify_NO;
-                VisitorName = visitor.vt_name;
-                Gender = visitor.vt_sex;
-                VisitorAddr = visitor.vt_address;
-                PassCardType = visitor.tmpcard_type;
-                PassCardId = visitor.tmpcard_id;
+                CardImgPath = visitor.Vt_identify_imgurl;
+                CaptureImageSrc = visitor.Vt_imgurl;
+                CardIdType = (int)visitor.Vt_identify_type;
+                CardId = visitor.Vt_identify_no;
+                VisitorName = visitor.Vt_name;
+                Gender = visitor.Vt_sex == "男" ? true : false;
 
-                var dep = Departments.FirstOrDefault(t => t.dep_id == visitor.vt_visit_department_id);
+                PassCardId = visitor.Tmpcard_no;
+
+                var dep = NodesCollection.FirstOrDefault(t => t.ID == visitor.Vt_visit_department_id);
                 if (dep != null)
                 {
-                    int index = Departments.IndexOf(dep);
-                    DepartmentIndex = index;
+                    int index = NodesCollection.IndexOf(dep);
+                    NodesCollection.Index = index;
                 }
 
-                var emp = Employees.FirstOrDefault(t => t.emp_id == visitor.vt_visit_employee_id);
+                var emp = NodesCollection.Childrens.FirstOrDefault(t => t.ID == visitor.Vt_visit_employee_id);
                 if (emp != null)
                 {
-                    int index = Employees.IndexOf(emp);
-                    EmployeeIndex = index;
+                    int index = NodesCollection.Childrens.IndexOf(emp);
+                    NodesCollection.IndexForChilds = index;
                 }
             }
         }
@@ -387,18 +693,22 @@ namespace VisitorManager
             }
         }
 
-        private void CancleCommand(object arg)
-        {
-            _pauseEvent.Set();
-            CaptureImageSrc = "";
-        }
-
         private void AddCommand(object arg)
         {
+
             if (string.IsNullOrEmpty(CardId))
             {
                 var result = MsgBox.Show("证件号码不能为空.", "提示", MessageBoxButton.OK);
                 return;
+            }
+
+            if (CardId != null && CardIdType == 0)
+            {
+                if ((!Regex.IsMatch(CardId, @"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$", RegexOptions.IgnoreCase)))
+                {
+                    MsgBox.Show("请输入正确的身份证号码.", "提示");
+                    return;
+                }
             }
 
             if (string.IsNullOrEmpty(VisitorName))
@@ -413,80 +723,53 @@ namespace VisitorManager
                 return;
             }
 
-            if (string.IsNullOrEmpty(CaptureImageSrc))
+            if (string.IsNullOrEmpty(CaptureImageSrc) || CaptureImageSrc == DefaultImageSrc)
             {
                 var result = MsgBox.Show("请抓拍来访者照片.", "提示", MessageBoxButton.OK);
                 return;
             }
 
-            if (Visitors.ToList().Find(t => t.vt_identify_NO == CardId) != null)
+            if (WaitVisitors.ToList().Find(t => t.Vt_identify_no == CardId) != null)
             {
                 MsgBox.Show("相同证件号码不能添加两次.", "提示", MessageBoxButton.OK);
                 return;
             }
-            if (DepartmentIndex < 0)
-            {
-                MsgBox.Show("请选择被访单位.", "提示", MessageBoxButton.OK);
-                return;
-            }
-            if (EmployeeIndex < 0)
+
+            if (CurrentNode == null)
             {
                 MsgBox.Show("请选择被访人员.", "提示", MessageBoxButton.OK);
                 return;
             }
 
-            Visitor visitor = PauseVisitors.FirstOrDefault(t => t.vt_identify_NO == CardId);
+            if (CurrentNode.Type == 0)
+            {
+                MsgBox.Show("请选择人员节点.", "提示", MessageBoxButton.OK);
+                return;
+            }
+
+            Visitor visitor = this.TemporaryVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId);
             if (visitor != null)
             {
                 //之前已经暂存过，需要删除
-                PauseVisitors.Remove(visitor);
-
-                visitor.vt_identify_imgurl = CaptureImageSrc;
-                visitor.vt_identify_type = CardIdType;
-                visitor.vt_identify_NO = CardId;
-                visitor.vt_imgurl = CaptureImageSrc;
-                visitor.vt_name = VisitorName;
-                visitor.vt_sex = Gender;
-                //等待提交
-                visitor.vt_status = VisitorStatus.Waiting;
-                visitor.vt_in_time = DateTime.Now;
-                visitor.vt_address = VisitorAddr;
-                visitor.tmpcard_id = PassCardId;
-                visitor.tmpcard_type = PassCardType;
-                visitor.vt_visit_department_id = Departments[DepartmentIndex].dep_id;
-                visitor.vt_visit_department = Departments[DepartmentIndex].dep_name;
-                visitor.vt_visit_employee_id = Employees[EmployeeIndex].emp_id;
-                visitor.vt_visit_employee = Employees[EmployeeIndex].emp_name;
-
-                DbUtil.UpdateModel<Visitor>(visitor, "vt_id");
+                TemporaryVisitors.Remove(visitor);
             }
-            else
+
+            visitor = new Visitor()
             {
-                visitor = new Visitor()
-                {
-                    vt_id = Guid.NewGuid().ToString(),
-                    vt_identify_imgurl = CaptureImageSrc,
-                    vt_identify_type = CardIdType,
-                    vt_identify_NO = CardId,
-                    vt_imgurl = CaptureImageSrc,
-                    vt_name = VisitorName,
-                    vt_sex = Gender,
-                    //等待提交
-                    vt_status = VisitorStatus.Waiting,
-                    vt_in_time = DateTime.Now,
-                    vt_address = VisitorAddr,
-                    tmpcard_id = PassCardId,
-                    tmpcard_type = PassCardType,
-                    vt_visit_department_id = Departments[DepartmentIndex].dep_id,
-                    vt_visit_department = Departments[DepartmentIndex].dep_name,
-                    vt_visit_employee_id = Employees[EmployeeIndex].emp_id,
-                    vt_visit_employee = Employees[EmployeeIndex].emp_name,
-                };
+                Vt_id = Guid.NewGuid().ToString(),
+                Vt_identify_imgurl = CardImgPath,
+                Vt_identify_type = (IdentifyType)CardIdType,
+                Vt_identify_no = CardId,
+                Vt_imgurl = CaptureImageSrc,
+                Vt_name = VisitorName,
+                Vt_sex = GenderStr,
+                Vt_visit_department_id = CurrentNode.ParentID,
+                Vt_visit_employee_id = CurrentNode.ID,
+                Vt_in_time = DateTime.Now.Ticks,
+                Tmpcard_no = PassCardId,
+            };
 
-                DbUtil.InsertModel<Visitor>(visitor);
-            }
-
-            Visitors.Add(visitor);
+            WaitVisitors.Add(visitor);
 
             NotifyChange("EnableSubmit");
 
@@ -501,148 +784,110 @@ namespace VisitorManager
                 return;
             }
 
-            if (Visitors.FirstOrDefault(v => v.vt_identify_NO == CardId) != null)
+            if (WaitVisitors.FirstOrDefault(v => v.Vt_identify_no == CardId) != null)
             {
                 var result = MsgBox.Show("来访者已存在,不可暂存.", "提示", MessageBoxButton.OK);
                 return;
             }
 
-            Visitor oldVisitor = PauseVisitors.FirstOrDefault(v => v.vt_identify_NO == CardId);
-            if (oldVisitor != null)
-            {
-                //存在的话，更新值
-                oldVisitor.vt_identify_imgurl = CaptureImageSrc;
-                oldVisitor.vt_identify_type = CardIdType;
-                oldVisitor.vt_identify_NO = CardId;
-                oldVisitor.vt_imgurl = CaptureImageSrc;
-                oldVisitor.vt_in_time = DateTime.Now;
-                oldVisitor.vt_address = VisitorAddr;
-                oldVisitor.tmpcard_id = PassCardId;
-                oldVisitor.tmpcard_type = PassCardType;
-                oldVisitor.vt_name = VisitorName;
-                oldVisitor.vt_sex = Gender;
-                oldVisitor.vt_status = VisitorStatus.Pause;
-                oldVisitor.vt_visit_department_id = Departments[DepartmentIndex].dep_id;
-                oldVisitor.vt_visit_department = Departments[DepartmentIndex].dep_name;
-                oldVisitor.vt_visit_employee_id = Employees[EmployeeIndex].emp_id;
-                oldVisitor.vt_visit_employee = Employees[EmployeeIndex].emp_name;
-                oldVisitor.NoticeAll();
+            Visitor visitor = TemporaryVisitors.FirstOrDefault(v => v.Vt_identify_no == CardId);
+            //存在的话，把之前的全部删除，然后重新取最新数据添加
+            if (visitor != null)
+                TemporaryVisitors.Remove(visitor);
 
-                var res = DbUtil.UpdateModel<Visitor>(oldVisitor, "vt_id");
-            }
-            else
+            visitor = new Visitor()
             {
-                //不存在则添加
-                Visitor visitor = new Visitor()
+                Vt_id = Guid.NewGuid().ToString(),
+                Vt_identify_imgurl = CardImgPath,
+                Vt_identify_type = (IdentifyType)(CardIdType),
+                Vt_identify_no = CardId,
+                Vt_imgurl = CaptureImageSrc,
+                Vt_in_time = DateTime.Now.Ticks,
+                Tmpcard_no = PassCardId,
+                Vt_name = VisitorName,
+                Vt_sex = GenderStr,
+            };
+
+            if (CurrentNode != null)
+            {
+                if (CurrentNode.Type == 0)
                 {
-                    vt_id = Guid.NewGuid().ToString(),
-                    vt_identify_imgurl = CaptureImageSrc,
-                    vt_identify_type = CardIdType,
-                    vt_identify_NO = CardId,
-                    vt_imgurl = CaptureImageSrc,
-                    vt_in_time = DateTime.Now,
-                    vt_address = VisitorAddr,
-                    tmpcard_id = PassCardId,
-                    tmpcard_type = PassCardType,
-                    vt_name = VisitorName,
-                    vt_sex = Gender,
-                    vt_status = VisitorStatus.Pause,
-                    vt_visit_department_id = Departments[DepartmentIndex].dep_id,
-                    vt_visit_department = Departments[DepartmentIndex].dep_name,
-                    vt_visit_employee_id = Employees[EmployeeIndex].emp_id,
-                    vt_visit_employee = Employees[EmployeeIndex].emp_name,
-                };
-                DbUtil.InsertModel<Visitor>(visitor);
-                PauseVisitors.Add(visitor);
+                    visitor.Vt_visit_department_id = CurrentNode.ID;
+                }
+                if (CurrentNode.Type == 1)
+                {
+                    visitor.Vt_visit_department_id = CurrentNode.ParentID;
+                    visitor.Vt_visit_employee_id = CurrentNode.ID;
+                }
             }
+            TemporaryVisitors.Add(visitor);
         }
 
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <param name="arg"></param>
         private void SubmitCommand(object arg)
         {
-            string id = GuidIndex;
-            foreach (var v in Visitors)
+            //如果存在来访单号，合并
+            string id = string.IsNullOrEmpty(VisitinglistId) ? GetNewVisitingListID() : VisitinglistId;
+            foreach (var v in WaitVisitors)
             {
                 //所有来访单号，在提交的时候才确认生成。
-                v.vt_visitinglist_id = id;
+                v.Vt_vl_id = id;
                 //状态修改成已进入状态
-                v.vt_status = VisitorStatus.In;
+                v.Vt_status = Status.Visiting;
 
-                //只负责更新
-                bool res = DbUtil.UpdateModel<Visitor>(v, "vt_id");
-
-                if (NewVisitor != null)
+                if (MainVM != null)
                 {
-                    NewVisitor(v);
+                    MainVM.VistingVM.UpdateVisitor(v);
                 }
             }
 
-            VisitingList vl = new VisitingList();
+            var result = ThriftManager.GetVisitorLists(id, 0, 0);
+            logger.Info(string.Format("GetVisitorLists ID {0},Count {1}", id, result.Count));
+            bool flag = false;
+            if (result.Count == 0)
             {
-                vl.vtl_id = id;
-                vl.vtl_time = DateTime.Now;
+                // 来访单
+                VisitorList vl = new VisitorList();
+                {
+                    vl.Vl_id = id;
+                    vl.Vl_in_time = DateTime.Now.Ticks;
+                    vl.Vl_carryThings = ObjectStr;
+                }
+                flag = ThriftManager.AddVisitorList(vl);
+                if (!flag)
+                {
+                    MsgBox.Show("提交来访单到服务失败.", "提示", MessageBoxButton.OK);
+                    return;
+                }
             }
-            DbUtil.InsertModel<VisitingList>(vl);
-
-            Reset();
-        }
-
-        public static event Action<Visitor> NewVisitor;
-
-        private string _guidIndex;
-        /// <summary>
-        /// 每次都会生成新的一个id。
-        /// </summary>
-        private string GuidIndex
-        {
-            get
+            else
             {
-                DateTime time = DateTime.Now;
-                _guidIndex = time.ToString("yyyyMMddhhMMss");
-                return _guidIndex;
+                VisitorList vl = result[0];
+                vl.Vl_carryThings = ObjectStr;
+                ThriftManager.UpdateVisitorList(vl);
             }
-        }
-
-        public List<TreeNode> Items
-        {
-            get { return _items; }
-            set
+            flag = ThriftManager.AddVisitor(WaitVisitors.ToList());
+            if (!flag)
             {
-                _items = value;
-                NotifyChange("Items");
-            }
-        }
-
-        private ICommand _addObjectCmd;
-
-        public ObservableCollection<BelongObject> Belongings
-        {
-            get { return _belongings; }
-            set { _belongings = value; }
-        }
-
-
-
-        public ICommand AddObjectCmd
-        {
-            get { return _addObjectCmd ?? (_addObjectCmd = new DelegateCommand(AddObjectCommand)); }
-        }
-
-        private void AddObjectCommand(object arg)
-        {
-            string val = arg.ToString();
-            if (string.IsNullOrEmpty(val))
-            {
+                MsgBox.Show("提交访问者到服务失败.", "提示", MessageBoxButton.OK);
                 return;
             }
-            if (val == "无") return;
+            Reset();
+            ObjectStr = "";
+        }
 
-            if (Belongings.FirstOrDefault(t => t.ObjectName == val) == null)
+        private void DeleteSelectedNodeCommand(object arg)
+        {
+            CurrentNode = null;
+            DeleteSelectedNodeBtnVis = Visibility.Collapsed;
+        }
+
+        private void SelectedTreeNodeCommand(object arg)
+        {
+            TreeNode tn = arg as TreeNode;
+            if (tn != null)
             {
-                BelongObject beobj = new BelongObject(val,Belongings);
+                CurrentNode = tn;
+                DeleteSelectedNodeBtnVis = Visibility.Visible;
             }
         }
 
@@ -653,68 +898,21 @@ namespace VisitorManager
 
         private void Reset(bool force = true)
         {
-            EmployeeIndex = -1;
-            DepartmentIndex = -1;
-
             CardIdType = 0;
             CardId = "";
             VisitorName = "";
-            VisitorAddr = "";
             Gender = false;
 
             PassCardId = "";
-            PassCardType = 0;
-
+            CardImgPath = "";
             CaptureImageSrc = "";
-
-            CancleCommand(null);
 
             //刷新guid，重新生成来访单号
             if (force)
             {
-                Visitors.Clear();
+                WaitVisitors.Clear();
+                DeleteSelectedNodeCommand(null);
             }
-        }
-    }
-
-    public class TreeNode
-    {
-        public TreeNode()
-        {
-            this.Nodes = new List<TreeNode>();
-            this.ParentID = -1;
-        }
-
-        public int Type { get; set; }
-
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public int ParentID { get; set; }
-        public List<TreeNode> Nodes { get; set; }
-    }
-
-    public class BelongObject
-    {
-        private ObservableCollection<BelongObject> _container;
-        public BelongObject(string objName, ObservableCollection<BelongObject> container)
-        {
-            _container = container;
-            ObjectName = objName;
-            _container.Add(this);
-        }
-
-        public string ObjectName { get; set; }
-
-        public ICommand DeleteObjCmd
-        {
-            get { return _deleteObjCmd ?? (_deleteObjCmd = new DelegateCommand(DeleteCommand)); }
-        }
-
-        public ICommand _deleteObjCmd;
-
-        private void DeleteCommand(object arg)
-        {
-            _container.Remove(this);
         }
     }
 }

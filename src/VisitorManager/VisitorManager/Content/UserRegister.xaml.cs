@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VisitorManager.ViewModel;
 
 namespace VisitorManager.Content
 {
@@ -22,9 +23,6 @@ namespace VisitorManager.Content
         public UserRegister()
         {
             InitializeComponent();
-            var _viewModel = new UserRegisterViewModel();
-            _viewModel.CaptureWindowType = typeof(CaptureWindow);
-            this.DataContext = _viewModel;
         }
     }
 }

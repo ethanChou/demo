@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
-using VisitorManager.Model;
 
-namespace VisitorManager.ViewModel.Common
+namespace VisitorManager.ViewModel
 {
     public class VisitorStatusToEnableConverter : IValueConverter
     {
@@ -13,10 +12,11 @@ namespace VisitorManager.ViewModel.Common
         {
             if (value == null) return false;
 
-            VisitorStatus vs = (VisitorStatus)Enum.Parse(typeof(VisitorStatus), value.ToString());
+            ThriftCommon.Status vs = (ThriftCommon.Status)Enum.Parse(typeof(ThriftCommon.Status), value.ToString());
             int res = (int)vs;
 
-            if (res == 1 || res == 3) return true;
+            //正在访问和逾期未还才可用
+            if (res == 1 || res == 4) return true;
 
             return false;
         }

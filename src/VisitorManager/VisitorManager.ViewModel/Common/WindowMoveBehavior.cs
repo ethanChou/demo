@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Interop;
 
-namespace VisitorManager
+namespace VisitorManager.ViewModel
 {
     public class WindowMoveBehavior : Behavior<DependencyObject>
     {

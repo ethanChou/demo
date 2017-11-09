@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager.Model
+namespace VisitorManager.ViewModel
 {
     /// <summary>
     /// 单位
     /// </summary>
-    public class Department
+    public class DepartmentDto
     {
         /// <summary>
         /// 

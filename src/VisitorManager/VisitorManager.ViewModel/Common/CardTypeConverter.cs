@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace VisitorManager.ViewModel.Common
+namespace VisitorManager.ViewModel
 {
     public class CardTypeConverter : IValueConverter
     {
@@ -36,6 +36,21 @@ namespace VisitorManager.ViewModel.Common
             if (res == 1) return "正式卡";
 
             return "临时卡";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TelephoneConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+
+            return string.Format(" {0}", value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

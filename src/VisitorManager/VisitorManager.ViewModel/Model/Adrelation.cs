@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisitorManager.Model
+namespace VisitorManager.ViewModel
 {
-    public class Adrelation
+    public class AdrelationDto
     {
         public string ad_id { get; set; }
 

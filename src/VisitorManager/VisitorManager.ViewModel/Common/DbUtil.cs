@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dapper;
-using VisitorManager.Model;
 
-namespace VisitorManager.ViewModel.Common
+
+namespace VisitorManager.ViewModel
 {
     public class DbUtil
     {
@@ -78,7 +78,8 @@ namespace VisitorManager.ViewModel.Common
                     }
                     else
                     {
-                        query = "SELECT  * FROM " + typeof(T).Name + " WHERE " + wheresql;
+                        //query = "SELECT  * FROM " + typeof(T).Name + " WHERE " + wheresql;
+                        query = "SELECT  * FROM " + typeof(T).Name.Replace("Dto","") + " WHERE " + wheresql;
                     }
 
                     if (conn != null)
@@ -251,53 +252,6 @@ namespace VisitorManager.ViewModel.Common
                         conn.Execute(CREATE_TB_VISITINGLIST);
                     }
                    
-                }
-            }
-        }
-
-        public static void Test()
-        {
-            Initialize();
-
-            string source = string.Format("Data Source={0}", DB_PATH);
-            using (IDbConnection conn = GetSqlConnection(source))
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    Department d = new Department()
-                    {
-                        dep_id = "0" + i,
-                        dep_parent_id = "0",
-                        ad_id = "0",
-                        dep_NO = DateTime.Now.ToBinary().ToString(),
-                        dep_name = "部门" + i,
-                        dep_isdeleted = false,
-                        dep_isspacial = false
-                    };
-                    string strsql = @"insert into department (dep_id,dep_parent_id,ad_id,dep_NO,dep_name,dep_isdeleted,dep_isspacial) values (@dep_id,@dep_parent_id,@ad_id,@dep_NO,@dep_name,@dep_isdeleted,@dep_isspacial)";
-                  
-                    int result = conn.Execute(strsql, d);
-                }
-            }
-
-            source = string.Format("Data Source={0}", DB_PATH);
-            using (IDbConnection conn = GetSqlConnection(source))
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    Employee d = new Employee()
-                    {
-                        emp_id = "0" + i,
-                        emp_NO = "0",
-                        dep_id = "0",
-                        emp_cardNO = DateTime.Now.ToBinary().ToString(),
-                        emp_name = "员工" + i,
-                        emp_tel = "123456789",
-                        emp_imgurl = "",
-                        emp_isdeleted = false
-                    };
-                    string strsql = @"insert into employee (emp_id,emp_NO,dep_id,emp_cardNO,emp_name,emp_tel,emp_imgurl,emp_isdeleted) values (@emp_id,@emp_NO,@dep_id,@emp_cardNO,@emp_name,@emp_tel,@emp_imgurl,@emp_isdeleted)";
-                    int result = conn.Execute(strsql, d);
                 }
             }
         }
