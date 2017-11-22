@@ -2,7 +2,7 @@
 
 ; 安装程序初始定义常量
 !define PRODUCT_NAME "传达室管理系统"
-!define PRODUCT_VERSION "2.0.0.0"
+!define PRODUCT_VERSION "2.0.1.0"
 !define PRODUCT_PUBLISHER "homingfly, Inc."
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VisitorManager.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -106,6 +106,14 @@ Section "MainSection" SEC01
   File "..\bin\Release\AForge.Video.dll"
   File "..\bin\Release\AForge.Video.DirectShow.dll"
   File "..\bin\Release\AForge.Controls.dll"
+  File "..\bin\Release\AForge.dll"
+  File "..\bin\Release\AForge.Imaging.dll"
+  File "..\bin\Release\AForge.Math.dll"
+      
+  File "..\bin\Release\BY618_108.dll"
+  File "..\bin\Release\logDll.dll"
+  File "..\bin\Release\sdtapi.dll"
+  File "..\bin\Release\WltRS.dll"
   
   SetOutPath "$INSTDIR\Doc"
   File /r /x *svn  "..\bin\Release\Doc\*"
@@ -215,6 +223,15 @@ Section Uninstall
   Delete "$INSTDIR\WPF.Extend.Controls.dll"
   Delete "$INSTDIR\WPF.Extend.dll"
 
+  Delete "$INSTDIR\AForge.dll"
+  Delete "$INSTDIR\AForge.Imaging.dll"
+  Delete "$INSTDIR\AForge.Math.dll"
+
+  Delete "$INSTDIR\BY618_108.dll"
+  Delete "$INSTDIR\logDll.dll"
+  Delete "$INSTDIR\sdtapi.dll"
+  Delete "$INSTDIR\WltRS.dll"
+  
 	RMDir /r "$INSTDIR\Doc"
   RMDir /r "$INSTDIR\Image"
   RMDir /r "$INSTDIR\SDK"
