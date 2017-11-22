@@ -60,6 +60,7 @@ namespace VisitorManager.ViewModel
             UserSearchCommands.ViewCmd = new DelegateCommand(SearchVM.ViewVisitor);
 
             UserVisitingCommands.Delete += VistingVM.VisitorDeleted;
+            UserVisitingCommands.Info += VistingVM.VisitorInfo;
         }
 
         /// <summary>
@@ -73,27 +74,34 @@ namespace VisitorManager.ViewModel
             {
                 if (data.cardholder_type == CardHolderType.Tmproty)
                 {
-                    var vtor = VistingVM.ExistsCard(data.card_no);
+                    var vtor = VistingVM.ExistsCard(string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no));
                     //临时卡正在使用
                     if (vtor != null)
                     {
                         LeaveVM.VisitorLeave(vtor);
+                        LeaveVM.ShowLostCardBtnVis = Visibility.Collapsed;
                         TabCommand(2);
                     }
                     else
                     {
-                        RegisterVM.UpdateTempCardId(data.card_no);
+                        RegisterVM.UpdateTempCardId(data);
                         TabCommand(1);
                     }
                 }
                 else
                 {
                     //正式卡
-                    var vtor = VistingVM.ExistsCard(data.card_no, false);
+                    var vtor = VistingVM.ExistsCard(string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no), false);
                     if (vtor == null)
                     {
                         RegisterVM.FreshCardReceived(data);
                         TabCommand(1);
+                    }
+                    else
+                    {
+                        LeaveVM.VisitorLeave(vtor);
+                        LeaveVM.ShowLostCardBtnVis = Visibility.Collapsed;
+                        TabCommand(2);
                     }
                 }
             }
@@ -105,6 +113,15 @@ namespace VisitorManager.ViewModel
         /// <param name="data"></param>
         private void IDCardDataRecevied(IDCardData data)
         {
+            if (!MainWindow.Dispatcher.CheckAccess())
+            {
+                MainWindow.Dispatcher.Invoke(() =>
+                {
+                    IDCardDataRecevied(data);
+                });
+                return;
+            }
+
             if (data != null)
             {
                 var vtor = VistingVM.ExistsCard(data.IdCardNO, false);
@@ -115,6 +132,7 @@ namespace VisitorManager.ViewModel
                 }
                 else {
                     LeaveVM.VisitorLeave(vtor);
+                    LeaveVM.ShowLostCardBtnVis = Visibility.Collapsed;
                     TabCommand(2);
                 }
             }
@@ -131,6 +149,7 @@ namespace VisitorManager.ViewModel
             if (v != null)
             {
                 LeaveVM.VisitorLeave(v);
+                LeaveVM.ShowLostCardBtnVis = Visibility.Visible;
                 TabCommand(2);
             }
         }

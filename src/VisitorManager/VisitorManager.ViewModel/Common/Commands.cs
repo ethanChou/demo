@@ -9,7 +9,9 @@ namespace VisitorManager.ViewModel
     public static class UserVisitingCommands
     {
         private static ICommand _deleteCmd = new DelegateCommand(DeleteCommand);
+        private static ICommand _infoCmd = new DelegateCommand(InfoCommand);
         public static Action<object> Delete;
+        public static Action<object> Info;
 
         public static ICommand DeleteCmd
         {
@@ -17,10 +19,21 @@ namespace VisitorManager.ViewModel
             set { _deleteCmd = value; }
         }
 
+        public static ICommand InfoCmd
+        {
+            get { return _infoCmd; }
+            set { _infoCmd = value; }
+        }
+
         private static void DeleteCommand(object arg)
         {
             if (Delete != null) Delete(arg);
         }
+        private static void InfoCommand(object arg)
+        {
+            if (Info != null) Info(arg);
+        }
+
     }
 
     public static class UserSearchCommands
@@ -135,7 +148,7 @@ namespace VisitorManager.ViewModel
             if (TempUsersDeleted != null) TempUsersDeleted(arg);
         }
 
-      
+        private static ICommand _shortWayCmd;
        
         public static ICommand DeleteWaitUserCmd
         {
@@ -149,6 +162,10 @@ namespace VisitorManager.ViewModel
             set { _deleteTempUserCmd = value; }
         }
 
-
+        public static ICommand ShortWayCmd
+        {
+            get { return _shortWayCmd; }
+            set { _shortWayCmd = value; }
+        }
     }
 }

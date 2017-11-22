@@ -12,7 +12,9 @@ namespace VisitorManager.ViewModel
     public class UserVisitingViewModel : ViewModelBase
     {
 
+        public Type WindowType { get; set; }
         MainWindowViewModel _mainVM;
+        private int _searchTimeIndex = 0;
         public static UserVisitingViewModel Single { get; set; }
         private DispatcherTimer _workTimer;
         private ObservableCollection<Visitor> _visistors;
@@ -55,14 +57,14 @@ namespace VisitorManager.ViewModel
             {
                 if (isTempCard)
                 {
-                    if (Visistors[i].Tmpcard_no == tmpid)
+                    if (Visistors[i].Tmpcard_no == tmpid && Visistors[i].Vt_status == Status.Visiting)
                     {
                         return Visistors[i];
                     }
                 }
                 else
                 {
-                    if (Visistors[i].Vt_identify_no == tmpid)
+                    if (Visistors[i].Vt_identify_no == tmpid && Visistors[i].Vt_status == Status.Visiting)
                     {
                         return Visistors[i];
                     }
@@ -81,6 +83,22 @@ namespace VisitorManager.ViewModel
                 {
                     ThriftManager.DeleteVisitor(v.Vt_id);
                     Visistors.Remove(v);
+                    CurrentVisitors = Visistors.Count;
+                }
+            }
+
+        }
+
+        internal void VisitorInfo(object arg)
+        {
+            Visitor vt = arg as Visitor;
+            if (vt != null)
+            {
+                IContextWindow window = (IContextWindow)Activator.CreateInstance(WindowType);
+                if (window != null)
+                {
+                    window.DataContext = vt;
+                    window.ShowDialog();
                 }
             }
         }
@@ -90,6 +108,7 @@ namespace VisitorManager.ViewModel
             if (!string.IsNullOrEmpty(DbUtil.DB_PATH))
             {
                 _workTimer.Stop();
+                GC.Collect();
                 UpdateVisitors();
             }
         }
@@ -104,14 +123,56 @@ namespace VisitorManager.ViewModel
             UpdateData();
         }
 
+        /// <summary>
+        /// 获取当前系统的版本号
+        /// </summary>
+        /// <returns></returns>
+        public string GetEdition()
+        {
+            return "V" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+        }
+
+        public string Version
+        {
+            get
+            {
+                var v = GetEdition();
+                return v;
+            }
+        }
+
         private void UpdateVisitors()
         {
             Visistors.Clear();
 
+            DateTime bt = DateTime.Now, et = DateTime.Now;
+
+            DateTime nt = DateTime.Now;
+            if (SearchTimeIndex == 0)
+            {
+                bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+                et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+            }
+            if (SearchTimeIndex == 1)//三天
+            {
+                et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+
+                nt = nt.AddDays(-3);
+                bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+            }
+
+            if (SearchTimeIndex == 2)//一周
+            {
+                et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+
+                nt = nt.AddDays(-7);
+                bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+            }
+
             _srcVisistors = ThriftManager.GetVisitors(
                 String.Empty, String.Empty,
                 ConditionStr, IdentifyType.IdCard,
-                String.Empty, String.Empty, 0, 0,
+                String.Empty, String.Empty, bt.Ticks, et.Ticks,
                 _statusIndex,
                 String.Empty, String.Empty);
 
@@ -190,6 +251,16 @@ namespace VisitorManager.ViewModel
             {
                 _conditionStr = value;
                 NotifyChange("ConditionStr");
+            }
+        }
+
+        public int SearchTimeIndex
+        {
+            get { return _searchTimeIndex; }
+            set
+            {
+                _searchTimeIndex = value;
+                NotifyChange("SearchTimeIndex");
             }
         }
 

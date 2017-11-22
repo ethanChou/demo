@@ -44,7 +44,7 @@ namespace VisitorManager.ViewModel
         private ICommand _clearCmd;
         private ICommand _selectedCmd;
         private ICommand _selectedTreeNodeCmd;
-        private static readonly string DefaultImageSrc = AppDomain.CurrentDomain.BaseDirectory + "Image\\Msg\\TransparentImg.png";
+        private static readonly string DefaultImageSrc = "";
         private bool _isIDCardCheck = true;
         private bool _isCommonCardCheck = false;
         private string _captureImageSrc = DefaultImageSrc;
@@ -53,7 +53,8 @@ namespace VisitorManager.ViewModel
         private string _visitinglistID = "";
         private bool _isShowVisitinglistId = false;
         private string _visitingListId;
-
+        private Visibility _loadFailVis = Visibility.Collapsed;
+        private bool _isOpenShortWay;
         #region 身份证信息
 
         private string _cardId = "";
@@ -77,6 +78,7 @@ namespace VisitorManager.ViewModel
         {
             MainVM = parent;
 
+            UserRegisterCommands.ShortWayCmd = new DelegateCommand(ShortWayCommand);
             _waitVisitors = new ObservableCollection<Visitor>();
             _recentlyVisitors = new ObservableCollection<Visitor>();
             _temporaryVisitors = new ObservableCollection<Visitor>();
@@ -92,6 +94,7 @@ namespace VisitorManager.ViewModel
         }
 
         public Type CaptureWindowType { get; set; }
+        public Type CameraWindowType { get; set; }
 
         public ICommand CaptureCmd
         {
@@ -178,8 +181,8 @@ namespace VisitorManager.ViewModel
                     }
                     catch (Exception)
                     {
-                        
-                        
+
+
                     }
                 }
             }
@@ -328,6 +331,8 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        private ICommand _comboboxSelected;
+
         private ICommand _deleteSelectedNodeCmd;
 
         private TreeNode _currentNodeCbx;
@@ -337,11 +342,6 @@ namespace VisitorManager.ViewModel
             set
             {
                 _currentNodeCbx = value;
-                if (value != null)
-                {
-                    _currentNode = value;
-                    NotifyChange("CurrentNode");
-                }
             }
         }
 
@@ -504,15 +504,54 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        public Visibility LoadFailVis
+        {
+            get { return _loadFailVis; }
+            set
+            {
+                _loadFailVis = value;
+                NotifyChange("LoadFailVis");
+            }
+        }
+
+        public bool IsOpenShortWay
+        {
+            get { return _isOpenShortWay; }
+            set
+            {
+                _isOpenShortWay = value;
+                if (CurrentNode != null)
+                {
+                    CurrentNode.IsShowShort = value;
+                }
+                NotifyChange("IsOpenShortWay");
+            }
+        }
+
+        public ICommand ComboboxSelected
+        {
+            get { return _comboboxSelected ?? (_comboboxSelected = new DelegateCommand(ComboboxSelectedCommand)); }
+
+        }
+
+
         internal void IDCardRecevied(IDCardData data)
         {
             if (data == null) return;
 
             CardIdType = 0;
             CardId = data.IdCardNO;
-
+            IsOpenShortWay = false;
             VisitorName = data.Name;
             CardImgPath = data.BmpPath;
+            if (string.IsNullOrWhiteSpace(CardImgPath))
+            {
+                LoadFailVis = Visibility.Visible;
+            }
+            else
+            {
+                LoadFailVis = Visibility.Collapsed;
+            }
             Gender = data.Sex == "男" ? true : false;
 
             var res = ThriftManager.GetBlackList(data.IdCardNO);
@@ -527,10 +566,11 @@ namespace VisitorManager.ViewModel
         /// 刷临时卡，更新数据
         /// </summary>
         /// <param name="id"></param>
-        internal void UpdateTempCardId(string id)
+        internal void UpdateTempCardId(VisitorFreshCardMessage data)
         {
             //临时卡
-            this.PassCardId = id;
+            // this.PassCardId = id;
+            this.PassCardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
         }
 
         internal void FreshCardReceived(VisitorFreshCardMessage data)
@@ -540,7 +580,9 @@ namespace VisitorManager.ViewModel
             if (data.cardholder_type == CardHolderType.Tmproty)
             {
                 //临时卡
-                this.PassCardId = data.card_no;
+                //this.PassCardId = data.card_no;
+                this.PassCardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
+                //string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
             }
             else if (data.cardholder_type == CardHolderType.CardHolder)
             {
@@ -567,10 +609,19 @@ namespace VisitorManager.ViewModel
                 //如果不存在，直接当成idcard使用
                 if (!exist)
                 {
+                    IsOpenShortWay = false;
                     CardIdType = 1;
-                    CardId = data.card_no;
-                    VisitorName = data.cardholder.LastName + data.cardholder.FirstName;
+                    CardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
+                    VisitorName = data.cardholder.LastName;
                     CardImgPath = data.img_url;
+                    if (string.IsNullOrWhiteSpace(CardImgPath))
+                    {
+                        LoadFailVis = Visibility.Visible;
+                    }
+                    else
+                    {
+                        LoadFailVis = Visibility.Collapsed;
+                    }
                     Gender = true;
                 }
                 else
@@ -635,13 +686,15 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        private Random _rd = new Random();
+
         /// <summary>
         /// 来访单每次的ID,每次都会生成新的一个id。
         /// </summary>
         private string GetNewVisitingListID()
         {
             DateTime time = DateTime.Now;
-            _visitingListId = time.ToString("yyyyMMddhhMMss");
+            _visitingListId = time.ToString("yyyyMMddhhMMss") + _rd.Next(100, 999).ToString();
             return _visitingListId;
         }
 
@@ -683,7 +736,9 @@ namespace VisitorManager.ViewModel
         {
             if (CaptureWindowType != null)
             {
-                ICaptureWindow window = (ICaptureWindow)Activator.CreateInstance(CaptureWindowType);
+
+                ICaptureWindow window = (ICaptureWindow)Activator.CreateInstance(
+                    LocalConfig.IsCaptureAdvanced ? CameraWindowType : CaptureWindowType);
                 window.Owner = Application.Current.MainWindow;
                 if (window.ShowDialog() == true)
                 {
@@ -695,11 +750,15 @@ namespace VisitorManager.ViewModel
 
         private void AddCommand(object arg)
         {
+            AddUser();
+        }
 
+        private bool AddUser()
+        {
             if (string.IsNullOrEmpty(CardId))
             {
                 var result = MsgBox.Show("证件号码不能为空.", "提示", MessageBoxButton.OK);
-                return;
+                return false;
             }
 
             if (CardId != null && CardIdType == 0)
@@ -707,45 +766,192 @@ namespace VisitorManager.ViewModel
                 if ((!Regex.IsMatch(CardId, @"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$", RegexOptions.IgnoreCase)))
                 {
                     MsgBox.Show("请输入正确的身份证号码.", "提示");
-                    return;
+                    return false;
                 }
             }
 
             if (string.IsNullOrEmpty(VisitorName))
             {
                 var result = MsgBox.Show("姓名不能为空.", "提示", MessageBoxButton.OK);
-                return;
+                return false;
             }
 
             if (string.IsNullOrEmpty(PassCardId))
             {
-                var result = MsgBox.Show("通行证编号不能为空.", "提示", MessageBoxButton.OK);
-                return;
+                var result = MsgBox.Show("临时卡号不能为空.", "提示", MessageBoxButton.OK);
+                return false;
             }
 
             if (string.IsNullOrEmpty(CaptureImageSrc) || CaptureImageSrc == DefaultImageSrc)
             {
                 var result = MsgBox.Show("请抓拍来访者照片.", "提示", MessageBoxButton.OK);
-                return;
+                return false;
+
             }
 
             if (WaitVisitors.ToList().Find(t => t.Vt_identify_no == CardId) != null)
             {
                 MsgBox.Show("相同证件号码不能添加两次.", "提示", MessageBoxButton.OK);
-                return;
+                return false;
+
             }
 
-            if (CurrentNode == null)
+            if (DeleteSelectedNodeBtnVis == Visibility.Collapsed)
             {
                 MsgBox.Show("请选择被访人员.", "提示", MessageBoxButton.OK);
-                return;
+                return false;
             }
 
-            if (CurrentNode.Type == 0)
+
+            Visitor visitor = this.TemporaryVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId);
+            if (visitor != null)
             {
-                MsgBox.Show("请选择人员节点.", "提示", MessageBoxButton.OK);
-                return;
+                //之前已经暂存过，需要删除
+                TemporaryVisitors.Remove(visitor);
             }
+
+            if (WaitVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId) != null)
+            {
+                MsgBox.Show("相同证件号码不能添加两次.", "提示", MessageBoxButton.OK);
+                return false;
+            }
+
+            if (WaitVisitors.FirstOrDefault(t => t.Tmpcard_no == PassCardId) != null)
+            {
+                MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
+                return false;
+            
+            }
+
+
+            visitor = new Visitor()
+            {
+                Vt_id = Guid.NewGuid().ToString(),
+                Vt_identify_imgurl = CardImgPath,
+                Vt_identify_type = (IdentifyType)CardIdType,
+                Vt_identify_no = CardId,
+                Vt_imgurl = CaptureImageSrc,
+                Vt_name = VisitorName,
+                Vt_sex = GenderStr,
+                Vt_visit_department_id = NodesCollection[NodesCollection.Index].ID,
+                Vt_visit_employee_id = NodesCollection.Childrens[NodesCollection.IndexForChilds].ID,
+                Vt_in_time = DateTime.Now.Ticks,
+                Tmpcard_no = PassCardId,
+            };
+
+            WaitVisitors.Add(visitor);
+
+            NotifyChange("EnableSubmit");
+
+            Reset(false);
+            return true;
+        }
+
+        private bool AddUserEx()
+        {
+            if (string.IsNullOrEmpty(CardId))
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("证件号码不能为空.", "提示", MessageBoxButton.OK);
+                }
+                else
+                {
+                    logger.Info("证件号码不能为空");
+                }
+
+                return false;
+            }
+
+            if (CardId != null && CardIdType == 0)
+            {
+                if ((!Regex.IsMatch(CardId, @"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$", RegexOptions.IgnoreCase)))
+                {
+                    if (WaitVisitors.Count <= 0)
+                    {
+                        MsgBox.Show("请输入正确的身份证号码.");
+                    }
+                    else
+                    {
+                        logger.Info("请输入正确的身份证号码.");
+                    }
+
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrEmpty(VisitorName))
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("姓名不能为空.");
+                }
+                else
+                {
+                    logger.Info("姓名不能为空.");
+                }
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(PassCardId))
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("临时卡号不能为空.");
+                }
+                else
+                {
+                    logger.Info("临时卡号不能为空.");
+                }
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(CaptureImageSrc) || CaptureImageSrc == DefaultImageSrc)
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("请抓拍来访者照片.");
+                }
+                else
+                {
+                    logger.Info("请抓拍来访者照片.");
+                }
+                return false;
+
+            }
+
+            if (WaitVisitors.ToList().Find(t => t.Vt_identify_no == CardId) != null)
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("相同证件号码不能添加两次.");
+                }
+                else
+                {
+                    logger.Info("相同证件号码不能添加两次.");
+                }
+                return false;
+            }
+            if (WaitVisitors.ToList().Find(t => t.Tmpcard_no == PassCardId) != null)
+            {
+                MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
+                return false;
+
+            }
+
+            if (DeleteSelectedNodeBtnVis == Visibility.Collapsed)
+            {
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("请选择被访人员.");
+                }
+                else
+                {
+                    logger.Info("请选择被访人员.");
+                }
+                return false;
+            }
+
 
             Visitor visitor = this.TemporaryVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId);
             if (visitor != null)
@@ -763,24 +969,41 @@ namespace VisitorManager.ViewModel
                 Vt_imgurl = CaptureImageSrc,
                 Vt_name = VisitorName,
                 Vt_sex = GenderStr,
-                Vt_visit_department_id = CurrentNode.ParentID,
-                Vt_visit_employee_id = CurrentNode.ID,
+                Vt_visit_department_id = NodesCollection[NodesCollection.Index].ID,
+                Vt_visit_employee_id = NodesCollection.Childrens[NodesCollection.IndexForChilds].ID,
                 Vt_in_time = DateTime.Now.Ticks,
                 Tmpcard_no = PassCardId,
             };
 
             WaitVisitors.Add(visitor);
-
-            NotifyChange("EnableSubmit");
-
             Reset(false);
+            return true;
         }
+
 
         private void SaveTempCommand(object arg)
         {
             if (string.IsNullOrEmpty(CardId))
             {
                 var result = MsgBox.Show("证件号码不能为空.", "提示", MessageBoxButton.OK);
+                return;
+            }
+
+            //if (string.IsNullOrEmpty(PassCardId))
+            //{
+            //    var result = MsgBox.Show("临时卡不能为空.", "提示", MessageBoxButton.OK);
+            //    return;
+            //}
+
+            if (string.IsNullOrEmpty(CaptureImageSrc))
+            {
+                var result = MsgBox.Show("请抓拍来访者照片.", "提示", MessageBoxButton.OK);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(PassCardId) && TemporaryVisitors.FirstOrDefault(v => v.Tmpcard_no == PassCardId) != null)
+            {
+                var result = MsgBox.Show("临时卡已被使用,不可暂存.", "提示", MessageBoxButton.OK);
                 return;
             }
 
@@ -808,23 +1031,23 @@ namespace VisitorManager.ViewModel
                 Vt_sex = GenderStr,
             };
 
-            if (CurrentNode != null)
+            if (DeleteSelectedNodeBtnVis == Visibility.Visible)
             {
-                if (CurrentNode.Type == 0)
-                {
-                    visitor.Vt_visit_department_id = CurrentNode.ID;
-                }
-                if (CurrentNode.Type == 1)
-                {
-                    visitor.Vt_visit_department_id = CurrentNode.ParentID;
-                    visitor.Vt_visit_employee_id = CurrentNode.ID;
-                }
+                visitor.Vt_visit_department_id = NodesCollection[NodesCollection.Index].ID;
+                visitor.Vt_visit_employee_id = NodesCollection.Childrens[NodesCollection.IndexForChilds].ID;
             }
+
             TemporaryVisitors.Add(visitor);
+
+            Reset(false);
         }
 
         private void SubmitCommand(object arg)
         {
+            bool f = AddUserEx();
+
+            if (WaitVisitors.Count <= 0) return;
+
             //如果存在来访单号，合并
             string id = string.IsNullOrEmpty(VisitinglistId) ? GetNewVisitingListID() : VisitinglistId;
             foreach (var v in WaitVisitors)
@@ -871,21 +1094,91 @@ namespace VisitorManager.ViewModel
                 MsgBox.Show("提交访问者到服务失败.", "提示", MessageBoxButton.OK);
                 return;
             }
-            Reset();
-            ObjectStr = "";
+            if (f)
+            {
+                Reset();
+                ObjectStr = "";
+            }
+            else
+            {
+                WaitVisitors.Clear();
+            }
+            ClearVisitingId();
+            DeleteSelectedNodeCommand(null);
         }
 
         private void DeleteSelectedNodeCommand(object arg)
         {
-            CurrentNode = null;
+            //CurrentNode = null;
             DeleteSelectedNodeBtnVis = Visibility.Collapsed;
         }
 
+        private void ResetTreeView()
+        {
+            for (int i = 0; i < SrcItems.Count; i++)
+            {
+                SrcItems[i].IsShowShort = false;
+            }
+        }
+
+        private void ComboboxSelectedCommand(object arg)
+        {
+
+        }
+
+        private void ShortWayCommand(object arg)
+        {
+            TreeNode tn = arg as TreeNode;
+
+            if (tn != null && tn.Tag != null)
+            {
+                ResetTreeView();
+                if (tn.Type == 1)
+                {
+                    tn.IsShowShort = IsOpenShortWay;
+                    // Console.WriteLine(tn.Name + IsOpenShortWay);
+                }
+                CurrentNode = tn;
+                DeleteSelectedNodeBtnVis = Visibility.Visible;
+
+                Employee emp = tn.Tag as Employee;
+
+                if (emp != null)
+                {
+                    CardIdType = 1;
+                    CardId = emp.Card_no;
+                    VisitorName = emp.Emp_name;
+                    CardImgPath = emp.Emp_imgurl;
+
+                    if (string.IsNullOrWhiteSpace(CardImgPath))
+                    {
+                        LoadFailVis = Visibility.Visible;
+                    }
+                    else
+                    {
+                        LoadFailVis = Visibility.Collapsed;
+                    }
+                    Gender = emp.Emp_sex == "男";
+                }
+            }
+        }
+
+
         private void SelectedTreeNodeCommand(object arg)
         {
+
+
             TreeNode tn = arg as TreeNode;
             if (tn != null)
             {
+                ResetTreeView();
+                if (tn.Type == 1)
+                {
+                    tn.IsShowShort = IsOpenShortWay;
+                    // Console.WriteLine(tn.Name + IsOpenShortWay);
+                }
+
+                if (IsOpenShortWay) return;
                 CurrentNode = tn;
                 DeleteSelectedNodeBtnVis = Visibility.Visible;
             }
@@ -906,7 +1199,9 @@ namespace VisitorManager.ViewModel
             PassCardId = "";
             CardImgPath = "";
             CaptureImageSrc = "";
+            LoadFailVis = Visibility.Collapsed;
 
+            RecentlyVisitors.Clear();
             //刷新guid，重新生成来访单号
             if (force)
             {

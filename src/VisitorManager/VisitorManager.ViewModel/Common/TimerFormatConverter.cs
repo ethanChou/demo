@@ -11,8 +11,8 @@ namespace VisitorManager.ViewModel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            DateTime dt = new DateTime((long)(value)); 
-
+            DateTime dt = new DateTime((long)(value));
+            if (dt == DateTime.MinValue) return "";
             return dt.ToString("yyyy-MM-dd HH:mm:ss");
         }
 

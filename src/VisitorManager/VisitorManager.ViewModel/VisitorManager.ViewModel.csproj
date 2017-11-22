@@ -116,9 +116,11 @@
     <Compile Include="Base\IDispatcher.cs" />
     <Compile Include="Base\KeyValueConfig.cs" />
     <Compile Include="Common\Comparable.cs" />
+    <Compile Include="Common\StatusToColorConverter.cs" />
     <Compile Include="Common\VisitorFreshCardMessage.cs" />
     <Compile Include="Common\TreeNode.cs" />
     <Compile Include="Common\MySqlHelper.cs" />
+    <Compile Include="Common\VisitorStatusToVisibilityConverter.cs" />
     <Compile Include="Manage\ThriftLocalProxy.cs" />
     <Compile Include="Common\IDConverter.cs" />
     <Compile Include="Common\ImageListBoxItemHeightConvert.cs" />

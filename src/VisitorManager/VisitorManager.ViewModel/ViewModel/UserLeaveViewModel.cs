@@ -48,6 +48,17 @@ namespace VisitorManager.ViewModel
                     isChecked = value;
                 }
             }
+
+            public bool IsEnable
+            {
+                get { return _isEnable; }
+                set
+                {
+                    _isEnable = value;
+                }
+            }
+
+            private bool _isEnable = false;
         }
         public static Visitor Visitor { get; set; }
 
@@ -55,7 +66,7 @@ namespace VisitorManager.ViewModel
 
         private static string DefaultImageSrc = AppDomain.CurrentDomain.BaseDirectory + "Image\\Msg\\TransparentImg.png";
         private ICommand _leaveCmd;
-
+        private ICommand _cancleCmd;
         public UserLeaveViewModel()
             : this(null)
         { }
@@ -93,6 +104,21 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        public ICommand CancleCmd
+        {
+            get { return _cancleCmd ?? (_cancleCmd = new DelegateCommand(CancleCommand)); }
+        }
+
+        public Visibility ShowLostCardBtnVis
+        {
+            get { return _showLostCardBtnVis; }
+            set
+            {
+                _showLostCardBtnVis = value;
+                NotifyChange("ShowLostCardBtnVis");
+            }
+        }
+
 
         private void UpdateVisitor(Visitor v)
         {
@@ -115,6 +141,12 @@ namespace VisitorManager.ViewModel
             NotifyChange("Emploayee");
             NotifyChange("HappenTime");
             NotifyChange("VisitinglistId");
+        }
+
+        private void CancleCommand(object arg)
+        {
+            Reset();
+            MainWindowViewModel.Singleton.TabCmd.Execute(0);
         }
 
         private void LeaveCommand(object arg)
@@ -151,7 +183,6 @@ namespace VisitorManager.ViewModel
                 UserVisitingViewModel.Single.UpdateData();
 
                 MainWindowViewModel.Singleton.TabCmd.Execute(0);
-
             }
         }
 
@@ -166,7 +197,7 @@ namespace VisitorManager.ViewModel
             HappenTime = "";
             VisitinglistId = "";
             ObjectStr = "";
-
+            FellowVisitors.Clear();
             NotifyChange("CaptureImage");
             NotifyChange("CardImage");
             NotifyChange("UserName");
@@ -176,8 +207,11 @@ namespace VisitorManager.ViewModel
             NotifyChange("HappenTime");
             NotifyChange("VisitinglistId");
             NotifyChange("ObjectStr");
+            NotifyChange("ShowLostCardBtnVis");
 
         }
+
+        private Visibility _showLostCardBtnVis = Visibility.Collapsed;
 
         /// <summary>
         /// 正在访问用户离开
@@ -187,7 +221,8 @@ namespace VisitorManager.ViewModel
         {
             if (!MainVM.MainWindow.Dispatcher.CheckAccess())
             {
-                MainVM.MainWindow.Dispatcher.Invoke(new Action(()=> {
+                MainVM.MainWindow.Dispatcher.Invoke(new Action(() =>
+                {
                     VisitorLeave(v);
                 }));
                 return;
@@ -199,8 +234,6 @@ namespace VisitorManager.ViewModel
 
                 var res = ThriftManager.GetVisitorLists(v.Vt_vl_id, 0, 0);
 
-             
-
                 if (res.Count > 0)
                     ObjectStr = res[0].Vl_carryThings;
                 NotifyChange("ObjectStr");
@@ -211,7 +244,12 @@ namespace VisitorManager.ViewModel
                 list.ForEach(t =>
                 {
                     var vex = new VisitorEx(t);
-                    vex.IsChecked = t.Vt_id == v.Vt_id;
+                    
+                    if (t.Vt_id == v.Vt_id && (v.Vt_status == Status.Visiting||v.Vt_status== Status.LostCard))
+                    {
+                        vex.IsChecked = t.Vt_id == v.Vt_id;
+                        vex.IsEnable = true;
+                    }
 
                     FellowVisitors.Add(vex);
                 });
