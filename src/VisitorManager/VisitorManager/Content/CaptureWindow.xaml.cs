@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using Microsoft.Win32;
 using WPF.Extend;
 using PixelFormat = System.Windows.Media.PixelFormat;
 using Rectangle = System.Windows.Shapes.Rectangle;
@@ -31,7 +32,7 @@ namespace VisitorManager.Content
     {
         private Visibility _defaultVis = Visibility.Visible;
         private Bitmap _currentImage;
-
+        private ICommand _addFileCmd;
         private WriteableBitmapSource _wbSource;
         private DispatcherTimer _drawTimer;
         private FilterInfoCollection _videoDevices;
@@ -41,9 +42,17 @@ namespace VisitorManager.Content
         public CaptureWindow()
         {
             InitializeComponent();
+
+            if (LocalConfig.IsAddLocalFile)
+            {
+                addLocalFile.Visibility = System.Windows.Visibility.Visible;
+            }
+
             this.Loaded += CaptureWindow_Loaded;
             this.DataContext = this;
         }
+
+        private bool _isEnabledButton = false;
 
         private void CaptureWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -77,11 +86,13 @@ namespace VisitorManager.Content
                     _videoSource.VideoSourceError += _videoSource_VideoSourceError;
                     _videoSource.Start();
                     _drawTimer.Start();
+                    IsEnabledButton = true;
                 }
-
                 else
                 {
-                    MsgBox.Show("未发现摄像头.");
+                    this.Title += "-未发现摄像头";
+                    IsChecked = false;
+
                 }
             }
             catch (Exception ex)
@@ -96,10 +107,11 @@ namespace VisitorManager.Content
 
             lock (_lock)
             {
-
                 if (IsChecked) IsChecked = false;
                 BitmapData data = _currentImage.LockBits(new System.Drawing.Rectangle(0, 0, _currentImage.Width, _currentImage.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                this._wbSource.Render(data.Scan0);
+
+                if (_wbSource != null)
+                    this._wbSource.Render(data.Scan0);
                 _currentImage.UnlockBits(data);
             }
         }
@@ -161,6 +173,11 @@ namespace VisitorManager.Content
             get { return _confirmCmd ?? (_confirmCmd = new DelegateCommand(ConfirmCommand)); }
         }
 
+        public ICommand AddFileCmd
+        {
+            get { return _addFileCmd ?? (_addFileCmd = new DelegateCommand(AddFileCommand)); }
+        }
+
         public Bitmap CurrentImage
         {
             get { return _currentImage; }
@@ -190,15 +207,38 @@ namespace VisitorManager.Content
             { }
         }
 
+        private void AddFileCommand(object arg)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "JPEG | *.jpg|PNG |*.png|BMP |*.bmp";
+            if (dialog.ShowDialog() == true)
+            {
+                System.Drawing.Bitmap image = (Bitmap)PicUtil.GetImage(dialog.FileName);
+                var bit = PicUtil.MakeThumbnail(image, 160, 0);
+                lock (_lock)
+                {
+                    _currentImage = image;
+                }
+                videoShow.Source = new BitmapImage(new Uri(dialog.FileName));
+            }
+        }
+
         private string _captureImageSrc = "";
+
         private void CaptureCommand(object arg)
         {
-            _drawTimer.Stop();
+            if (IsEnabledButton)
+            {
+                _drawTimer.Stop();
+            }
         }
 
         private void ReCaptureCommand(object arg)
         {
-            _drawTimer.Start();
+            if (IsEnabledButton)
+            {
+                _drawTimer.Start();
+            }
         }
 
         private void CloseCommand(object arg)
@@ -264,6 +304,9 @@ namespace VisitorManager.Content
             get { return CaptureImageSrc; }
         }
 
+        /// <summary>
+        /// wait splash
+        /// </summary>
         public bool IsChecked
         {
             get { return _isChecked; }
@@ -273,6 +316,18 @@ namespace VisitorManager.Content
                 NotifyChange("IsChecked");
             }
         }
+
+        public bool IsEnabledButton
+        {
+            get { return _isEnabledButton; }
+            set
+            {
+                _isEnabledButton = value;
+                NotifyChange("IsEnabledButton");
+
+            }
+        }
+
         #endregion
     }
 }

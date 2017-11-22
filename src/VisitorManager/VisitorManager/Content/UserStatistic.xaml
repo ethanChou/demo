@@ -40,9 +40,9 @@
 
                 <Button Command="{Binding StartCmd}"  Height="30" Width="100" Margin="15,0,15,0">
                     <Button.Content>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,0">
                             <Image Source="../Image/Statis.png" Height="20" Margin="0"></Image>
-                            <TextBlock Text="统计" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                            <TextBlock Text="统计" Foreground="White" Margin="8,0,8,0"  VerticalAlignment="Center" ></TextBlock>
                         </StackPanel>
                     </Button.Content>
                 </Button>

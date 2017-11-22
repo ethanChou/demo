@@ -28,8 +28,8 @@
                 <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Text="来访者照片" FontWeight="Bold" FontSize="14"></TextBlock>
-            <Border  Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,5,2,0" >
+            <TextBlock Text="来访者照片" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
+            <Border  Grid.Row="1" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="5,0,2,0" >
                 <Grid Background="{StaticResource FaceRectBrush}">
                     <Image Source="{Binding CaptureImage,Mode=TwoWay}" Margin="3"></Image>
                 </Grid>
@@ -42,12 +42,12 @@
                 <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="证件照" FontWeight="Bold" FontSize="14"></TextBlock>
+            <TextBlock Grid.Row="0" Text="证件照" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
             <Border Grid.Row="1"  
                     CornerRadius="3" 
                     BorderThickness="1" 
                     BorderBrush="{DynamicResource BorderColor}" 
-                    Margin="1,5,2,0" 
+                    Margin="5,0,2,0" 
                     >
                 <Grid Background="{StaticResource FaceRectBrush}">
                     <Image Source="{Binding CardImage,Mode=TwoWay}" Margin="3"></Image>
@@ -60,8 +60,8 @@
                 <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="来访信息" FontWeight="Bold" FontSize="14"></TextBlock>
-            <Border Grid.Row="1" Margin="0,0,2,0" CornerRadius="3"  BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+            <TextBlock Grid.Row="0" Text="来访信息" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
+            <Border Grid.Row="1" Margin="5,0,5,0" CornerRadius="3"  BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -105,7 +105,7 @@
         </Grid>
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Command="{Binding LeaveCmd}" CommandParameter="0" Height="28" Width="120" Margin="10,0,10,0">
+                <Button Command="{Binding LeaveCmd}" CommandParameter="0" Height="28" Width="100" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" >
                             <Image Source="../Image/ExitBtn.png" Height="20" Margin="0"></Image>
@@ -113,12 +113,28 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <Button Command="{Binding LeaveCmd}" CommandParameter="1" Height="28" Width="120" Margin="10,0,10,0">
+                <Button Command="{Binding LeaveCmd}" Visibility="{Binding ShowLostCardBtnVis,Mode=TwoWay}" CommandParameter="1" Height="28" Width="100" Margin="10,0,10,0">
                     <Button.Content>
-                        <StackPanel Orientation="Horizontal" >
-                            <Image Source="../Image/ExitBtn.png" Height="20" Margin="0"></Image>
-                            <TextBlock Text="卡丢失离开" Margin="2,2" Foreground="White" VerticalAlignment="Center"></TextBlock>
-                        </StackPanel>
+                        <Grid  >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0" Stretch="Fill" Fill="White" Data="M871.476476 804.401415C832.043914 845.307025 785.812646 877.487616 733.915778 900.036692 680.205919 923.378952 623.0967 935.163394 563.947868 935.163394 449.956057 935.163394 342.762962 890.745113 262.198173 810.180324 181.520071 729.615535 137.215103 622.42244 137.215103 508.430628 137.215103 394.438817 181.633383 287.245722 262.198173 206.68093 342.762962 126.116147 449.956057 81.697863 563.947868 81.697863 677.93968 81.697863 785.132775 126.116147 865.697564 206.68093 881.674547 222.657914 907.509673 222.657914 923.37334 206.68093 939.350323 190.703947 939.350323 164.868829 923.37334 149.005154 876.802135 102.207323 822.412406 65.60757 761.903827 39.999071 699.242324 13.484071 632.614903-4.7e-05 563.947868-4.7e-05 495.280833-4.7e-05 428.766724 13.484071 366.105221 39.999071 305.596645 65.60757 251.206914 102.207323 204.522395 148.891845 157.837876 195.576359 121.238119 249.966093 95.629621 310.474669 69.001315 373.249484 55.630506 439.763593 55.630506 508.430628 55.630506 577.097663 69.114627 643.611772 95.629621 706.386587 121.238119 766.895163 157.837876 821.284894 204.522395 867.969413 251.206914 914.653932 305.596645 951.253689 366.105221 976.862187 428.766724 1003.377181 495.394145 1016.861302 564.06118 1016.861302 634.427895 1016.861302 702.52837 1002.810622 766.549617 974.935884 828.30462 948.080955 883.487539 909.781519 930.398681 861.057385 946.035728 844.853777 945.582482 819.018655 929.265562 803.381607 912.948641 787.74456 887.113523 788.197808 871.476476 804.401415L871.476476 804.401415ZM1079.630509 509.67706C1079.403882 501.065352 1076.457771 492.566957 1071.018795 485.541616L947.84872 328.377956C933.911355 310.701293 908.302856 307.528559 890.62619 321.465928 872.949532 335.403296 869.776794 361.011795 883.714166 378.688457L954.98737 469.904569 492.674658 469.904569C470.125582 469.904569 451.88236 488.147791 451.88236 510.696867L451.88236 510.923491 451.88236 511.150115C451.88236 533.699191 470.125582 551.942413 492.674658 551.942413L954.98737 551.942413 883.600849 643.045213C869.663484 660.721875 872.836214 686.443685 890.51288 700.267742 897.991467 706.159963 906.8298 708.992762 915.668126 708.992762 927.792506 708.992762 939.803569 703.667101 947.84872 693.355714L1071.018795 536.192054C1076.571081 529.166713 1079.403882 520.668318 1079.630509 512.056611L1079.630509 510.810179C1079.630509 510.470243 1079.630509 510.130308 1079.630509 509.67706L1079.630509 509.67706Z" Width="20" Height="20" Margin="0"></Path>
+                            <TextBlock Grid.Column="1" Text="卡丢失离开" Margin="2,2" Foreground="White" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding CancleCmd}" CommandParameter="1" Height="28" Width="100" Margin="10,0,10,0">
+                    <Button.Content>
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0" Stretch="Fill" Fill="White" Data="M599.474772 0.692778l0 169.805384c-68.830645 0-496.217549 3.481288-496.217549 418.34497 0 223.336578 160.561859 405.962965 368.19785 435.156868-129.228223-27.421536-226.450499-145.967466-226.450499-288.116977 0-271.375687 254.570953-273.686313 354.470197-273.686313L599.474772 661.659555l330.031599-329.22728L599.474772 0.692778z" Width="18" Height="18" Margin="0"></Path>
+                            <TextBlock Grid.Column="1" Text="取消" Margin="8,0,8,0" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
                     </Button.Content>
                 </Button>
             </StackPanel>
@@ -130,7 +146,7 @@
                 <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Text="来访者列表" FontWeight="Bold" FontSize="14"></TextBlock>
+            <TextBlock Text="来访者列表" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"></TextBlock>
             <Border Grid.Row="1"  CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" Margin="5" BorderThickness="1">
                 <DataGrid x:Name="dg"
                           HeadersVisibility="Column"
@@ -153,7 +169,7 @@
                         <DataGridTemplateColumn Header="选择" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox Style="{StaticResource SimpleCheckBoxStyle}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" IsEnabled="{Binding Vt_status,Converter={StaticResource VisitorStatusToEnableConverter}}" >
+                                    <CheckBox  Style="{StaticResource SimpleCheckBoxStyle}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" IsEnabled="{Binding IsEnable}" >
                                         <!--<behaviors:CommandBehaviorCollection.Behaviors>
 
                                             <behaviors:BehaviorBinding Event="Checked" Command="vm:UserLeaveCommands.CheckedCmd" CommandParameter="{Binding .}"/>

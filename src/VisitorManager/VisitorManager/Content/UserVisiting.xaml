@@ -14,13 +14,17 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="60,15,60,5" >
+        <Grid Grid.Row="0" Margin="80,10,80,5" >
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" CornerRadius="0"  Width="500" Height="40" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="200"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Row="0" Grid.ColumnSpan="2" CornerRadius="0"  Width="500" Height="40" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
                     <Grid  >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
@@ -34,29 +38,35 @@
                         </Button>
                     </Grid>
                 </Border>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <mbexd:SimpleRadioButton Content="正在访问" IsChecked="True" Margin="5,0,5,0">
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <mbexd:SimpleRadioButton Content="正在访问" Background="#ffa100"  IsChecked="True" Margin="5,0,5,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding StatusCmd}" CommandParameter="1"></i:InvokeCommandAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </mbexd:SimpleRadioButton>
-                    <mbexd:SimpleRadioButton Content="已经离开" Margin="5,0,5,0">
+                    <mbexd:SimpleRadioButton Content="已经离开" Background="#ffa100" Margin="5,0,5,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding StatusCmd}" CommandParameter="2"></i:InvokeCommandAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </mbexd:SimpleRadioButton>
-                    <mbexd:SimpleRadioButton Content="所有记录" Margin="5,0,5,0">
+                    <mbexd:SimpleRadioButton Content="所有记录" Background="#ffa100"  Margin="5,0,5,0">
+                        <mbexd:SimpleRadioButton.ContextMenu>
+                            <ContextMenu >
+                                <MenuItem Header="近一周"></MenuItem>
+                                <MenuItem Header="近一个月"></MenuItem>
+                            </ContextMenu>
+                        </mbexd:SimpleRadioButton.ContextMenu>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding StatusCmd}" CommandParameter="0"></i:InvokeCommandAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </mbexd:SimpleRadioButton>
-                    <mbexd:SimpleRadioButton Content="卡丢失" Margin="5,0,5,0">
+                    <mbexd:SimpleRadioButton Content="卡丢失" Background="#ffa100"  Margin="5,0,5,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding StatusCmd}" CommandParameter="4"></i:InvokeCommandAction>
@@ -64,27 +74,31 @@
                         </i:Interaction.Triggers>
                     </mbexd:SimpleRadioButton>
                 </StackPanel>
+                <ComboBox Grid.Row="1" Focusable="False" Grid.Column="1" Margin="0,0,26,0" Background="Transparent" Width="70" Height="20" SelectedIndex="{Binding SearchTimeIndex,Mode=TwoWay}" HorizontalAlignment="Right">
+                    <ComboBoxItem>当天</ComboBoxItem>
+                    <ComboBoxItem>近三天</ComboBoxItem>
+                    <ComboBoxItem>近一周</ComboBoxItem>
+                </ComboBox>
             </Grid>
         </Grid>
 
-        <content:ImageListBox  Margin="80,5,80,5" Grid.Row="1" ImageItemTemplate="{DynamicResource VisitingDisplayItemTemplate}" ItemsSource="{Binding Visistors}"></content:ImageListBox>
+        <content:ImageListBox  Margin="80,0,80,5" Grid.Row="1" ImageItemTemplate="{DynamicResource VisitingDisplayItemTemplate}" ItemsSource="{Binding Visistors}"></content:ImageListBox>
 
         <Grid Grid.Row="2" Background="#212121" Opacity="0.8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"></ColumnDefinition>
-                <ColumnDefinition Width="50"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="300"></ColumnDefinition>
+
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="80"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="正在访问人数：" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="查询记录" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="10,0,10,0" HorizontalAlignment="Center" Text="{Binding CurrentVisitors,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+                <TextBlock HorizontalAlignment="Center" Margin="0,0,0,0" Text="条" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
 
-            <Rectangle Grid.Column="1" Fill="#fFa927"  Height="30">
-
-            </Rectangle>
-            <TextBlock Foreground="#ffffff" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding CurrentVisitors,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
-            <TextBlock x:Name="Version" Grid.Column="4" Text="V2.0.0.0" FontSize="16" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor}" ></TextBlock>
+            </StackPanel>
+            <TextBlock x:Name="Version" Grid.Column="2" Text="{Binding Version}" FontSize="16" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor}" ></TextBlock>
         </Grid>
     </Grid>
 </UserControl>

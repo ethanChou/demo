@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="VisitorManager.Content.Splash"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisitorManager.Content"
+             xmlns:cmbexd="http://complex.wpfextend.com/"
+             mc:Ignorable="d" 
+             d:DesignHeight="215.832" d:DesignWidth="563.327">
+    <Grid >
+        <Grid.Background>
+            <ImageBrush ImageSource="{StaticResource backImg}"></ImageBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <cmbexd:ProgressRing Grid.Row="1"  Width="100" Foreground="#ffa000" Margin="5"  IsActive="True" />
+            <!--<TextBlock Grid.Row="1" TextAlignment="Center"  VerticalAlignment="Center" FontSize="30" FontWeight="Bold" Text="{Binding Percent,Mode=OneWay }"></TextBlock>-->
+            <TextBlock Grid.Row="2" FontSize="22" VerticalAlignment="Center" TextAlignment="Center" Text="正在检测程序运行环境"></TextBlock>
+
+            <TextBlock Grid.Row="3" Foreground="Red" FontSize="18" VerticalAlignment="Center" TextAlignment="Center" Text="{Binding DetectText,Mode=TwoWay}"></TextBlock>
+
+        </Grid>
+        <ProgressBar VerticalAlignment="Bottom" Maximum="100" Grid.ColumnSpan="3" Margin="0" Value="{Binding Percent,Mode=OneWay}" Style="{StaticResource SimpleProgressBar}" x:Name="pro4"></ProgressBar>
+    </Grid>
+</UserControl>

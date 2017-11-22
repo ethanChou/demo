@@ -25,7 +25,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="210"></ColumnDefinition>
                 <ColumnDefinition Width="450*"></ColumnDefinition>
-                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition Width="450*"></ColumnDefinition>
                 <ColumnDefinition Width="160*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -47,7 +47,7 @@
                         <Border Grid.Row="1" Margin="5,3,3,0" Height="25" VerticalAlignment="Center" BorderThickness="1" Background="#2b2b2b"  BorderBrush="#343434">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock  VerticalAlignment="Center" Width="65" Foreground="#787878" Text="当前选择"/>
-                                <TextBlock  VerticalAlignment="Center" Visibility="{Binding DeleteSelectedNodeBtnVis,Mode=TwoWay}"  Text="{Binding CurrentNode,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                <TextBlock  VerticalAlignment="Center" Visibility="{Binding DeleteSelectedNodeBtnVis,Mode=TwoWay}"  Text="{Binding Text,ElementName=cboVistor}">
 
                                 </TextBlock>
                                 <mbexd:SimpleButton Command="{Binding DeleteSelectedNodeCmd}" Visibility="{Binding DeleteSelectedNodeBtnVis,Mode=TwoWay}" 
@@ -65,7 +65,7 @@
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="被访单位" Foreground="#787878" VerticalAlignment="Center" Margin="2,0,2,0"></TextBlock>
-                                <ComboBox Grid.Column="1" Width="130" Height="25"  Margin="0,0,5,0" ItemsSource="{Binding NodesCollection}" SelectedIndex="{Binding NodesCollection.Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MaxDropDownHeight="150"></ComboBox>
+                                <ComboBox IsEnabled="{Binding IsOpenShortWay,Mode=TwoWay,Converter={StaticResource InverseBooleanConverter},ConverterParameter=inverse}" Grid.Column="1" Width="130" Height="25"  Margin="0,0,5,0" ItemsSource="{Binding NodesCollection}" SelectedIndex="{Binding NodesCollection.Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MaxDropDownHeight="150"></ComboBox>
                             </Grid>
                         </Border>
 
@@ -76,7 +76,9 @@
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="被访人员" Foreground="#787878" VerticalAlignment="Center" Margin="2,0,2,0"></TextBlock>
-                                <ComboBox Grid.Column="1" Width="130" SelectedValue="{Binding CurrentNodeCbx,Mode=OneWayToSource}" Height="25" Margin="0,0,5,0"  ItemsSource="{Binding NodesCollection.Childrens,Mode=OneWay}" SelectedIndex="{Binding NodesCollection.IndexForChilds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>
+                                <ComboBox IsEnabled="{Binding IsOpenShortWay,Mode=TwoWay,Converter={StaticResource InverseBooleanConverter},ConverterParameter=inverse}" x:Name="cboVistor" Grid.Column="1" Width="130"   Height="25" Margin="0,0,5,0"   ItemsSource="{Binding NodesCollection.Childrens,Mode=OneWay}"  SelectedIndex="{Binding NodesCollection.IndexForChilds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150">
+                                   
+                                </ComboBox>
                             </Grid>
                         </Border>
 
@@ -118,14 +120,17 @@
                                             <Image Source="{StaticResource TreeDepart}" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter}}" Width="16" Height="16" />
                                             <Image Source="{StaticResource TreePerson}" Visibility="{Binding Type,Converter={StaticResource IntToVisibilityConverter},ConverterParameter=inverse}" Width="16" Height="16" />
                                             <TextBlock Text="{Binding Name}"  Margin="3,0,0,0" ToolTip="{Binding Name}" />
-
-                                            <TextBlock Text="{Binding Tag,Converter={StaticResource TelephoneConverter}}" Foreground="Red" Margin="0,0,0,0" ToolTip="{Binding Tag}"/>
-
+                                            <TextBlock Text="{Binding Telephone}" Foreground="Red" Margin="0,0,0,0" />
+                                            <Button Command="{x:Static vm:UserRegisterCommands.ShortWayCmd}" CommandParameter="{Binding .}" Visibility="{Binding IsShowShort,Mode=TwoWay,Converter={StaticResource BooleanToVisibilityConverter}}"  Width="18" ToolTip="设置为来访人" Height="16" Margin="4,0,0,0" Background="Transparent">
+                                                <Button.Content>
+                                                    <Path Stretch="Fill" Fill="#ffa000" Data="M774.041088 218.48713l-29.268604 29.268604 64.442708 64.443731 29.269627-29.268604c9.628288-9.628288 9.628288-25.238824 0-34.866089l-29.576619-29.576619c-9.628288-9.629311-25.238824-9.629311-34.867112-0.001023zM614.888322 777.335111H223.862557V376.845811h139.179876V246.62191h251.845889v102.057397l45.567825-45.567825v-77.574796c0-13.520945-10.960633-24.481577-24.481578-24.481577H348.157421a40.694841 40.694841 0 0 0-28.77537 11.91947L190.213179 342.142427a40.694841 40.694841 0 0 0-11.91947 28.775371v427.50356c0 13.520945 10.960633 24.481577 24.481577 24.481578h433.19826c13.520945 0 24.481577-10.960633 24.481577-24.481578V489.919099l-45.567825 45.567825v241.848187zM394.787438 597.741803l-56.821123 121.264854 121.263831-56.821123L794.734386 326.680271l-64.442708-64.443731-335.50424 335.505263z m43.441395 14.479783l-14.480806-14.480806 306.543651-306.543652 14.480806 14.480806-306.543651 306.543652z" ></Path>
+                                                </Button.Content>
+                                            </Button>
                                         </StackPanel>
                                     </HierarchicalDataTemplate>
                                 </Grid.Resources>
                                 <Border BorderThickness="1" Margin="5,5,5,0" BorderBrush="#343434">
-                                    <TreeView Name="TreeView" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding Items,Mode=TwoWay}" Tag="{Binding SrcItems}"  Background="Transparent">
+                                    <TreeView Name="TreeView" Focusable="False"  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding Items,Mode=TwoWay}" Tag="{Binding SrcItems}"  Background="Transparent">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="SelectedItemChanged">
                                                 <i:InvokeCommandAction Command="{Binding SelectedTreeNodeCmd}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TreeView}}, Path=SelectedValue}"/>
@@ -151,11 +156,22 @@
                     <Grid Background="{StaticResource FaceRectBrush}">
 
                         <!--<Image Margin="3" Source="http://192.168.0.17:6551/DownLoadFile?filename=LOC:03/data/20171026/13/9e78617bdab326e0c47771380a821ca2_1" ></Image>-->
-                        <Image Margin="3" Source="{Binding CardImgPath,Mode=TwoWay}"  Stretch="Uniform"></Image>
+                        <Image Margin="6" Source="{Binding CardImgPath,Mode=TwoWay}"  Stretch="Uniform"></Image>
+                   
+                        <Grid  Visibility="{Binding LoadFailVis,Mode=TwoWay}" Margin="0,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Image Width="220" Source="{StaticResource LoadFail}" Stretch="Uniform">
+                               
+                            </Image>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="图片加载失败" FontSize="17" FontFamily="{DynamicResource  DefaultFontFamily}" Foreground="Red"></TextBlock>
+                        </Grid>
                     </Grid>
                 </Border>
 
-                <Border Grid.Row="2" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                <Border Grid.Row="2" Margin="0,0,2,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="18"></RowDefinition>
@@ -171,9 +187,9 @@
                                     <ColumnDefinition Width="80"></ColumnDefinition>
                                     <ColumnDefinition Width="*" ></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="姓名" Margin="5,0,0,0"  Foreground="#787878"  VerticalAlignment="Center"></TextBlock>
+                                <TextBlock  Text="姓名" Margin="5,0,0,0"  Foreground="#787878"  VerticalAlignment="Center"></TextBlock>
                                 <Grid Grid.Column="1" x:Name="gdName" Margin="2,0,2,0">
-                                    <TextBox Width="{Binding ActualWidth,ElementName=gdName}" VerticalContentAlignment="Center" Height="25" Text="{Binding VisitorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                    <TextBox IsReadOnly="True" Width="{Binding ActualWidth,ElementName=gdName}" VerticalContentAlignment="Center" Height="25" Text="{Binding VisitorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                 </Grid>
                             </Grid>
                         </Border>
@@ -188,33 +204,23 @@
                                 <TextBlock Text="证件类型" Margin="5,0,0,0"  Foreground="#787878"   VerticalAlignment="Center"></TextBlock>
                                 <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsIdCardCheck,Mode=TwoWay}">二代身份证</RadioButton>
                                 <RadioButton Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding IsCommonCardCheck,Mode=TwoWay}">正式卡</RadioButton>
-                                <Grid Grid.Column="3">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="60"></ColumnDefinition>
-                                        <ColumnDefinition Width="40"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition ></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="性别" Foreground="#787878" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
-                                    <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
-                                    <RadioButton Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
-                                </Grid>
+                               
                             </Grid>
                         </Border>
-
 
                         <Border Grid.Row="3" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
-                            <Grid VerticalAlignment="Center" Margin="0" >
+                            <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                    <ColumnDefinition Width="90"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="证件号码"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                                <Grid Grid.Column="1" x:Name="gdId" Margin="2,0,2,0">
-                                    <TextBox Width="{Binding ActualWidth,ElementName=gdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding CardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                </Grid>
+                                <TextBlock Grid.Column="0" Text="性别" Foreground="#787878" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
+                                <RadioButton Grid.Column="2"  VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
                             </Grid>
                         </Border>
+
 
                         <Border Grid.Row="4" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
                             <Grid VerticalAlignment="Center" Margin="0" >
@@ -222,12 +228,14 @@
                                     <ColumnDefinition Width="80"></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="通行证编号"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                                <Grid Grid.Column="1" x:Name="tpgdId" Margin="2,0,2,0">
-                                    <TextBox Width="{Binding ActualWidth,ElementName=tpgdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding PassCardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                <TextBlock Grid.Column="0" Text="证件号码"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <Grid Grid.Column="1" x:Name="gdId" Margin="2,0,2,0">
+                                    <TextBox IsReadOnly="True" Width="{Binding ActualWidth,ElementName=gdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding CardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                 </Grid>
                             </Grid>
                         </Border>
+
+                       
 
 
 
@@ -247,7 +255,7 @@
                 <Border Grid.Row="1" BorderBrush="{DynamicResource BorderColor}"  BorderThickness="1" CornerRadius="3" Margin="0,0,2,2">
                     <Grid Margin="0,0,0,0" Background="{StaticResource FaceRectBrush}">
 
-                        <Image x:Name="displayImage" Source="{Binding CaptureImageSrc,Mode=TwoWay}" Margin="3" Stretch="Uniform"></Image>
+                        <Image x:Name="displayImage" Source="{Binding CaptureImageSrc,Mode=TwoWay}" Margin="6" Stretch="Uniform"></Image>
 
                         <mbexd:SimpleButton Command="{Binding CaptureCmd}" 
                                             Width="48" Height="48"
@@ -260,21 +268,35 @@
                     </Grid>
                 </Border>
 
-                <Border Grid.Row="2" Margin="0,0,0,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                <Border Grid.Row="2" Margin="0,0,2,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
 
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="18"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="18"></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="18"></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
+                        <TextBlock Text="通行证" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
 
-                        <TextBlock Text="携带物品" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="0" FontSize="14"></TextBlock>
+                        <Border Grid.Row="1" Margin="0" Height="35"  BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                            <Grid VerticalAlignment="Center" Margin="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="临时卡号"  Foreground="#787878"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <Grid Grid.Column="1" x:Name="tpgdId" Margin="2,0,2,0">
+                                    <TextBox IsReadOnly="True"  Width="{Binding ActualWidth,ElementName=tpgdId}" VerticalContentAlignment="Center"  Height="25" Text="{Binding PassCardId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        
+                        <TextBlock Text="携带物品" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" Grid.Row="2" FontSize="14"></TextBlock>
 
-                        <Border Grid.Row="1" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                        <Border Grid.Row="3" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
                             <Border x:Name="pt" Margin="2,0,2,0" >
                                 <cmbexd:MultiComboBox Height="25" 
                                     Width="{Binding ActualWidth,ElementName=pt}" 
@@ -287,8 +309,8 @@
                             </Border>
                         </Border>
 
-                        <TextBlock Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"  Text="来访单编号" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" FontSize="14"></TextBlock>
-                        <Border Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="3" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
+                        <TextBlock Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="4"  Text="来访单编号" Foreground="#787878" Margin="5,0,5,0" FontWeight="Bold" FontSize="14"></TextBlock>
+                        <Border Visibility="{Binding IsShowVisitinglistId,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="5" Margin="0,0,0,0" Height="35" BorderThickness="1" Background="#2b2b2b" BorderBrush="#343434">
                             <TextBlock VerticalAlignment="Center" Text="{Binding VisitinglistId,Mode=TwoWay}"></TextBlock>
                         </Border>
 
@@ -304,7 +326,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Text="来访者信息" Foreground="#787878" FontWeight="Bold" FontSize="14" Grid.Row="0" ></TextBlock>
-                <Border Grid.Row="1" Margin="0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                <Border Grid.Row="1" Margin="0,0,2,0" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
                     <DataGrid Margin="0" x:Name="list"  
                               HeadersVisibility="Column"
                               ItemsSource="{Binding WaitVisitors}"
@@ -353,7 +375,7 @@
             </Grid>
 
             <!--暂存待办-->
-            <Grid Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Margin="5,0,0,0">
+            <Grid Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Margin="3,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -413,6 +435,9 @@
 
         <!--操作-->
         <Grid Grid.Row="2">
+
+            <CheckBox IsChecked="{Binding IsOpenShortWay,Mode=TwoWay}" Margin="5,0,0,0" Height="30"  Style="{StaticResource SimpleCheckBoxStyle}" Foreground="White" Content="无证办卡" HorizontalAlignment="Left" ></CheckBox>
+
             <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Center">
                 <Button Command="{Binding AddCmd}" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
@@ -430,7 +455,8 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <Button  IsEnabled="{Binding EnableSubmit,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Command="{Binding SubmitCmd}" Height="28" Width="80" Margin="10,0,10,0"  >
+                <!--IsEnabled="{Binding EnableSubmit,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"-->
+                <Button   Command="{Binding SubmitCmd}" Height="28" Width="80" Margin="10,0,10,0"  >
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource SubmitBtn}" Height="18" Margin="0"></Image>
@@ -438,7 +464,7 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <Button Command="{Binding ClearCmd}" Height="28" Width="80" Margin="10,0,10,0">
+                <Button Command="{Binding ClearCmd}" Visibility="Collapsed" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource ClearBtn}" Height="18" Margin="0"></Image>

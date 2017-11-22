@@ -74,9 +74,9 @@
 
             <Button Grid.Row="6" Command="{Binding SearchCmd}"  Height="28" Width="100" Margin="0,5,0,0">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,0">
                         <Image Source="../Image/Find.png" Height="18" Margin="0"></Image>
-                        <TextBlock Text="查找" Foreground="White"  VerticalAlignment="Center" Margin="5,2"></TextBlock>
+                        <TextBlock Text="查找" Foreground="White" Margin="8,0,8,0"   VerticalAlignment="Center" ></TextBlock>
                     </StackPanel>
                 </Button.Content>
             </Button>
@@ -121,7 +121,7 @@
                                                                 Hover="{DynamicResource InfoH}"
                                                                 Pressed="{DynamicResource InfoP}"
                                                                 HorizontalAlignment="Center" Margin="0" CommandParameter="{Binding .}" 
-                                                                Command="vm:UserSearchCommands.ViewCmd" Width="25" Height="25"
+                                                                Command="vm:UserSearchCommands.ViewCmd" Width="21" Height="21"
                                                                 ToolTip="详情"
                                                                 ></mbexd:SimpleButton>
                                     </Grid>
@@ -134,11 +134,11 @@
         </Grid>
 
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Command="{Binding ExportCmd}" Height="30" Width="80" Margin="10,0,10,0" >
+            <Button Command="{Binding ExportCmd}" Height="30" Width="100" Margin="10,0,10,0" >
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,3,0,0">
                         <Image Source="../Image/Export.png" Height="18" VerticalAlignment="Center" ></Image>
-                        <TextBlock Text="导出" Foreground="White" TextAlignment="Center"  VerticalAlignment="Center" ></TextBlock>
+                        <TextBlock Text="导出" Foreground="White" Margin="8,0,8,0" TextAlignment="Center"  VerticalAlignment="Center" ></TextBlock>
                     </StackPanel>
                 </Button.Content>
             </Button>
