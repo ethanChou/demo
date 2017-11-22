@@ -5,7 +5,11 @@
 
     <ImageBrush x:Key="PressRadioButtonBrush" ImageSource="/VisitorManager;component/Image/Tab.png"></ImageBrush>
 
-
+    <BitmapImage UriSource="/VisitorManager;component/Image\LoadFail.png"
+                 CreateOptions="IgnoreImageCache"
+                 CacheOption="OnLoad"
+                 x:Key="LoadFail" />
+    
     <BitmapImage UriSource="/VisitorManager;component/Image\Man.png"
                  CreateOptions="IgnoreImageCache"
                  CacheOption="OnLoad"

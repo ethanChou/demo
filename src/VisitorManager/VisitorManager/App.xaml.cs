@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using NLog;
+using VisitorManager.ViewModel;
 
 namespace VisitorManager
 {
@@ -24,10 +25,11 @@ namespace VisitorManager
             ProgramStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "VSManage", out createNew);
             if (!createNew)
             {
-                _logger.Info("程序已经启动.");
+                MessageBox.Show("VSM程序已经启动.");
                 Process.GetCurrentProcess().Kill();
             }
 
+                       
             MainWindow main = new MainWindow();
             main.Show();
         }

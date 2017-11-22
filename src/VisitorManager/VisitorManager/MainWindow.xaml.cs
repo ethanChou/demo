@@ -46,8 +46,8 @@ namespace VisitorManager
                 this.MainVM = new MainWindowViewModel(this);
                 this.MainVM.Init(
                     new UserLeaveViewModel(MainVM),
-                    new UserRegisterViewModel(MainVM) { CaptureWindowType = typeof(CaptureWindow) },
-                    new UserVisitingViewModel(MainVM),
+                    new UserRegisterViewModel(MainVM) { CaptureWindowType = typeof(CaptureWindow),CameraWindowType=typeof(CameraWindow) },
+                    new UserVisitingViewModel(MainVM) { WindowType = typeof(VisitorInfoWindow) },
                     new UserSearchViewModel(MainVM) { WindowType = typeof(VisitorInfoWindow) },
                     new UserStatisticViewModel(MainVM));
                 visitors.Children.Add(new UserVisiting() { DataContext = MainVM.VistingVM });
