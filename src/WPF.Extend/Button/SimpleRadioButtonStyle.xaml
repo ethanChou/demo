@@ -16,6 +16,7 @@
    
     
     <Style x:Key="{x:Type local:SimpleRadioButton}" TargetType="{x:Type local:SimpleRadioButton}">
+        <Setter Property="Background" Value="{DynamicResource SimpleRediaButtonBorder}"></Setter>
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Foreground" Value="White"></Setter>
         <Setter Property="Template">
@@ -28,10 +29,10 @@
                         </Grid.ColumnDefinitions>
                         <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0,1,2,0" CornerRadius="2" 
                                 Background="Transparent" 
-                                BorderBrush="{DynamicResource SimpleRediaButtonBorder}" BorderThickness="2">
+                                BorderBrush="{TemplateBinding Background}" BorderThickness="2">
                             <Path x:Name="CheckMark" Width="9" Height="9" Stretch="Fill" Fill="{TemplateBinding Foreground}" Visibility="Collapsed" Data="F1 M 23.7501,33.25L 34.8334,44.3333L 52.2499,22.1668L 56.9999,26.9168L 34.8334,53.8333L 19.0001,38L 23.7501,33.25 Z "/>
                         </Border>
-                        <ContentPresenter Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                        <ContentPresenter  Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
@@ -42,25 +43,24 @@
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">
                             <Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed" />
-                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource SimpleRediaButtonBorderChecked}" />
-
+                            <!--<Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource SimpleRediaButtonBorderChecked}" />-->
                         </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <!--<Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource SimpleRediaButtonBorderHover}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource SimpleRediaButtonBorderPressed}" />
-                        </Trigger>
+                        </Trigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="SimpleCheckBoxBorder" Color="#0050ff"></SolidColorBrush>
-    <SolidColorBrush x:Key="SimpleCheckBoxBorderHover" Color="#0078ff"></SolidColorBrush>
-    <SolidColorBrush x:Key="SimpleCheckBoxBorderPressed" Color="#005eff"></SolidColorBrush>
-    <SolidColorBrush x:Key="SimpleCheckBoxBorderChecked" Color="#005eff"></SolidColorBrush>
+    <SolidColorBrush x:Key="SimpleCheckBoxBorder" Color="#ffa100"></SolidColorBrush>
+    <SolidColorBrush x:Key="SimpleCheckBoxBorderHover" Color="#ffa100"></SolidColorBrush>
+    <SolidColorBrush x:Key="SimpleCheckBoxBorderPressed" Color="#ffa100"></SolidColorBrush>
+    <SolidColorBrush x:Key="SimpleCheckBoxBorderChecked" Color="#ffa100"></SolidColorBrush>
     
     <Style x:Key="SimpleCheckBoxStyle" TargetType="{x:Type CheckBox}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />

@@ -153,7 +153,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Grid Name="Bg"
+                            <Grid Name="Bg" Height="7"
                                   Background="{TemplateBinding Background}"
                                   SnapsToDevicePixels="true" >
                                 <Grid.ColumnDefinitions>
@@ -178,7 +178,7 @@
                                         <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="{x:Static ScrollBar.PageRightCommand}"/>
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
-                                        <Thumb Style="{StaticResource ScrollBarThumb}" Padding="0,4" />
+                                        <Thumb Style="{StaticResource ScrollBarThumb}" Padding="0" />
                                     </Track.Thumb>
                                 </Track>
                                 <RepeatButton Style="{StaticResource ScrollBarButton}" Visibility="Collapsed"

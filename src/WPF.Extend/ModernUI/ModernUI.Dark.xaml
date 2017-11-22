@@ -3,9 +3,9 @@
 
     <Color x:Key="WindowBackgroundColor">#252526</Color>
 
-    <SolidColorBrush x:Key="ButtonBackground" Color="#ffa000" />
-    <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#ffbd00" />
-    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#ee9500" />
+    <SolidColorBrush x:Key="ButtonBackground" Color="#c88400" />
+    <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#f3850c" />
+    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#b36209" />
     <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#999999" />
     
     <SolidColorBrush x:Key="ButtonBorder" Color="#333333" />

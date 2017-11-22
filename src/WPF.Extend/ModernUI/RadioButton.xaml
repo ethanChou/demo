@@ -11,10 +11,12 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0,1,4,0" Background="{DynamicResource ButtonBackground}" BorderBrush="{DynamicResource ButtonBorder}" BorderThickness="1">
-                            <!--<Rectangle x:Name="CheckMark" Width="8" Height="8" Margin="4" Fill="{TemplateBinding Foreground}" Visibility="Collapsed"/>-->
-                            <Path x:Name="CheckMark" Width="8" Height="8" Stretch="Fill" Fill="{TemplateBinding Foreground}" Visibility="Collapsed" Data="F1 M 23.7501,33.25L 34.8334,44.3333L 52.2499,22.1668L 56.9999,26.9168L 34.8334,53.8333L 19.0001,38L 23.7501,33.25 Z "/>
-                        </Border>
+                        <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0,1,4,0" CornerRadius="2" Background="#2b2b2b"  BorderBrush="{DynamicResource ButtonBackground}" BorderThickness="2">
+                            <Grid>
+                                <!--<Rectangle x:Name="CheckMark11" Width="8" Height="8" Margin="4" Fill="{TemplateBinding Foreground}" Visibility="Collapsed"/>-->
+                                <Path x:Name="CheckMark" Width="8" Height="8" Stretch="Fill" Fill="{TemplateBinding Foreground}" Visibility="Collapsed" Data="F1 M 23.7501,33.25L 34.8334,44.3333L 52.2499,22.1668L 56.9999,26.9168L 34.8334,53.8333L 19.0001,38L 23.7501,33.25 Z "/>
+                            </Grid>
+                            </Border>
                         <ContentPresenter Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -24,13 +26,13 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <!--<Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
-                            <!--<Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />-->
-                        </Trigger>
+                            --><!--<Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />--><!--
+                        </Trigger>-->
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                            <!--<Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackground}" />-->
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
                             <!--<Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextPressed}" />-->
                         </Trigger>
