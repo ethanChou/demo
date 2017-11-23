@@ -1,7 +1,7 @@
 ; 该脚本使用 HM VNISEdit 脚本编辑器向导产生
 
 ; 安装程序初始定义常量
-!define PRODUCT_NAME "传达室管理系统"
+!define PRODUCT_NAME "来访登记管理系统"
 !define PRODUCT_VERSION "2.0.1.0"
 !define PRODUCT_PUBLISHER "homingfly, Inc."
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VisitorManager.exe"
