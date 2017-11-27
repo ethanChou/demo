@@ -180,7 +180,7 @@ namespace VisitorManager.ViewModel
 
                 Reset();
 
-                UserVisitingViewModel.Single.UpdateData();
+                UserVisitingViewModel.Single.BeginUpdateData();
 
                 MainWindowViewModel.Singleton.TabCmd.Execute(0);
             }

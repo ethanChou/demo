@@ -108,6 +108,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LenelDataServer\bin\Debug\Thrift.dll</HintPath>
     </Reference>
+    <Reference Include="ThriftCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\ThriftCommon.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -116,6 +120,7 @@
     <Compile Include="Base\IDispatcher.cs" />
     <Compile Include="Base\KeyValueConfig.cs" />
     <Compile Include="Common\Comparable.cs" />
+    <Compile Include="Common\RandomTest.cs" />
     <Compile Include="Common\StatusToColorConverter.cs" />
     <Compile Include="Common\VisitorFreshCardMessage.cs" />
     <Compile Include="Common\TreeNode.cs" />
@@ -190,10 +195,6 @@
     <ProjectReference Include="..\..\WPF.Extend\WPF.Extend.csproj">
       <Project>{40624232-8185-427d-9225-7e95ec43fcaf}</Project>
       <Name>WPF.Extend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThriftCommon\ThriftCommon.csproj">
-      <Project>{59c9fd3e-2761-4f87-858e-e5151c42f3a4}</Project>
-      <Name>ThriftCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

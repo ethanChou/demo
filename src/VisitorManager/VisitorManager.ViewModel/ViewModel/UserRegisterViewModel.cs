@@ -59,7 +59,7 @@ namespace VisitorManager.ViewModel
 
         private string _cardId = "";
         private string _visitorName = "";
-        private bool _gender = false;
+        //private bool _gender = false;
         private string _cardImgPath = DefaultImageSrc;
         /// <summary>
         /// 临时卡
@@ -142,14 +142,18 @@ namespace VisitorManager.ViewModel
         {
             get
             {
-                return IsIdCardCheck ? 0 : 1;
+                if (IsIdCardCheck) return 0;
+                if (IsCommonCardCheck) return 1;
+                if (IsNoneCardCheck) return 2;
+                return 0;
             }
 
             set
             {
                 var v = value;
                 if (v == 0) IsIdCardCheck = true;
-                else IsCommonCardCheck = true;
+                if (v == 1) IsCommonCardCheck = true;
+                if (v == 2) IsNoneCardCheck = true;
             }
         }
 
@@ -198,21 +202,58 @@ namespace VisitorManager.ViewModel
             }
         }
 
-        public bool Gender
+        //public bool Gender
+        //{
+        //    get { return _gender; }
+        //    set
+        //    {
+        //        _gender = value;
+        //        NotifyChange("Gender");
+        //    }
+        //}
+
+        private bool _isBoy = true;
+
+        public bool IsBoy
         {
-            get { return _gender; }
+            get { return _isBoy; }
             set
             {
-                _gender = value;
-                NotifyChange("Gender");
-
+                _isBoy = value;
+                NotifyChange("IsBoy");
             }
         }
+        private bool _isGirl = false;
+
+        public bool IsGirl
+        {
+            get { return _isGirl; }
+            set
+            {
+                _isGirl = value;
+                NotifyChange("IsGirl");
+            }
+        }
+        //private bool _isNone = false;
+
+        //public bool IsNone
+        //{
+        //    get { return _isNone; }
+        //    set
+        //    {
+        //        _isNone = value;
+        //        NotifyChange("IsNone");
+        //    }
+        //}
 
         private string GenderStr
         {
-            get { return _gender ? "男" : "女"; }
-
+            get
+            {
+                if (IsBoy) return "男";
+                if (IsGirl) return "女";
+                return "男";
+            }
         }
 
         public string PassCardId
@@ -437,6 +478,22 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        private bool _isNoneCardCheck;
+
+        /// <summary>
+        /// 未知卡类型
+        /// </summary>
+        public bool IsNoneCardCheck
+        {
+            get { return _isNoneCardCheck; }
+            set
+            {
+                _isNoneCardCheck = value;
+                NotifyChange("IsNoneCardCheck");
+            }
+        }
+
+
         /// <summary>
         /// 携带物品
         /// </summary>
@@ -520,7 +577,8 @@ namespace VisitorManager.ViewModel
             set
             {
                 _isOpenShortWay = value;
-                if (CurrentNode != null)
+                if (value) IsAutoGenerateWay = false;
+                if (CurrentNode != null&&CurrentNode.Type==1)
                 {
                     CurrentNode.IsShowShort = value;
                 }
@@ -542,6 +600,8 @@ namespace VisitorManager.ViewModel
             CardIdType = 0;
             CardId = data.IdCardNO;
             IsOpenShortWay = false;
+            IsAutoGenerateWay = false;
+
             VisitorName = data.Name;
             CardImgPath = data.BmpPath;
             if (string.IsNullOrWhiteSpace(CardImgPath))
@@ -552,7 +612,19 @@ namespace VisitorManager.ViewModel
             {
                 LoadFailVis = Visibility.Collapsed;
             }
-            Gender = data.Sex == "男" ? true : false;
+
+            if (data.Sex == "男")
+            {
+                IsBoy = true;
+            }
+            if (data.Sex == "女")
+            {
+                IsGirl = true;
+            }
+            //if (data.Sex == "未知")
+            //{
+            //    IsNone = true;
+            //}
 
             var res = ThriftManager.GetBlackList(data.IdCardNO);
 
@@ -610,6 +682,7 @@ namespace VisitorManager.ViewModel
                 if (!exist)
                 {
                     IsOpenShortWay = false;
+                    IsAutoGenerateWay = false;
                     CardIdType = 1;
                     CardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
                     VisitorName = data.cardholder.LastName;
@@ -622,7 +695,7 @@ namespace VisitorManager.ViewModel
                     {
                         LoadFailVis = Visibility.Collapsed;
                     }
-                    Gender = true;
+                    IsBoy = true;
                 }
                 else
                 {
@@ -712,7 +785,19 @@ namespace VisitorManager.ViewModel
                 CardIdType = (int)visitor.Vt_identify_type;
                 CardId = visitor.Vt_identify_no;
                 VisitorName = visitor.Vt_name;
-                Gender = visitor.Vt_sex == "男" ? true : false;
+
+                if (visitor.Vt_sex == "男")
+                {
+                    IsBoy = true;
+                }
+                if (visitor.Vt_sex == "女")
+                {
+                    IsGirl = true;
+                }
+                //if (visitor.Vt_sex == "未知")
+                //{
+                //    IsNone = true;
+                //}
 
                 PassCardId = visitor.Tmpcard_no;
 
@@ -755,6 +840,8 @@ namespace VisitorManager.ViewModel
 
         private bool AddUser()
         {
+           
+
             if (string.IsNullOrEmpty(CardId))
             {
                 var result = MsgBox.Show("证件号码不能为空.", "提示", MessageBoxButton.OK);
@@ -796,12 +883,17 @@ namespace VisitorManager.ViewModel
 
             }
 
+            if (WaitVisitors.FirstOrDefault(t => t.Tmpcard_no == PassCardId) != null)
+            {
+                MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
+                return false;
+            }
+
             if (DeleteSelectedNodeBtnVis == Visibility.Collapsed)
             {
                 MsgBox.Show("请选择被访人员.", "提示", MessageBoxButton.OK);
                 return false;
             }
-
 
             Visitor visitor = this.TemporaryVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId);
             if (visitor != null)
@@ -809,20 +901,6 @@ namespace VisitorManager.ViewModel
                 //之前已经暂存过，需要删除
                 TemporaryVisitors.Remove(visitor);
             }
-
-            if (WaitVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId) != null)
-            {
-                MsgBox.Show("相同证件号码不能添加两次.", "提示", MessageBoxButton.OK);
-                return false;
-            }
-
-            if (WaitVisitors.FirstOrDefault(t => t.Tmpcard_no == PassCardId) != null)
-            {
-                MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
-                return false;
-            
-            }
-
 
             visitor = new Visitor()
             {
@@ -849,6 +927,17 @@ namespace VisitorManager.ViewModel
 
         private bool AddUserEx()
         {
+            if (string.IsNullOrEmpty(CardId) &&
+                string.IsNullOrEmpty(VisitorName) &&
+                string.IsNullOrEmpty(PassCardId) &&
+                string.IsNullOrEmpty(CaptureImageSrc)
+                )
+            {
+                return true;
+            }
+
+            return AddUser();
+            #region MyRegion
             if (string.IsNullOrEmpty(CardId))
             {
                 if (WaitVisitors.Count <= 0)
@@ -934,7 +1023,14 @@ namespace VisitorManager.ViewModel
             }
             if (WaitVisitors.ToList().Find(t => t.Tmpcard_no == PassCardId) != null)
             {
-                MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
+                if (WaitVisitors.Count <= 0)
+                {
+                    MsgBox.Show("相同临时卡号不能添加两次.", "提示", MessageBoxButton.OK);
+                }
+                else
+                {
+                    logger.Info("相同临时卡号不能添加两次.");
+                }
                 return false;
 
             }
@@ -952,6 +1048,7 @@ namespace VisitorManager.ViewModel
                 return false;
             }
 
+            #endregion
 
             Visitor visitor = this.TemporaryVisitors.FirstOrDefault(t => t.Vt_identify_no == CardId);
             if (visitor != null)
@@ -979,7 +1076,6 @@ namespace VisitorManager.ViewModel
             Reset(false);
             return true;
         }
-
 
         private void SaveTempCommand(object arg)
         {
@@ -1059,7 +1155,7 @@ namespace VisitorManager.ViewModel
 
                 if (MainVM != null)
                 {
-                    MainVM.VistingVM.UpdateVisitor(v);
+                    MainVM.VistingVM.UpdateData();
                 }
             }
 
@@ -1126,6 +1222,40 @@ namespace VisitorManager.ViewModel
 
         }
 
+        private bool _isAutoGenerateWay = false;
+
+        public bool IsAutoGenerateWay
+        {
+            get { return _isAutoGenerateWay; }
+            set
+            {
+                _isAutoGenerateWay = value;
+
+                NotifyChange("IsAutoGenerateWay");
+
+                if (value)
+                {
+                    IsOpenShortWay = false;
+                    //未知
+                    CardIdType = 2;
+                    CardId = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    VisitorName = "其它证件访客";
+                    CardImgPath = "";
+
+                    if (string.IsNullOrWhiteSpace(CardImgPath))
+                    {
+                        LoadFailVis = Visibility.Visible;
+                    }
+                    else
+                    {
+                        LoadFailVis = Visibility.Collapsed;
+                    }
+
+                    IsBoy = true;
+                }
+            }
+        }
+
         private void ShortWayCommand(object arg)
         {
             TreeNode tn = arg as TreeNode;
@@ -1158,7 +1288,20 @@ namespace VisitorManager.ViewModel
                     {
                         LoadFailVis = Visibility.Collapsed;
                     }
-                    Gender = emp.Emp_sex == "男";
+                    //Gender = emp.Emp_sex == "男";
+
+                    if (emp.Emp_sex == "男")
+                    {
+                        IsBoy = true;
+                    }
+                    if (emp.Emp_sex == "女")
+                    {
+                        IsGirl = true;
+                    }
+                    //if (emp.Emp_sex == "未知")
+                    //{
+                    //    IsNone = true;
+                    //}
                 }
             }
         }
@@ -1191,10 +1334,10 @@ namespace VisitorManager.ViewModel
 
         private void Reset(bool force = true)
         {
-            CardIdType = 0;
+            CardIdType = 2;
             CardId = "";
             VisitorName = "";
-            Gender = false;
+            IsBoy = true;
 
             PassCardId = "";
             CardImgPath = "";
@@ -1202,6 +1345,7 @@ namespace VisitorManager.ViewModel
             LoadFailVis = Visibility.Collapsed;
 
             RecentlyVisitors.Clear();
+            IsAutoGenerateWay = false;
             //刷新guid，重新生成来访单号
             if (force)
             {
@@ -1209,5 +1353,7 @@ namespace VisitorManager.ViewModel
                 DeleteSelectedNodeCommand(null);
             }
         }
+
+
     }
 }

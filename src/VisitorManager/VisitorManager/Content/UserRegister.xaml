@@ -197,13 +197,15 @@
                             <Grid VerticalAlignment="Center" Margin="0" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"></ColumnDefinition>
-                                    <ColumnDefinition Width="90" ></ColumnDefinition>
-                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                    <ColumnDefinition Width="100" ></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="证件类型" Margin="5,0,0,0"  Foreground="#787878"   VerticalAlignment="Center"></TextBlock>
-                                <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsIdCardCheck,Mode=TwoWay}">二代身份证</RadioButton>
-                                <RadioButton Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding IsCommonCardCheck,Mode=TwoWay}">正式卡</RadioButton>
+                                <RadioButton  Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsIdCardCheck,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">二代身份证</RadioButton>
+                                <RadioButton  Grid.Column="2" Margin="0,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IsCommonCardCheck,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">正式卡</RadioButton>
+                                <RadioButton  Grid.Column="3" Margin="0,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IsNoneCardCheck,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">其他</RadioButton>
                                
                             </Grid>
                         </Border>
@@ -212,12 +214,14 @@
                             <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"></ColumnDefinition>
-                                    <ColumnDefinition Width="90"></ColumnDefinition>
-                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="性别" Foreground="#787878" Margin="10,0,0,0" VerticalAlignment="Center"></TextBlock>
-                                <RadioButton Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">男</RadioButton>
-                                <RadioButton Grid.Column="2"  VerticalAlignment="Center" IsChecked="{Binding Gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NegeateConverter}}">女</RadioButton>
+                                <TextBlock Grid.Column="0" Text="性别" Foreground="#787878" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                                <RadioButton Grid.Column="1" Content="男" VerticalAlignment="Center" IsChecked="{Binding IsBoy,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></RadioButton>
+                                <RadioButton Grid.Column="2" Content="女" VerticalAlignment="Center" IsChecked="{Binding IsGirl,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></RadioButton>
+                                <RadioButton Visibility="Collapsed" Grid.Column="3" Content="未知"  VerticalAlignment="Center" IsChecked="{Binding IsNone,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></RadioButton>
                             </Grid>
                         </Border>
 
@@ -436,9 +440,15 @@
         <!--操作-->
         <Grid Grid.Row="2">
 
-            <CheckBox IsChecked="{Binding IsOpenShortWay,Mode=TwoWay}" Margin="5,0,0,0" Height="30"  Style="{StaticResource SimpleCheckBoxStyle}" Foreground="White" Content="无证办卡" HorizontalAlignment="Left" ></CheckBox>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" IsChecked="{Binding IsOpenShortWay,Mode=TwoWay}" Margin="5,0,0,0" Height="30"  Style="{StaticResource SimpleCheckBoxStyle}" Foreground="White" Content="无证办卡" ></CheckBox>
+            <CheckBox Grid.Column="1" IsChecked="{Binding IsAutoGenerateWay,Mode=TwoWay}" Margin="5,0,0,0" Height="30"  Style="{StaticResource SimpleCheckBoxStyle}" Foreground="White" Content="其它证件办卡" ></CheckBox>
 
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="2" Grid.ColumnSpan="3" HorizontalAlignment="Center">
                 <Button Command="{Binding AddCmd}" Height="28" Width="80" Margin="10,0,10,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">

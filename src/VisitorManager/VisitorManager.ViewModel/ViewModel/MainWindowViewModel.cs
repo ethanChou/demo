@@ -11,7 +11,7 @@ namespace VisitorManager.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-       
+
 
         internal IContextWindow MainWindow { get; set; }
 
@@ -25,7 +25,32 @@ namespace VisitorManager.ViewModel
             IDCardManager.Start();
             FreshCardManager.Start();
             ThriftManager.Start();
+            List<Visitor> dts = new List<Visitor>();
+           // for (int i = 0; i < 500; i++)
+           // {
+           //     var visitor = new Visitor()
+           //      {
+           //          Vt_id = Guid.NewGuid().ToString(),
+           //          Vt_identify_imgurl = "http://192.168.1.104:6551/DownLoadFile?filename=LOC:03/data_S/20171127/10/16ad1516077b4947d837bf725debdf96_1",
+           //          Vt_identify_type = IdentifyType.IdCard,
+           //          Vt_identify_no = IDCardNumber.Radom().ToString(),
+           //          Vt_imgurl = "http://192.168.1.104:6551/DownLoadFile?filename=LOC:03/data_S/20171127/10/16ad1516077b4947d837bf725debdf96_6",
+           //          Vt_name = RandomTest.getRandomName(),
+           //          Vt_sex = i % 2 == 0 ? "男" : "女",
+           //          Vt_status= Status.Leave,
+           //          Vt_visit_department_id = "601ec9a3-a800-4b7a-9b81-dfc1f1a78e41",
+           //          Vt_visit_employee_id = "14592736-7f39-4f88-97c5-0a3fb95437a7",
+           //          Vt_in_time = DateTime.Now.Ticks,
+           //          Tmpcard_no = RandomTest.GetRandomNumber(100000, 999999),
+           //      };
 
+           //     dts.Add(visitor);
+           // }
+           //bool f=  ThriftManager.AddVisitor(dts);
+           // if (f)
+           // {
+                
+           // }
         }
 
 
@@ -130,7 +155,8 @@ namespace VisitorManager.ViewModel
                     RegisterVM.IDCardRecevied(data);
                     TabCommand(1);
                 }
-                else {
+                else
+                {
                     LeaveVM.VisitorLeave(vtor);
                     LeaveVM.ShowLostCardBtnVis = Visibility.Collapsed;
                     TabCommand(2);
@@ -287,6 +313,7 @@ namespace VisitorManager.ViewModel
             int index = int.Parse(arg.ToString());
             if (index == 0)
             {
+                VistingVM.BeginUpdateCount();
                 VisitorVis = Visibility.Visible;
                 RegisterVis = Visibility.Collapsed;
                 ExitVis = Visibility.Collapsed;

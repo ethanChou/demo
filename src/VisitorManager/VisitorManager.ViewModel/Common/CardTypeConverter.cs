@@ -11,15 +11,16 @@ namespace VisitorManager.ViewModel
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) return "二代身份证";
+            if (value == null) return "未知";
 
 
             ThriftCommon.IdentifyType res = (ThriftCommon.IdentifyType)Enum.Parse(typeof(ThriftCommon.IdentifyType), value.ToString());
          
             if ((int)res == 0) return "二代身份证";
             if ((int)res == 1) return "正式卡";
+            if ((int)res == 2) return "其他证件";
 
-            return "二代身份证";
+            return "未知";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

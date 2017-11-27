@@ -30,6 +30,11 @@ namespace VisitorManager.ViewModel
         public string ID { get; set; }
 
         /// <summary>
+        /// 编号
+        /// </summary>
+        public string LnlId { get; set; }
+
+        /// <summary>
         /// 节点显示名称
         /// </summary>
         public string Name { get; set; }

@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mbexd="clr-namespace:WPF.Extend.Button;assembly=WPF.Extend"
              xmlns:content="clr-namespace:VisitorManager.Content"
+             xmlns:cmbexd="http://complex.wpfextend.com/"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
@@ -86,19 +87,37 @@
 
         <Grid Grid.Row="2" Background="#212121" Opacity="0.8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"></ColumnDefinition>
-
+               
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="80"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="正在访问:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding VisitingCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+                
+                <TextBlock Text="已经离开:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding LevaeCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+
+                <TextBlock Text="卡丢失:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding LostCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+
+                <TextBlock Text="所有记录:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding TotalCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+
+            </StackPanel>
+            <!--<StackPanel Grid.Column="0" Orientation="Horizontal">
                 <TextBlock Text="查询记录" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
                 <TextBlock Foreground="#ffffff" Margin="10,0,10,0" HorizontalAlignment="Center" Text="{Binding CurrentVisitors,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
                 <TextBlock HorizontalAlignment="Center" Margin="0,0,0,0" Text="条" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
 
-            </StackPanel>
+            </StackPanel>-->
             <TextBlock x:Name="Version" Grid.Column="2" Text="{Binding Version}" FontSize="16" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor}" ></TextBlock>
         </Grid>
+
+        <Border Grid.Row="0" Grid.RowSpan="2" Background="Black" Opacity="0.6" Visibility="{Binding IsCheckedBusyBox,Mode=TwoWay,Converter={StaticResource BooleanToVisibilityConverter}}">
+            <cmbexd:BusyBox  Height="100" Width="100" Foreground="#ffa000" Background="Red"  Margin="5"  IsActive="{Binding IsCheckedBusyBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+        </Border>
     </Grid>
 </UserControl>

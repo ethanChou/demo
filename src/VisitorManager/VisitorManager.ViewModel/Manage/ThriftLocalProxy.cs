@@ -292,5 +292,11 @@ namespace VisitorManager.ViewModel
         {
             throw new NotImplementedException();
         }
+
+
+        public int GetVisitorCount(Status type, long starttime, long endtime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

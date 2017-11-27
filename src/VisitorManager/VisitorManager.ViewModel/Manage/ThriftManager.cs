@@ -15,7 +15,7 @@ namespace VisitorManager.ViewModel
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         static bool IsEnableProxy = false;
-
+        private static object _lock = new object();
         private static LenelDataService.Iface _client;
         private static TTransport _transport;
         private static TProtocol _protocol;
@@ -50,10 +50,10 @@ namespace VisitorManager.ViewModel
         {
             try
             {
-                //if (_transport != null && !_transport.IsOpen)
-                //{
-                //    _transport.Open();
-                //}
+                if (_transport != null && !_transport.IsOpen)
+                {
+                    //_transport.Open();
+                }
             }
             catch (Exception ex)
             {
@@ -121,6 +121,29 @@ namespace VisitorManager.ViewModel
 
         #region 数据模拟
 
+        public class TreeNodeComparer : IComparer<TreeNode>
+        {
+            public int Compare(TreeNode x, TreeNode y)
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(x.LnlId) || string.IsNullOrEmpty(y.LnlId))
+                    {
+                        return -1;
+                    }
+                    int id1 = int.Parse(x.LnlId);
+                    int id2 = int.Parse(y.LnlId);
+                    if (id1 > id2) return 1;
+                    if (id1 == id2) return 0;
+                    return -1;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
+            }
+        }
+
         /// <summary>
         /// 未排序分类
         /// </summary>
@@ -139,15 +162,18 @@ namespace VisitorManager.ViewModel
 
             foreach (var d in dps)
             {
-                var node = new TreeNode { ID = d.Dep_id, Name = d.Dep_name, ParentID = d.Dep_parent_id };
+                var node = new TreeNode { ID = d.Dep_id, LnlId = d.Lnl_id, Name = d.Dep_name, ParentID = d.Dep_parent_id };
                 nodes.Add(node);
             }
+
             var eys = GetEmployees("", "", "", "", "");
             foreach (var e in eys)
             {
-                var node = new TreeNode { ID = e.Emp_id, Name = e.Emp_name, ParentID = e.Dep_id, Type = 1, Telephone = e.Emp_tel, Tag = e };
+                var node = new TreeNode { ID = e.Emp_id, LnlId = e.Lnl_id, Name = e.Emp_name, ParentID = e.Dep_id, Type = 1, Telephone = e.Emp_tel, Tag = e };
                 nodes.Add(node);
             }
+
+            nodes.Sort(new TreeNodeComparer());
 
             Tree = Method.Bindings(nodes);
 
@@ -168,8 +194,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.GetDepartments(ad_id, id, lnl_id, name);
+                lock (_lock)
+                {
+                    return _client.GetDepartments(ad_id, id, lnl_id, name);
+                }
             }
             catch (Exception ex)
             {
@@ -184,8 +212,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.GetEmployees(dep_id, id, lnl_id, name, card_NO);
+                lock (_lock)
+                {
+                    return _client.GetEmployees(dep_id, id, lnl_id, name, card_NO);
+                }
             }
             catch (Exception ex)
             {
@@ -199,9 +229,10 @@ namespace VisitorManager.ViewModel
             try
             {
                 Check();
-
-                if (_client == null) throw new NullReferenceException(Error);
-
+                lock (_lock)
+                {
+                    if (_client == null) throw new NullReferenceException(Error);
+                }
                 return _client.DeleteVisitorList(vl_id);
             }
             catch (Exception ex)
@@ -217,8 +248,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.AddVisitorList(vlist);
+                lock (_lock)
+                {
+                    return _client.AddVisitorList(vlist);
+                }
             }
             catch (Exception ex)
             {
@@ -233,7 +266,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.UpdateVisitorList(vlist);
+                lock (_lock)
+                {
+                    return _client.UpdateVisitorList(vlist);
+                }
             }
             catch (Exception ex)
             {
@@ -248,7 +284,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.GetVisitorLists(vl_id, vl_in_time, vl_out_time);
+                lock (_lock)
+                {
+                    return _client.GetVisitorLists(vl_id, vl_in_time, vl_out_time);
+                }
             }
             catch (Exception ex)
             {
@@ -263,8 +302,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.AddVisitor(visitors);
+                lock (_lock)
+                {
+                    return _client.AddVisitor(visitors);
+                }
             }
             catch (Exception ex)
             {
@@ -279,7 +320,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.UpdateVisitor(visitor);
+                lock (_lock)
+                {
+                    return _client.UpdateVisitor(visitor);
+                }
             }
             catch (Exception ex)
             {
@@ -294,7 +338,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.DeleteVisitor(vt_id);
+                lock (_lock)
+                {
+                    return _client.DeleteVisitor(vt_id);
+                }
             }
             catch (Exception ex)
             {
@@ -309,7 +356,11 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.GetVisitors(String.Empty, String.Empty, String.Empty, IdentifyType.Ohter, String.Empty, String.Empty, in_time, out_time, Status.None, String.Empty, String.Empty);
+                lock (_lock)
+                {
+                    return _client.GetVisitors(String.Empty, String.Empty, String.Empty, IdentifyType.Ohter,
+                        String.Empty, String.Empty, in_time, out_time, Status.None, String.Empty, String.Empty);
+                }
             }
             catch (Exception ex)
             {
@@ -324,7 +375,11 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-                return _client.GetVisitors(vt_id, vt_vl_id, name, identify_type, tmpcard_no, vt_identify_NO, in_time, out_time, status, dep_id, emp_id);
+                lock (_lock)
+                {
+                    return _client.GetVisitors(vt_id, vt_vl_id, name, identify_type, tmpcard_no, vt_identify_NO, in_time,
+                        out_time, status, dep_id, emp_id);
+                }
             }
             catch (Exception ex)
             {
@@ -340,8 +395,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return GetBlackList("", IdentifyType.IdCard, bl_identify_NO, "");
+                lock (_lock)
+                {
+                    return GetBlackList("", IdentifyType.IdCard, bl_identify_NO, "");
+                }
             }
             catch (Exception ex)
             {
@@ -356,14 +413,34 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.GetBlackList(bl_id, identify_type, bl_identify_NO, name);
+                lock (_lock)
+                {
+                    return _client.GetBlackList(bl_id, identify_type, bl_identify_NO, name);
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "GetBlackList");
             }
             return new List<BlackList>();
+        }
+
+        public static int GetVisitorCount(Status type, long starttime, long endtime)
+        {
+            try
+            {
+                Check();
+                if (_client == null) throw new NullReferenceException(Error);
+                lock (_lock)
+                {
+                    return _client.GetVisitorCount(type, starttime, endtime);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "GetBlackList");
+            }
+            return 0;
         }
 
         /// <summary>
@@ -377,8 +454,10 @@ namespace VisitorManager.ViewModel
             {
                 Check();
                 if (_client == null) throw new NullReferenceException(Error);
-
-                return _client.UploadImg2Bimg(imgBytes);
+                lock (_lock)
+                {
+                    return _client.UploadImg2Bimg(imgBytes);
+                }
             }
             catch (Exception ex)
             {

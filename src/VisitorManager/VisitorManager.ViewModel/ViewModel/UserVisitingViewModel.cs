@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -15,8 +17,10 @@ namespace VisitorManager.ViewModel
         public Type WindowType { get; set; }
         MainWindowViewModel _mainVM;
         private int _searchTimeIndex = 0;
+        private bool _isCheckedBusyBox = false;
         public static UserVisitingViewModel Single { get; set; }
-        private DispatcherTimer _workTimer;
+        private Timer _workTimer;
+        private Timer _workTimer2;
         private ObservableCollection<Visitor> _visistors;
         private List<Visitor> _srcVisistors;
         private int _departmentIndex = -1;
@@ -36,13 +40,17 @@ namespace VisitorManager.ViewModel
             _srcVisistors = new List<Visitor>();
             _visistors = new ObservableCollection<Visitor>();
 
-            _workTimer = new DispatcherTimer();
-            _workTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            _workTimer.Tick += WorkTimer_Tick;
+            _workTimer2 = new Timer();
+            _workTimer2.Interval = 100;
+            _workTimer2.Elapsed += WorkTimer2_Tick;
+            _workTimer2.Start();
+
+            _workTimer = new Timer();
+            _workTimer.Interval = 100;
+            _workTimer.Elapsed += WorkTimer_Tick;
             _workTimer.Start();
             Single = this;
         }
-
 
         /// <summary>
         /// 根据TMPID查找是否存在此正在访问用户
@@ -103,24 +111,52 @@ namespace VisitorManager.ViewModel
             }
         }
 
+
+        void WorkTimer2_Tick(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(DbUtil.DB_PATH))
+            {
+
+                _workTimer2.Stop();
+
+                UpdateCountCore();
+
+                GC.Collect();
+            }
+        }
+
         private void WorkTimer_Tick(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(DbUtil.DB_PATH))
             {
                 _workTimer.Stop();
+                UpdateDataCore();
+                UpdateCountCore();
                 GC.Collect();
-                UpdateVisitors();
             }
         }
 
-        public void UpdateData()
+        private int _levaeCount = 0;
+        private int _visitingCount = 0;
+        private int _lostCount = 0;
+        private int _totalCount = 0;
+
+
+        public void BeginUpdateData()
         {
-            _workTimer.Start();
+            if (!_workTimer.Enabled)
+                _workTimer.Start();
         }
 
-        internal void UpdateVisitor(Visitor obj)
+        public void BeginUpdateCount()
         {
-            UpdateData();
+            if (!_workTimer2.Enabled)
+                _workTimer2.Start();
+        }
+
+        internal void UpdateData()
+        {
+            BeginUpdateData();
         }
 
         /// <summary>
@@ -132,6 +168,12 @@ namespace VisitorManager.ViewModel
             return "V" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
         }
 
+        private Dispatcher Dispatcher
+        {
+
+            get { return _mainVM.MainWindow.Dispatcher; }
+        }
+
         public string Version
         {
             get
@@ -141,10 +183,8 @@ namespace VisitorManager.ViewModel
             }
         }
 
-        private void UpdateVisitors()
+        private void UpdateCountCore()
         {
-            Visistors.Clear();
-
             DateTime bt = DateTime.Now, et = DateTime.Now;
 
             DateTime nt = DateTime.Now;
@@ -169,21 +209,109 @@ namespace VisitorManager.ViewModel
                 bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
             }
 
-            _srcVisistors = ThriftManager.GetVisitors(
-                String.Empty, String.Empty,
-                ConditionStr, IdentifyType.IdCard,
-                String.Empty, String.Empty, bt.Ticks, et.Ticks,
-                _statusIndex,
-                String.Empty, String.Empty);
+            int v1 = ThriftManager.GetVisitorCount(Status.None, bt.Ticks, et.Ticks);
+            int v2 = ThriftManager.GetVisitorCount(Status.Visiting, bt.Ticks, et.Ticks);
+            int v3 = ThriftManager.GetVisitorCount(Status.LostCard, bt.Ticks, et.Ticks);
+            int v4 = ThriftManager.GetVisitorCount(Status.Leave, bt.Ticks, et.Ticks);
 
-            _srcVisistors.Sort(new TimeComparer(false));
-
-            _srcVisistors.ForEach(t =>
+            if (Dispatcher.CheckAccess())
             {
-                Visistors.Add(t);
-            });
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    TotalCount = v1;
+                    VisitingCount = v2;
+                    LostCount = v3;
+                    LevaeCount = v4;
+                }));
+            }
+            else
+            {
+                TotalCount = v1;
+                VisitingCount = v2;
+                LostCount = v3;
+                LevaeCount = v4;
+            }
+        }
 
-            CurrentVisitors = Visistors.Count;
+        private void UpdateDataCore()
+        {
+            Stopwatch w = null;
+            try
+            {
+                IsCheckedBusyBox = true;
+
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        Visistors.Clear();
+                    }));
+                }
+                else
+                {
+                    Visistors.Clear();
+                }
+
+                DateTime bt = DateTime.Now, et = DateTime.Now;
+
+                DateTime nt = DateTime.Now;
+                if (SearchTimeIndex == 0)
+                {
+                    bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+                    et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+                }
+                if (SearchTimeIndex == 1) //三天
+                {
+                    et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+
+                    nt = nt.AddDays(-3);
+                    bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+                }
+
+                if (SearchTimeIndex == 2) //一周
+                {
+                    et = new DateTime(nt.Year, nt.Month, nt.Day, 23, 59, 59);
+
+                    nt = nt.AddDays(-7);
+                    bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
+                }
+                w = new Stopwatch();
+                w.Start();
+                _srcVisistors = ThriftManager.GetVisitors(
+                    String.Empty, String.Empty,
+                    ConditionStr, IdentifyType.IdCard,
+                    String.Empty, String.Empty, bt.Ticks, et.Ticks,
+                    _statusIndex,
+                    String.Empty, String.Empty);
+                Console.WriteLine(w.ElapsedMilliseconds);
+                _srcVisistors.Sort(new TimeComparer(false));
+
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        Visistors.AddRange(_srcVisistors);
+
+                        CurrentVisitors = Visistors.Count;
+                    }));
+                }
+                else
+                {
+                    Visistors.AddRange(_srcVisistors);
+                    CurrentVisitors = Visistors.Count;
+                }
+                //Console.WriteLine("test:"+w.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                IsCheckedBusyBox = false;
+                // Console.WriteLine("test111:" + w.ElapsedMilliseconds);
+            }
+
         }
 
         public ObservableCollection<Visitor> Visistors
@@ -260,24 +388,76 @@ namespace VisitorManager.ViewModel
             set
             {
                 _searchTimeIndex = value;
+                BeginUpdateData();
                 NotifyChange("SearchTimeIndex");
+            }
+        }
+
+        public int LevaeCount
+        {
+            get { return _levaeCount; }
+            set
+            {
+                _levaeCount = value;
+                NotifyChange("LevaeCount");
+
+            }
+        }
+
+        public int VisitingCount
+        {
+            get { return _visitingCount; }
+            set
+            {
+                _visitingCount = value;
+                NotifyChange("VisitingCount");
+            }
+        }
+
+        public int LostCount
+        {
+            get { return _lostCount; }
+            set
+            {
+                _lostCount = value;
+                NotifyChange("LostCount");
+            }
+        }
+
+        public int TotalCount
+        {
+            get { return _totalCount; }
+            set
+            {
+                _totalCount = value;
+                NotifyChange("TotalCount");
+            }
+        }
+
+        public bool IsCheckedBusyBox
+        {
+            get { return _isCheckedBusyBox; }
+            set
+            {
+                _isCheckedBusyBox = value;
+                NotifyChange("IsCheckedBusyBox");
             }
         }
 
         private void StatusCommand(object arg)
         {
             _statusIndex = (Status)int.Parse(arg.ToString());
-
+            BeginUpdateData();
         }
 
         private void SearchCommand(object arg)
         {
-            UpdateVisitors();
+            UpdateDataCore();
+            UpdateCountCore();
         }
 
         private void ClearCommand(object arg)
         {
-
             DepartmentIndex = -1;
             EmployeeIndex = -1;
         }

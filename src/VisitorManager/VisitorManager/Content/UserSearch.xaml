@@ -97,7 +97,7 @@
                               CanUserAddRows="False">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="姓名" Width="70"  ElementStyle="{StaticResource ContentCenterStyle}" Binding="{Binding Vt_name}" />
+                        <DataGridTextColumn Header="姓名" Width="90"  ElementStyle="{StaticResource ContentCenterStyle}" Binding="{Binding Vt_name}" />
                         <DataGridTextColumn Header="被访单位" Width="1*"  ElementStyle="{StaticResource ContentCenterStyle}" Binding="{Binding Vt_visit_department_id,Converter={StaticResource IDConverter},ConverterParameter=0}" />
                         <DataGridTextColumn Header="被访人员" Width="80"  ElementStyle="{StaticResource ContentCenterStyle}" Binding="{Binding Vt_visit_employee_id,Converter={StaticResource IDConverter},ConverterParameter=1}" />
                         <DataGridTextColumn Header="来访时间" Width="1*"  ElementStyle="{StaticResource ContentCenterStyle}" Binding="{Binding Vt_in_time,Converter={StaticResource TimerFormatConverter}}" />

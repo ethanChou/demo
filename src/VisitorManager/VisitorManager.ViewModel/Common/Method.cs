@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,7 +10,7 @@ using ThriftCommon;
 
 namespace VisitorManager.ViewModel
 {
-    public class Method
+    public static class Method
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public static string UploadImg(string bimgAddress, byte[] imgBytes)
@@ -41,7 +42,7 @@ namespace VisitorManager.ViewModel
         /// <summary>
         /// 绑定树
         /// </summary>
-        List<TreeNode> Bind(List<TreeNode> nodes)
+       static List<TreeNode>  Bind(List<TreeNode> nodes)
         {
             List<TreeNode> outputList = new List<TreeNode>();
             for (int i = 0; i < nodes.Count; i++)
@@ -61,7 +62,7 @@ namespace VisitorManager.ViewModel
         /// <summary>
         /// 递归向下查找
         /// </summary>
-        TreeNode FindDownward(List<TreeNode> nodes, string id)
+       static TreeNode FindDownward(List<TreeNode> nodes, string id)
         {
             if (nodes == null) return null;
             for (int i = 0; i < nodes.Count; i++)
@@ -77,6 +78,14 @@ namespace VisitorManager.ViewModel
                 }
             }
             return null;
+        }
+
+        public static void AddRange<T>(this ObservableCollection<T> dst, IEnumerable<T> source)
+        {
+            for (int i = 0; i < source.Count(); i++)
+            {
+                dst.Add(source.ElementAt(i));
+            }
         }
 
         public static List<TreeNode> Bindings(IEnumerable<TreeNode> items)
