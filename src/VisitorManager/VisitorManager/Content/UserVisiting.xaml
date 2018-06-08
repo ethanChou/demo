@@ -74,6 +74,14 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </mbexd:SimpleRadioButton>
+                    <mbexd:SimpleRadioButton Content="逾期未还" Background="#ffa100"  Margin="5,0,5,0">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding StatusCmd}" CommandParameter="3"></i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </mbexd:SimpleRadioButton>
+                    <CheckBox Margin="5,0,5,0" IsChecked="{Binding IsAutoGenerateWay,Mode=TwoWay}"   Style="{StaticResource SimpleCheckBoxStyle}" Foreground="White" Content="其它证件办卡" ></CheckBox>
                 </StackPanel>
                 <ComboBox Grid.Row="1" Focusable="False" Grid.Column="1" Margin="0,0,26,0" Background="Transparent" Width="70" Height="20" SelectedIndex="{Binding SearchTimeIndex,Mode=TwoWay}" HorizontalAlignment="Right">
                     <ComboBoxItem>当天</ComboBoxItem>
@@ -103,8 +111,14 @@
                 <TextBlock Text="卡丢失:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
                 <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding LostCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
 
+                <TextBlock Text="逾期未还:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding NocomebackInTimeCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+                
                 <TextBlock Text="所有记录:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="#fFa927" ></TextBlock>
                 <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding TotalCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
+
+                <TextBlock Text="历史逾期未还:" Margin="15,0,0,0" HorizontalAlignment="Center" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" Foreground="Red" ></TextBlock>
+                <TextBlock Foreground="#ffffff" Margin="5,0,5,0" HorizontalAlignment="Center" Text="{Binding NocomebackCount,Mode=TwoWay}" FontFamily="{DynamicResource DefaultFontFamily}" VerticalAlignment="Center" FontSize="16" ></TextBlock>
 
             </StackPanel>
             <!--<StackPanel Grid.Column="0" Orientation="Horizontal">

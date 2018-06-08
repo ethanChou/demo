@@ -29,6 +29,7 @@
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Border Margin="5,0,5,0" Grid.Row="1"  BorderThickness="1"  Background="#2b2b2b" BorderBrush="#343434">
@@ -71,8 +72,13 @@
                     <!--<ComboBox Height="25" Width="145" ItemsSource="{Binding NodesCollection.Childrens,Mode=OneWay}" SelectedIndex="{Binding NodesCollection.IndexForChilds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="150"></ComboBox>-->
                 </StackPanel>
             </Border>
-
-            <Button Grid.Row="6" Command="{Binding SearchCmd}"  Height="28" Width="100" Margin="0,5,0,0">
+            <Border Margin="5,5,5,0" Grid.Row="6"  BorderThickness="1"  Background="#2b2b2b" BorderBrush="#343434">
+                <StackPanel  Orientation="Horizontal">
+                    <TextBlock Text="访客姓名" Width="60" Foreground="#787878"  VerticalAlignment="Center"></TextBlock>
+                    <TextBox Height="25" VerticalContentAlignment="Center" Width="145" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                </StackPanel>
+            </Border>
+            <Button Grid.Row="7" Command="{Binding SearchCmd}"  Height="28" Width="100" Margin="0,5,0,0">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,0">
                         <Image Source="../Image/Find.png" Height="18" Margin="0"></Image>

@@ -20,23 +20,32 @@
 
         <Border Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,5,0" Height="40" BorderThickness="1"  Background="#2b2b2b" BorderBrush="#343434">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="年份选择" Width="60"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="统计方式" Width="60"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
 
-
-                <ComboBox  Width="120" Height="25" SelectedIndex="0"  Margin="2,0,5,0" Text="{Binding Year,Mode=TwoWay}" ItemsSource="{Binding YearDatas}"  MaxDropDownHeight="150"></ComboBox>
-
-
-                <TextBlock Text="起始月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <ComboBox  SelectedIndex="0" Height="25" Width="100" Text="{Binding BeginMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
-
+                <ComboBox  Width="120" Focusable="False" Height="25" SelectedIndex="{Binding StatisticIndex,Mode=TwoWay}"  Margin="2,0,5,0"  MaxDropDownHeight="150">
+                    <ComboBoxItem>按月统计</ComboBoxItem>
+                    <ComboBoxItem>按天统计</ComboBoxItem>
                 </ComboBox>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDayConditon,Mode=TwoWay,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter=inverse}">
+                    <TextBlock Text="开始日期" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <DatePicker  Height="25" Width="100" SelectedDate="{Binding BeginDate,Mode=TwoWay}"></DatePicker>
+                    <TextBlock Text="结束日期" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <DatePicker  Height="25" Width="100"  SelectedDate="{Binding EndDate,Mode=TwoWay}"></DatePicker>
+                </StackPanel>
 
-
-
-                <TextBlock Text="结束月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <ComboBox SelectedIndex="11" Height="25" Width="100" Text="{Binding EndMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
-
-                </ComboBox>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDayConditon,Mode=TwoWay,Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="年份选择" Width="60"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <ComboBox  Width="80" Height="25" SelectedIndex="0"  Margin="2,0,5,0" Text="{Binding Year,Mode=TwoWay}" ItemsSource="{Binding YearDatas}"  MaxDropDownHeight="150"></ComboBox>
+                    <TextBlock Text="起始月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <ComboBox  SelectedIndex="0" Height="25" Width="80" Text="{Binding BeginMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
+                    </ComboBox>
+                    <TextBlock Text="年份选择" Width="60"  Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <ComboBox  Width="80" Height="25" SelectedIndex="0"  Margin="2,0,5,0" Text="{Binding Endyear,Mode=TwoWay}" ItemsSource="{Binding YearDatas}"  MaxDropDownHeight="150"></ComboBox>
+                    <TextBlock Text="结束月份" Width="60" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <ComboBox SelectedIndex="11" Height="25" Width="80" Text="{Binding EndMonth,Mode=TwoWay}" ItemsSource="{Binding MonthDatas}">
+                    </ComboBox>
+                </StackPanel>
+               
 
                 <Button Command="{Binding StartCmd}"  Height="30" Width="100" Margin="15,0,15,0">
                     <Button.Content>
