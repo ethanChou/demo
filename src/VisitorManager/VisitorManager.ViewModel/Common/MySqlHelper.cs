@@ -79,8 +79,18 @@ namespace VisitorManager.ViewModel
             {
                 query = "SELECT  * FROM " + typeof(T).Name + " WHERE " + wheresql;
             }
-            List<T> list = _conn.Query<T>(query).ToList();
-            return list;
+            try
+            {
+                List<T> list = _conn.Query<T>(query).ToList();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+        
+          
         }
         /// <summary>
         /// 多表联合查询，待修改

@@ -30,6 +30,7 @@ namespace VisitorManager.ViewModel
         private int _currentVisitors = 0;
         private ICommand _statusCmd;
         private string _conditionStr = "";
+        private bool _isAutoGenerateWay = false;
         public UserVisitingViewModel()
             : this(null)
         { }
@@ -52,35 +53,7 @@ namespace VisitorManager.ViewModel
             Single = this;
         }
 
-        /// <summary>
-        /// 根据TMPID查找是否存在此正在访问用户
-        /// </summary>
-        /// 
-        /// <remarks>不存在则返回null</remarks>
-        /// <param name="tmpid"></param>
-        /// <returns></returns>
-        internal Visitor ExistsCard(string tmpid, bool isTempCard = true)
-        {
-            for (int i = 0; i < Visistors.Count; i++)
-            {
-                if (isTempCard)
-                {
-                    if (Visistors[i].Tmpcard_no == tmpid && Visistors[i].Vt_status == Status.Visiting)
-                    {
-                        return Visistors[i];
-                    }
-                }
-                else
-                {
-                    if (Visistors[i].Vt_identify_no == tmpid && Visistors[i].Vt_status == Status.Visiting)
-                    {
-                        return Visistors[i];
-                    }
-                }
-            }
-            return null;
-        }
-
+        
 
         internal void VisitorDeleted(object obj)
         {
@@ -140,7 +113,8 @@ namespace VisitorManager.ViewModel
         private int _visitingCount = 0;
         private int _lostCount = 0;
         private int _totalCount = 0;
-
+        private int _nocomebackCount = 0;
+        private int _nocomebackInTimeCount = 0;
 
         public void BeginUpdateData()
         {
@@ -209,27 +183,32 @@ namespace VisitorManager.ViewModel
                 bt = new DateTime(nt.Year, nt.Month, nt.Day, 0, 0, 0);
             }
 
-            int v1 = ThriftManager.GetVisitorCount(Status.None, bt.Ticks, et.Ticks);
+            int v1 = ThriftManager.GetVisitorCount(Status.NoComeBack, 0, 0);
             int v2 = ThriftManager.GetVisitorCount(Status.Visiting, bt.Ticks, et.Ticks);
             int v3 = ThriftManager.GetVisitorCount(Status.LostCard, bt.Ticks, et.Ticks);
             int v4 = ThriftManager.GetVisitorCount(Status.Leave, bt.Ticks, et.Ticks);
+            int v5 = ThriftManager.GetVisitorCount(Status.None, bt.Ticks, et.Ticks);
 
             if (Dispatcher.CheckAccess())
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    TotalCount = v1;
                     VisitingCount = v2;
                     LostCount = v3;
                     LevaeCount = v4;
+                    TotalCount = v5;
+                    NocomebackCount = v1;
+                    NocomebackInTimeCount = Math.Max(0, v5 - v2 - v3 - v4);
                 }));
             }
             else
             {
-                TotalCount = v1;
                 VisitingCount = v2;
                 LostCount = v3;
                 LevaeCount = v4;
+                TotalCount = v5;
+                NocomebackCount = v1;
+                NocomebackInTimeCount = Math.Max(0, v5 - v2 - v3 - v4);
             }
         }
 
@@ -279,8 +258,9 @@ namespace VisitorManager.ViewModel
                 w.Start();
                 _srcVisistors = ThriftManager.GetVisitors(
                     String.Empty, String.Empty,
-                    ConditionStr, IdentifyType.IdCard,
-                    String.Empty, String.Empty, bt.Ticks, et.Ticks,
+                    ConditionStr, IsAutoGenerateWay ? IdentifyType.Ohter : IdentifyType.IdCard,
+                    String.Empty, String.Empty,
+                    _statusIndex == Status.NoComeBack ? 0 : bt.Ticks, _statusIndex == Status.NoComeBack ? 0 : et.Ticks,
                     _statusIndex,
                     String.Empty, String.Empty);
                 Console.WriteLine(w.ElapsedMilliseconds);
@@ -434,6 +414,8 @@ namespace VisitorManager.ViewModel
             }
         }
 
+
+
         public bool IsCheckedBusyBox
         {
             get { return _isCheckedBusyBox; }
@@ -441,6 +423,38 @@ namespace VisitorManager.ViewModel
             {
                 _isCheckedBusyBox = value;
                 NotifyChange("IsCheckedBusyBox");
+            }
+        }
+
+        public bool IsAutoGenerateWay
+        {
+            get { return _isAutoGenerateWay; }
+            set
+            {
+                _isAutoGenerateWay = value;
+                BeginUpdateData();
+                NotifyChange("TotalCount");
+            }
+        }
+
+        public int NocomebackCount
+        {
+            get { return _nocomebackCount; }
+            set
+            {
+                _nocomebackCount = value;
+                NotifyChange("NocomebackCount");
+            }
+        }
+
+        public int NocomebackInTimeCount
+        {
+            get { return _nocomebackInTimeCount; }
+            set
+            {
+                _nocomebackInTimeCount = value;
+                NotifyChange("NocomebackInTimeCount");
+
             }
         }
 

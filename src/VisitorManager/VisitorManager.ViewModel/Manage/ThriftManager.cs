@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -65,11 +66,11 @@ namespace VisitorManager.ViewModel
         {
             try
             {
-                DateTime dtn = DateTime.Now;
+                logger.Info("RunDetect Start");
+                Stopwatch watch = new Stopwatch();
                 while (true)
                 {
-                    DateTime dtcur = DateTime.Now;
-                    if (dtcur.Hour - dtn.Hour >= 2)
+                    if (watch.ElapsedMilliseconds == 0 || watch.ElapsedMilliseconds >= 1000 * 3600)
                     {
                         var datas = GetVisitors(
                             String.Empty, String.Empty, String.Empty,
@@ -77,11 +78,11 @@ namespace VisitorManager.ViewModel
                             Status.Visiting,
                             String.Empty,
                             String.Empty);
-                        dtn = dtcur;
+
                         for (int i = 0; i < datas.Count; i++)
                         {
                             var dt = new DateTime(datas[i].Vt_in_time);
-                            if ((dtcur - dt).Days >= 1)
+                            if (dt.Day != DateTime.Now.Day)
                             {
                                 //超过24时自动处理
                                 datas[i].Vt_status = Status.NoComeBack;
@@ -90,14 +91,16 @@ namespace VisitorManager.ViewModel
                                     f, datas[i].Vt_name, datas[i].Vt_identify_no, datas[i].Tmpcard_no, datas[i].Vt_vl_id));
                             }
                         }
+                        watch.Restart();
                     }
                     Thread.Sleep(1000);
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                logger.Info(e);
             }
+            logger.Warn("RunDetect End");
         }
 
         public static void Stop()
@@ -127,19 +130,32 @@ namespace VisitorManager.ViewModel
             {
                 try
                 {
+                    if (x == null || y == null)
+                    {
+                        return -1;
+                    }
+
                     if (string.IsNullOrEmpty(x.LnlId) || string.IsNullOrEmpty(y.LnlId))
                     {
                         return -1;
                     }
-                    int id1 = int.Parse(x.LnlId);
-                    int id2 = int.Parse(y.LnlId);
+                    if (x.Equals(y))
+                    {
+                        return 0;
+                    }
+                    double id1 = double.Parse(x.LnlId);
+                    double id2 = double.Parse(y.LnlId);
                     if (id1 > id2) return 1;
-                    if (id1 == id2) return 0;
-                    return -1;
+                    if (Equals(id1, id2)) return 0;
+                    if (id1 < id2) return -1;
+
+
+                    return 0;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    return -1;
+                    //logger.Error(ex);
+                    return 0;
                 }
             }
         }
@@ -154,9 +170,15 @@ namespace VisitorManager.ViewModel
         /// </summary>
         public static List<TreeNode> Tree { get; set; }
 
+        public static Adrelation Adrelation { get; set; }
+
         public static List<TreeNode> GetNodes()
         {
             if (_client == null) return new List<TreeNode>();
+
+            var list = GetAdrelations();
+            if (list != null && list.Count > 0) Adrelation = list[0];
+
             List<TreeNode> nodes = new List<TreeNode>();
             var dps = GetDepartments("", "", "", "");
 
@@ -173,12 +195,20 @@ namespace VisitorManager.ViewModel
                 nodes.Add(node);
             }
 
-            nodes.Sort(new TreeNodeComparer());
+            try
+            {
+                nodes.Sort(new TreeNodeComparer());
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex);
+            }
+
 
             Tree = Method.Bindings(nodes);
 
-            All = nodes;
 
+            All = nodes;
             return nodes;
         }
 
@@ -187,6 +217,24 @@ namespace VisitorManager.ViewModel
         #region Iface
 
         private const string Error = "ThriftManager's LenelDataService.Iface is null,Please call ThriftManager.Start()";
+
+        public static List<ThriftCommon.Adrelation> GetAdrelations()
+        {
+            try
+            {
+                Check();
+                if (_client == null) throw new NullReferenceException(Error);
+                lock (_lock)
+                {
+                    return _client.GetAdralations("", "", "");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "GetAdrelations");
+            }
+            return new List<Adrelation>();
+        }
 
         public static List<Department> GetDepartments(string ad_id, string id, string lnl_id, string name)
         {
@@ -358,7 +406,7 @@ namespace VisitorManager.ViewModel
                 if (_client == null) throw new NullReferenceException(Error);
                 lock (_lock)
                 {
-                    return _client.GetVisitors(String.Empty, String.Empty, String.Empty, IdentifyType.Ohter,
+                    return _client.GetVisitors(String.Empty, String.Empty, String.Empty, IdentifyType.IdCard,
                         String.Empty, String.Empty, in_time, out_time, Status.None, String.Empty, String.Empty);
                 }
             }
@@ -465,6 +513,25 @@ namespace VisitorManager.ViewModel
             }
             return String.Empty;
         }
+
+        public static DataCount GetCount(string sql)
+        {
+            try
+            {
+                Check();
+                if (_client == null) throw new NullReferenceException(Error);
+                lock (_lock)
+                {
+                    return _client.GetCount(sql);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "GetCount");
+            }
+            return null;
+        }
+
         #endregion
     }
 }

@@ -15,7 +15,8 @@ namespace VisitorManager.ViewModel
     public class UserSearchViewModel : ViewModelBase
     {
         MainWindowViewModel _mainVM;
-        public UserSearchViewModel() : this(null)
+        public UserSearchViewModel()
+            : this(null)
         {
 
         }
@@ -28,9 +29,9 @@ namespace VisitorManager.ViewModel
 
         public Type WindowType { get; set; }
         private int _statusIndex = 0;
-        private DateTime _beginTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month , DateTime.Now.AddDays(-7).Day, 0, 0, 0);
+        private DateTime _beginTime = new DateTime(DateTime.Now.AddDays(-7).Year, DateTime.Now.AddDays(-7).Month, DateTime.Now.AddDays(-7).Day, 0, 0, 0);
         private DateTime _endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
-
+        private string _userName="";
         private ICommand _searchCmd;
         private ObservableCollection<Visitor> _resultList = new ObservableCollection<Visitor>();
         TreeNodeCollection _nodesCollection = new TreeNodeCollection();
@@ -119,19 +120,32 @@ namespace VisitorManager.ViewModel
                 String.Empty,
                 String.Empty,
                 String.Empty,
-                IdentifyType.Ohter,
+                IdentifyType.IdCard,
                 String.Empty,
                 String.Empty,
-                BeginTime.Ticks,
-                EndTime.Add(new TimeSpan(23, 59, 59)).Ticks,
+                new DateTime(BeginTime.Year,BeginTime.Month,BeginTime.Day,0,0,0).Ticks,
+                 new DateTime(EndTime.Year, EndTime.Month, EndTime.Day, 23, 59, 59).Ticks,
                 (Status)StatusIndex,
                 DepNode != null ? DepNode.ID : String.Empty,
                 EmpNode != null ? EmpNode.ID : String.Empty);
 
+           
+
             vs.Sort(new TimeComparer(false));
+
             foreach (var t in vs)
             {
-                ResultList.Add(t);
+                if (!string.IsNullOrEmpty(UserName))
+                {
+                    if (t.Vt_name.Contains(UserName))
+                    {
+                        ResultList.Add(t);
+                    }
+                }
+                else
+                {
+                    ResultList.Add(t); 
+                }
             }
 
             NotifyChange("ResultList");
@@ -155,6 +169,16 @@ namespace VisitorManager.ViewModel
             set { _empNode = value; }
         }
 
+        public string UserName
+        {
+            get { return _userName; }
+            set
+            {
+                _userName = value;
+                NotifyChange("UserName");
+            }
+        }
+
         private void ExportCommand(object arg)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -176,8 +200,8 @@ namespace VisitorManager.ViewModel
 
                 tableFormatters.Add(new TableFormatter<Visitor>(collection["访客登记表", "UserName"].X, datas,
                     new TableColumnInfo<Visitor>(collection["访客登记表", "UserName"].Y, t => t.Vt_name),
-                    new TableColumnInfo<Visitor>(collection["访客登记表", "Employee"].Y, t => t.Vt_visit_employee_id),
-                    new TableColumnInfo<Visitor>(collection["访客登记表", "Department"].Y, t => t.Vt_visit_department_id),
+                    new TableColumnInfo<Visitor>(collection["访客登记表", "Employee"].Y, t => GetName(t.Vt_visit_employee_id,1)),
+                    new TableColumnInfo<Visitor>(collection["访客登记表", "Department"].Y, t => GetName(t.Vt_visit_department_id,0)),
                     new TableColumnInfo<Visitor>(collection["访客登记表", "InTime"].Y, t => DateTime.FromFileTime(t.Vt_in_time).ToString("yyyy-MM-dd HH:mm:ss")),
                     new TableColumnInfo<Visitor>(collection["访客登记表", "OutTime"].Y, t => DateTime.FromFileTime(t.Vt_out_time).ToString("yyyy-MM-dd HH:mm:ss")),
                     new TableColumnInfo<Visitor>(collection["访客登记表", "CardType"].Y, t => GetIdentifyTypeStr(t.Vt_identify_type)),
@@ -195,6 +219,20 @@ namespace VisitorManager.ViewModel
             }
         }
 
+        private string GetName(string id, int type)
+        {
+            var nodes = ThriftManager.All;
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].ID == id && nodes[i].Type == type)
+                {
+                    return nodes[i].Name;
+                }
+            }
+
+            return "";
+        }
 
         private string GetStatusStr(Status s)
         {

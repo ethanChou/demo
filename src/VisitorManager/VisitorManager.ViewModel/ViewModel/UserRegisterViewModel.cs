@@ -84,8 +84,15 @@ namespace VisitorManager.ViewModel
             _temporaryVisitors = new ObservableCollection<Visitor>();
 
             _objectList.AddRange(new List<string>() { "包", "箱子", "笔记本", "手机", "U盘", "移动硬盘", "其他" });
+            try
+            {
+                ThriftManager.GetNodes();
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex);
+            }
 
-            ThriftManager.GetNodes();
 
             SrcItems = ThriftManager.All;
             //已经排序过了
@@ -578,7 +585,7 @@ namespace VisitorManager.ViewModel
             {
                 _isOpenShortWay = value;
                 if (value) IsAutoGenerateWay = false;
-                if (CurrentNode != null&&CurrentNode.Type==1)
+                if (CurrentNode != null && CurrentNode.Type == 1)
                 {
                     CurrentNode.IsShowShort = value;
                 }
@@ -599,6 +606,7 @@ namespace VisitorManager.ViewModel
 
             CardIdType = 0;
             CardId = data.IdCardNO;
+
             IsOpenShortWay = false;
             IsAutoGenerateWay = false;
 
@@ -642,7 +650,7 @@ namespace VisitorManager.ViewModel
         {
             //临时卡
             // this.PassCardId = id;
-            this.PassCardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
+            this.PassCardId = string.IsNullOrEmpty(data.cardholder.ID) ? data.card_no : string.Format("{0}({1})", data.cardholder.ID, data.card_no);
         }
 
         internal void FreshCardReceived(VisitorFreshCardMessage data)
@@ -651,13 +659,20 @@ namespace VisitorManager.ViewModel
 
             if (data.cardholder_type == CardHolderType.Tmproty)
             {
+                string tpid = string.IsNullOrEmpty(data.cardholder.ID) ? data.card_no : string.Format("{0}({1})", data.cardholder.ID, data.card_no);
+                ;
+
                 //临时卡
                 //this.PassCardId = data.card_no;
-                this.PassCardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
+                this.PassCardId = tpid;
                 //string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
             }
             else if (data.cardholder_type == CardHolderType.CardHolder)
             {
+                string userIp = string.IsNullOrEmpty(data.cardholder.ID) ? data.card_no : string.Format("{0}({1})", data.cardholder.ID, data.card_no);
+                ;
+
+
                 bool exist = false;
                 TreeNode treeNode = null;
                 for (int i = 0; i < NodesCollection.Count; i++)
@@ -684,8 +699,8 @@ namespace VisitorManager.ViewModel
                     IsOpenShortWay = false;
                     IsAutoGenerateWay = false;
                     CardIdType = 1;
-                    CardId = string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no);
-                    VisitorName = data.cardholder.LastName;
+                    CardId = userIp;
+                    VisitorName = data.cardholder.FirstName;
                     CardImgPath = data.img_url;
                     if (string.IsNullOrWhiteSpace(CardImgPath))
                     {
@@ -840,7 +855,7 @@ namespace VisitorManager.ViewModel
 
         private bool AddUser()
         {
-           
+
 
             if (string.IsNullOrEmpty(CardId))
             {
@@ -892,6 +907,20 @@ namespace VisitorManager.ViewModel
             if (DeleteSelectedNodeBtnVis == Visibility.Collapsed)
             {
                 MsgBox.Show("请选择被访人员.", "提示", MessageBoxButton.OK);
+                return false;
+            }
+
+            var tmp = ThriftManager.GetVisitors("", "", "", CardIdType == 0 ? IdentifyType.IdCard : IdentifyType.Employee, "", CardId, 0, 0, Status.Visiting, "", "");
+            if (tmp != null && tmp.Count > 0)
+            {
+                MsgBox.Show("此证件号码已被使用.", "提示", MessageBoxButton.OK);
+                return false;
+            }
+
+            tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.IdCard, PassCardId, "", 0, 0, Status.Visiting, "", "");
+            if (tmp != null && tmp.Count > 0)
+            {
+                MsgBox.Show("此证件号码已被使用.", "提示", MessageBoxButton.OK);
                 return false;
             }
 
@@ -1148,6 +1177,7 @@ namespace VisitorManager.ViewModel
             string id = string.IsNullOrEmpty(VisitinglistId) ? GetNewVisitingListID() : VisitinglistId;
             foreach (var v in WaitVisitors)
             {
+
                 //所有来访单号，在提交的时候才确认生成。
                 v.Vt_vl_id = id;
                 //状态修改成已进入状态

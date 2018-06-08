@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VisitorManager.ViewModel
 {
-    public class TreeNode:ViewModelBase
+    public class TreeNode : ViewModelBase
     {
         public TreeNode()
         {
@@ -68,6 +68,29 @@ namespace VisitorManager.ViewModel
         public override string ToString()
         {
             return Name;
+        }
+
+        public TreeNode Clone()
+        {
+            var t= new TreeNode()
+            {
+                ID = this.ID,
+                IsShowShort = this.IsShowShort,
+                LnlId = this.LnlId,
+                Name = this.Name,
+               
+                ParentID = this.ParentID,
+                Tag = this.Tag,
+                Telephone = this.Telephone,
+                Type = this.Type
+            };
+            List<TreeNode> list = new List<TreeNode>();
+            foreach (var m in t.Nodes)
+            {
+                list.Add(m.Clone());
+            }
+            t.Nodes = list;
+            return t;
         }
     }
 

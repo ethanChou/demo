@@ -25,32 +25,7 @@ namespace VisitorManager.ViewModel
             IDCardManager.Start();
             FreshCardManager.Start();
             ThriftManager.Start();
-            List<Visitor> dts = new List<Visitor>();
-           // for (int i = 0; i < 500; i++)
-           // {
-           //     var visitor = new Visitor()
-           //      {
-           //          Vt_id = Guid.NewGuid().ToString(),
-           //          Vt_identify_imgurl = "http://192.168.1.104:6551/DownLoadFile?filename=LOC:03/data_S/20171127/10/16ad1516077b4947d837bf725debdf96_1",
-           //          Vt_identify_type = IdentifyType.IdCard,
-           //          Vt_identify_no = IDCardNumber.Radom().ToString(),
-           //          Vt_imgurl = "http://192.168.1.104:6551/DownLoadFile?filename=LOC:03/data_S/20171127/10/16ad1516077b4947d837bf725debdf96_6",
-           //          Vt_name = RandomTest.getRandomName(),
-           //          Vt_sex = i % 2 == 0 ? "男" : "女",
-           //          Vt_status= Status.Leave,
-           //          Vt_visit_department_id = "601ec9a3-a800-4b7a-9b81-dfc1f1a78e41",
-           //          Vt_visit_employee_id = "14592736-7f39-4f88-97c5-0a3fb95437a7",
-           //          Vt_in_time = DateTime.Now.Ticks,
-           //          Tmpcard_no = RandomTest.GetRandomNumber(100000, 999999),
-           //      };
 
-           //     dts.Add(visitor);
-           // }
-           //bool f=  ThriftManager.AddVisitor(dts);
-           // if (f)
-           // {
-                
-           // }
         }
 
 
@@ -62,8 +37,8 @@ namespace VisitorManager.ViewModel
             SearchVM = svm;
             StatisticVM = stvm;
 
-            IDCardManager.RecevierCallback += IDCardDataRecevied;
-            FreshCardManager.MessageReceived += FreshCardReceived;
+            IDCardManager.RecevierCallback += RecevieIDCardData;
+            FreshCardManager.MessageReceived += ReceiveEmployeeCard;
 
             UserLeaveCommands.Selected = new Action<object>(LeaveVM.SelectedCommand);
             UserLeaveCommands.Leave = new Action<object>(VisitroLeave);
@@ -89,17 +64,84 @@ namespace VisitorManager.ViewModel
         }
 
         /// <summary>
+        /// 根据TMPID查找是否存在此正在访问用户
+        /// </summary>
+        /// <remarks>不存在则返回null</remarks>
+        /// <param name="tmpid"></param>
+        /// <param name="cardType">0 临时卡，1 正式卡， 2 身份证卡</param>
+        /// <returns></returns>
+        private Visitor ExistsCard(string tmpid, int cardType)
+        {
+            try
+            {
+                if (cardType == 0)
+                {
+                    var tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.IdCard, tmpid, "", 0, 0, Status.Visiting, "", "");
+
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+                    tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.IdCard, tmpid, "", 0, 0, Status.NoComeBack, "", "");
+
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+                }
+                else if (cardType == 1)
+                {
+                    var tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.Employee, "", tmpid, 0, 0, Status.Visiting, "", "");
+
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+
+                    tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.Employee, "", tmpid, 0, 0, Status.NoComeBack, "", "");
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+                }
+                else if (cardType == 2)
+                {
+                    var tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.IdCard, "", tmpid, 0, 0, Status.Visiting, "", "");
+
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+
+                    tmp = ThriftManager.GetVisitors("", "", "", IdentifyType.IdCard, "", tmpid, 0, 0, Status.NoComeBack, "", "");
+                    if (tmp != null && tmp.Count > 0)
+                    {
+                        return tmp[0];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// 员工卡
         /// </summary>
         /// <param name="message"></param>
-        private void FreshCardReceived(string message)
+        private void ReceiveEmployeeCard(string message)
         {
             VisitorFreshCardMessage data = message.Deserialize<VisitorFreshCardMessage>();
             if (data != null)
             {
+                string id = string.IsNullOrEmpty(data.cardholder.ID)
+                       ? data.card_no : string.Format("{0}({1})", data.cardholder.ID, data.card_no);
                 if (data.cardholder_type == CardHolderType.Tmproty)
                 {
-                    var vtor = VistingVM.ExistsCard(string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no));
+                    var vtor = ExistsCard(id,0);
                     //临时卡正在使用
                     if (vtor != null)
                     {
@@ -116,7 +158,7 @@ namespace VisitorManager.ViewModel
                 else
                 {
                     //正式卡
-                    var vtor = VistingVM.ExistsCard(string.IsNullOrEmpty(data.cardholder.FirstName) ? data.card_no : string.Format("{0}({1})", data.cardholder.FirstName, data.card_no), false);
+                    var vtor = ExistsCard(id, 1);
                     if (vtor == null)
                     {
                         RegisterVM.FreshCardReceived(data);
@@ -136,20 +178,20 @@ namespace VisitorManager.ViewModel
         /// 刷身份证卡，产生消息，更新
         /// </summary>
         /// <param name="data"></param>
-        private void IDCardDataRecevied(IDCardData data)
+        private void RecevieIDCardData(IDCardData data)
         {
             if (!MainWindow.Dispatcher.CheckAccess())
             {
                 MainWindow.Dispatcher.Invoke(() =>
                 {
-                    IDCardDataRecevied(data);
+                    RecevieIDCardData(data);
                 });
                 return;
             }
 
             if (data != null)
             {
-                var vtor = VistingVM.ExistsCard(data.IdCardNO, false);
+                var vtor = ExistsCard(data.IdCardNO,2);
                 if (vtor == null)
                 {
                     RegisterVM.IDCardRecevied(data);

@@ -239,13 +239,13 @@ namespace VisitorManager.ViewModel
                 NotifyChange("ObjectStr");
                 FellowVisitors.Clear();
 
-                var list = ThriftManager.GetVisitors("", Visitor.Vt_vl_id, "", IdentifyType.Ohter, "", "", 0, 0, Status.None, "", "");
+                var list = ThriftManager.GetVisitors("", Visitor.Vt_vl_id, "", IdentifyType.IdCard, "", "", 0, 0, Status.None, "", "");
 
                 list.ForEach(t =>
                 {
                     var vex = new VisitorEx(t);
                     
-                    if (t.Vt_id == v.Vt_id && (v.Vt_status == Status.Visiting||v.Vt_status== Status.LostCard))
+                    if (t.Vt_id == v.Vt_id && (v.Vt_status == Status.Visiting||v.Vt_status== Status.LostCard||v.Vt_status == Status.NoComeBack))
                     {
                         vex.IsChecked = t.Vt_id == v.Vt_id;
                         vex.IsEnable = true;

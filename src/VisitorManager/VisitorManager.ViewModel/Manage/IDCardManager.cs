@@ -26,10 +26,10 @@ namespace VisitorManager.ViewModel
             _runThred.Start();
         }
 
-
         public static void Stop()
         {
             if (_runThred != null)
+
                 _runThred.Abort();
 
             IDCardInfoExtractor.Stop(true);

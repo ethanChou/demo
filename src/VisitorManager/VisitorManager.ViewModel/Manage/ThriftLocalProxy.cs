@@ -298,5 +298,11 @@ namespace VisitorManager.ViewModel
         {
             throw new NotImplementedException();
         }
+
+
+        public DataCount GetCount(string sql)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

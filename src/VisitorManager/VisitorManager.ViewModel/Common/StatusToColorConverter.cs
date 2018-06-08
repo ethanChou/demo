@@ -20,9 +20,13 @@ namespace VisitorManager.ViewModel
             if (vs == ThriftCommon.Status.Leave)
             {
                 return new SolidColorBrush(Color.FromArgb(0xff, 0x33, 0x33, 0x33));
-
             }
             if (vs == ThriftCommon.Status.LostCard)
+            {
+                //return new SolidColorBrush(Color.FromArgb(0xff, 0x00, 0x53, 0x44));
+                return new SolidColorBrush(Color.FromArgb(0xff, 0x42, 0x82, 0xc4));
+            }
+            if (vs == ThriftCommon.Status.NoComeBack)
             {
                 return new SolidColorBrush(Color.FromArgb(0xff, 0x99, 0x00, 0x00));
             }

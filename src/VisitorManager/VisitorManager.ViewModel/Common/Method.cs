@@ -99,7 +99,7 @@ namespace VisitorManager.ViewModel
                     {
                         if (!_treeNodes.ContainsKey(item.ID))
                         {
-                            _treeNodes.Add(item.ID, item);
+                            _treeNodes.Add(item.ID, item.Clone());
                         }
                     }
                     catch (Exception ex)
@@ -144,6 +144,7 @@ namespace VisitorManager.ViewModel
                 }
 
             }
+            GC.Collect();
             return dataList;
         }
 
@@ -161,7 +162,7 @@ namespace VisitorManager.ViewModel
                     {
                         if (!_treeNodes.ContainsKey(item.ID))
                         {
-                            _treeNodes.Add(item.ID, item);
+                            _treeNodes.Add(item.ID, item.Clone());
                         }
                     }
                 }
