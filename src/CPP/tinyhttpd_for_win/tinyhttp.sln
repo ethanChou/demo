@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyhttp", "tinyhttp.vcxproj", "{F33C5448-3F6C-4E2D-AFCF-AD7824F86F03}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minhttp", "..\..\minhttp\minhttp.vcxproj", "{0C9982E0-08F0-4689-B412-A2674189845A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minhttpclient", "..\..\minhttpclient\minhttpclient.vcxproj", "{EB254215-FE0D-4E57-9480-8CEF8482252A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pthreadtest", "..\..\pthreadtest\pthreadtest.vcxproj", "{D4146D68-E252-4FE1-B1F1-BA86CD1179B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F33C5448-3F6C-4E2D-AFCF-AD7824F86F03}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F33C5448-3F6C-4E2D-AFCF-AD7824F86F03}.Debug|Win32.Build.0 = Debug|Win32
+		{F33C5448-3F6C-4E2D-AFCF-AD7824F86F03}.Release|Win32.ActiveCfg = Release|Win32
+		{F33C5448-3F6C-4E2D-AFCF-AD7824F86F03}.Release|Win32.Build.0 = Release|Win32
+		{0C9982E0-08F0-4689-B412-A2674189845A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C9982E0-08F0-4689-B412-A2674189845A}.Debug|Win32.Build.0 = Debug|Win32
+		{0C9982E0-08F0-4689-B412-A2674189845A}.Release|Win32.ActiveCfg = Release|Win32
+		{0C9982E0-08F0-4689-B412-A2674189845A}.Release|Win32.Build.0 = Release|Win32
+		{EB254215-FE0D-4E57-9480-8CEF8482252A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EB254215-FE0D-4E57-9480-8CEF8482252A}.Debug|Win32.Build.0 = Debug|Win32
+		{EB254215-FE0D-4E57-9480-8CEF8482252A}.Release|Win32.ActiveCfg = Release|Win32
+		{EB254215-FE0D-4E57-9480-8CEF8482252A}.Release|Win32.Build.0 = Release|Win32
+		{D4146D68-E252-4FE1-B1F1-BA86CD1179B1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D4146D68-E252-4FE1-B1F1-BA86CD1179B1}.Debug|Win32.Build.0 = Debug|Win32
+		{D4146D68-E252-4FE1-B1F1-BA86CD1179B1}.Release|Win32.ActiveCfg = Release|Win32
+		{D4146D68-E252-4FE1-B1F1-BA86CD1179B1}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
