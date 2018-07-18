@@ -1,0 +1,54 @@
+D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js:177
+    child.send('shutdown');
+          ^
+
+TypeError: Cannot read property 'send' of null
+    at process.killkid (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js:177:11)
+    at emitNone (events.js:106:13)
+    at process.emit (events.js:208:7)
+    at Signal.wrap.onsignal (internal/process.js:208:44)
+undefined:1
+undefined
+^
+
+SyntaxError: Unexpected token u in JSON at position 0
+    at JSON.parse (<anonymous>)
+    at Request.request.get [as _callback] (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\get.js:23:27)
+    at self.callback (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:185:22)
+    at emitOne (events.js:116:13)
+    at Request.emit (events.js:211:7)
+    at Request.onRequestError (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:877:8)
+    at emitOne (events.js:116:13)
+    at ClientRequest.emit (events.js:211:7)
+    at Socket.socketErrorListener (_http_client.js:387:9)
+    at emitOne (events.js:116:13)
+undefined:1
+undefined
+^
+
+SyntaxError: Unexpected token u in JSON at position 0
+    at JSON.parse (<anonymous>)
+    at Request.request.get [as _callback] (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\get.js:7:27)
+    at self.callback (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:185:22)
+    at emitOne (events.js:116:13)
+    at Request.emit (events.js:211:7)
+    at Request.onRequestError (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:877:8)
+    at emitOne (events.js:116:13)
+    at ClientRequest.emit (events.js:211:7)
+    at Socket.socketErrorListener (_http_client.js:387:9)
+    at emitOne (events.js:116:13)
+undefined:1
+undefined
+^
+
+SyntaxError: Unexpected token u in JSON at position 0
+    at JSON.parse (<anonymous>)
+    at Request.request.get [as _callback] (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\get.js:23:27)
+    at self.callback (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:185:22)
+    at emitOne (events.js:116:13)
+    at Request.emit (events.js:211:7)
+    at Request.onRequestError (D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\request\request.js:877:8)
+    at emitOne (events.js:116:13)
+    at ClientRequest.emit (events.js:211:7)
+    at Socket.socketErrorListener (_http_client.js:387:9)
+    at emitOne (events.js:116:13)

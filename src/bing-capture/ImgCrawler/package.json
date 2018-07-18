@@ -1,0 +1,17 @@
+{
+  "name": "imgcrawler",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-schedule": "^1.3.0",
+    "node-windows": "^0.1.14",
+    "request": "2.87.0"
+  }
+}

@@ -1,0 +1,10 @@
+LIBRARY yuv
+EXPORTS 
+yuv_sacle
+yuv_merge
+yuv_yv12tobgr24
+yuv_yv12tobgr24_fast
+yuv_nv12torgb24
+yuv_nv12toi420
+yuv_rotate90nv12
+yuv_rotate270yuv420sp

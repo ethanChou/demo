@@ -1,0 +1,74 @@
+2018-07-05 09:07:03 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-05 09:07:03 - Started 8180
+2018-07-05 09:09:54 - Stopping node_imgcrawler.exe
+2018-07-05 09:09:54 - ProcessKill 8180
+2018-07-05 09:09:54 - Found child process: 236 Name: node.exe
+2018-07-05 09:09:54 - Stopping process 236
+2018-07-05 09:09:54 - Send SIGINT 236
+2018-07-05 09:09:54 - SIGINT to 236 failed - Killing as fallback
+2018-07-05 09:09:54 - Stopping process 8180
+2018-07-05 09:09:54 - Send SIGINT 8180
+2018-07-05 09:09:54 - SIGINT to8180 successful
+2018-07-05 09:09:54 - Finished node_imgcrawler.exe
+2018-07-06 09:21:55 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-06 09:21:56 - Started 2904
+2018-07-06 18:46:15 - Stopping node_imgcrawler.exe
+2018-07-06 18:46:15 - ProcessKill 2904
+2018-07-06 18:46:16 - Shutdown exception
+Message:
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementObjectCollection.ManagementObjectEnumerator.MoveNext()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2018-07-09 09:14:09 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-09 09:14:09 - Started 2520
+2018-07-09 17:04:26 - Stopping node_imgcrawler.exe
+2018-07-09 17:04:26 - ProcessKill 2520
+2018-07-09 17:04:27 - Shutdown exception
+Message:
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementObjectCollection.ManagementObjectEnumerator.MoveNext()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2018-07-09 17:05:50 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-09 17:05:51 - Started 3268
+2018-07-09 18:16:34 - Stopping node_imgcrawler.exe
+2018-07-09 18:16:34 - ProcessKill 3268
+2018-07-09 18:16:35 - Shutdown exception
+Message:
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementObjectCollection.ManagementObjectEnumerator.MoveNext()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2018-07-10 09:16:01 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-10 09:16:01 - Started 2896
+2018-07-11 20:53:44 - Stopping node_imgcrawler.exe
+2018-07-11 20:53:44 - ProcessKill 2896
+2018-07-11 20:53:46 - Shutdown exception
+Message:
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementObjectCollection.ManagementObjectEnumerator.MoveNext()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2018-07-12 09:10:32 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-12 09:10:33 - Started 2340
+2018-07-13 18:55:15 - Stopping node_imgcrawler.exe
+2018-07-13 18:55:15 - ProcessKill 2340
+2018-07-13 18:55:17 - Shutdown exception
+Message:
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementObjectCollection.ManagementObjectEnumerator.MoveNext()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2018-07-16 09:35:16 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\node_modules\node-windows\lib\wrapper.js --file D:\WorkSpace\node-js-demo\bing-capture\ImgCrawler\index.js --log "node_imgcrawler wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-07-16 09:35:17 - Started 3284
