@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="D:\TDDOWNLOAD\开发\100个C%23辅助类\100个C#辅助类\DotNet.Utilities\bin\Debug\DotNet.Utilities.dll" total="0" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2013-06-17" time="22:43:25">
+  <environment nunit-version="2.6.2.12296" clr-version="2.0.50727.5466" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\Program Files\NUnit 2.6.2\bin" machine-name="2011-20130608FQ" user="Administrator" user-domain="2011-20130608FQ" />
+  <culture-info current-culture="zh-CN" current-uiculture="zh-CN" />
+  <test-suite type="Assembly" name="D:\TDDOWNLOAD\开发\100个C%23辅助类\100个C#辅助类\DotNet.Utilities\bin\Debug\DotNet.Utilities.dll" executed="True" result="Inconclusive" success="False" time="0.000" asserts="0" />
+</test-results>
