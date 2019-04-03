@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Plupload - Getting Started</title>
+    <script type="text/javascript" src="/js/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/vue.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/element.min.js"></script>
+    <link rel="stylesheet" href="/css/element.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-row>
+            <el-button>默认按钮</el-button>
+            <el-button type="primary">主要按钮</el-button>
+            <el-button type="success">成功按钮</el-button>
+            <el-button type="info">信息按钮</el-button>
+            <el-button type="warning">警告按钮</el-button>
+            <el-button type="danger">危险按钮</el-button>
+        </el-row>
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :offset="4" :span="16">
+                <el-table :data="tableData"
+                          style="width: 100%">
+                    <el-table-column prop="date"
+                                     label="日期"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="name"
+                                     label="姓名"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="address"
+                                     label="地址">
+                    </el-table-column>
+                </el-table>
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
+    </div>
+
+    <ul id="filelist"></ul>
+    <br />
+
+    <div id="container">
+        <a id="browse" href="javascript:;">[Browse...]</a>
+        <a id="start-upload" href="javascript:;">[Start Upload]</a>
+    </div>
+
+    <br />
+    <pre id="console"></pre>
+
+    <script type="text/javascript">
+
+        var uploader = new plupload.Uploader({
+            browse_button: 'browse', // this can be an id of a DOM element or the DOM element itself
+            url: '/vsse/file/upload/video',
+            max_retries: 3,
+            unique_names: true,
+            multipart: true,
+            chunk_size: "5Mb"
+        });
+
+        uploader.init();
+
+        uploader.bind('FilesAdded', function (up, files) {
+            var html = '';
+            plupload.each(files, function (file) {
+                html += '<li id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+            });
+            document.getElementById('filelist').innerHTML += html;
+        });
+
+        uploader.bind("BeforeChunkUpload", function (
+            up,
+            file,
+            post,
+            chunkBlob,
+            offset
+        ) {
+            post.offset = offset;
+            post.originalname = file.name;
+        });
+
+        uploader.bind('UploadProgress', function (up, file) {
+            console.log(file.percent);
+           // document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+        });
+
+        uploader.bind('FileUploaded', function (up, file, info) {
+            console.log("FileUploaded");
+            console.log(info);
+        });
+
+        uploader.bind('Error', function (up, err) {
+            document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
+        });
+
+        document.getElementById('start-upload').onclick = function () {
+            uploader.start();
+        };
+
+        //1. Init：Plupload初始化完成后触发，参数：uploader当前的plupload实例对象
+        //2. OptionChanged：当使用Plupload实例的setOption()方法改变当前配置参数后触发，参数：(uploader, option_name, new_value, old_value) ：uploader为当前的plupload实例对象，option_name为发生改变的参数名称，new_value为改变后的值，old_value为改变前的值
+        //3. UploadFile：当上传队列中某一个文件开始上传后触发，参数：(uploader, file) ：uploader为当前的plupload实例对象，file为触发此事件的文件对象
+        //4. BeforeUpload：上传前触发，参数同3
+        //5. UploadProgress：会在文件上传过程中不断触发，可以用此事件来显示上传进度，参数：(uploader，file) ：uploader为当前的plupload实例对象，file为触发此事件的文件对象
+        //6. FilesRemoved：当文件从上传队列移除后触发，参数同3
+        //7. FilesAdded：当文件从上传队列添加后触发，参数同3
+        //8. FileUploaded：上传完成后触发，参数：(uploader, file, responseObject)uploader为当前的plupload实例对象，file为触发此事件的文件对象，responseObject为服务器返回的信息对象（response，responseHeaders，status）
+        //9. UploadComplete：当上传队列中所有文件都上传完成后触发，参数同3
+        //10. Error：当发生错误时触发，参数：(uploader, errObject) ，uploader为当前的plupload实例对象，errObject为错误对象，3个主要属性(code：错误代码，file：与该错误相关的文件对象，message：错误信息）
+        //11. Destroy：当调用destroy方法时触发，参数：(uploader) ：uploader为当前的plupload实例对象
+
+    </script>
+
+    <script>
+
+        // 创建一个 Vue 实例或 "ViewModel"
+        // 它连接 View 与 Model
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+
+                    tableData: [{
+                        date: '2016-05-02',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1517 弄'
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1519 弄'
+                    }, {
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1516 弄'
+                    }]
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

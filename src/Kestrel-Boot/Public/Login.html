@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>VSSE 后台管理</title>
+    <link rel="icon" href="/favicon.ico">
+    <script type="text/javascript" src="/js/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/vue.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/element-ui-2.6.1-index.js"></script>
+    <script type="text/javascript" src="/js/global.js"></script>
+    <link rel="stylesheet" href="/css/element-ui-2.6.1-index.css">
+</head>
+<body>
+    <div id="app">
+        <el-form :model="loginForm" :rules="fieldRules" ref="loginForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+            <h3 class="title">系统登录</h3>
+            <el-form-item prop="account">
+                <el-input type="text" v-model="loginForm.account" auto-complete="off" placeholder="账号"></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+                <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
+            </el-form-item>
+            <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+            <el-form-item style="width:100%;">
+                <el-button type="primary" style="width:48%;" @click.native.prevent="reset">重 置</el-button>
+                <el-button type="primary" style="width:48%;" @click.native.prevent="login" :loading="logining">登 录</el-button>
+            </el-form-item>
+        </el-form>
+
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                logining: false,
+                loginForm: {
+                    account: 'admin',
+                    password: null
+                },
+                fieldRules: {
+                    account: [
+                        { required: true, message: '请输入账号', trigger: 'blur' },
+                    ],
+                    password: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                    ]
+                },
+                checked: true
+            },
+            methods: {
+                login() {
+                    var vm = this;
+                    let userInfo = { account: this.loginForm.account, password: this.loginForm.password }
+                    $.ajax({
+                        url: '/api/token',
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        contentType: 'application/json',
+                        data: JSON.stringify(userInfo),
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(errorThrown);
+                            console.log(textStatus);
+                            vm.$message({
+                                message: "系统登录异常",
+                                type: 'error'
+                            });
+                            // alert("系统登录异常");
+                        },
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            console.log(status);
+                            if (data.code == 0) {
+                                //window._vsse_token = data.token;
+                                //cert.token = data.token;
+                                location.href = "/home.html";
+                                //location.reload();
+                                return false;
+                            }
+                            
+                        }
+                    });
+                },
+                reset() {
+                    this.loginForm.account = "";
+                    this.loginForm.password = "";
+                }
+            }
+        })
+    </script>
+
+    <style>
+        .login-container {
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            background-clip: padding-box;
+            margin: 180px auto;
+            width: 400px;
+            padding: 35px 35px 15px 35px;
+            background: #fff;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 0 25px #cac6c6;
+        }
+
+        .remember {
+            margin: 0px 0px 20px 0px;
+        }
+
+        .title {
+            margin: 0px auto 40px auto;
+            text-align: center;
+            color: #505458;
+        }
+    </style>
+</body>
+
+</html>

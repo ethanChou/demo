@@ -1,0 +1,848 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>VSSE 后台管理</title>
+    <link rel="icon" href="/favicon.ico">
+
+    <script>
+        var parseQuery = function (query) {
+            var reg = /([^=&\s]+)[=\s]*([^=&\s]*)/g;
+            var obj = {};
+            while (reg.exec(query)) {
+                obj[RegExp.$1] = RegExp.$2;
+            }
+            return obj;
+        }
+
+        var ck = document.cookie;
+        var cert = parseQuery(ck);
+
+        if (!cert.token) {
+            location.href = '/login.html';
+        }
+    </script>
+
+    <script type="text/javascript" src="/js/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/vue.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/element-ui-2.6.1-index.js"></script>
+    <script type="text/javascript" src="/js/global.js"></script>
+    <link rel="stylesheet" href="/css/element-ui-2.6.1-index.css">
+
+</head>
+<body>
+    <div id="app">
+        <!--导航条-->
+        <el-row>
+            <el-col :span="24" class="header">
+                <el-col :span="23">
+                    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+                             background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                        <el-menu-item index="0"><span>我的工作台</span></el-menu-item>
+                        <el-menu-item index="1" @click="chagePanel(1)">文件中心</el-menu-item>
+                        <el-menu-item index="2" @click="chagePanel(2)">任务中心</el-menu-item>
+                        <el-menu-item index="3" @click="chagePanel(3)">结果中心</el-menu-item>
+                        <el-menu-item index="4" @click="chagePanel(4)">系统配置</el-menu-item>
+                        <el-menu-item index="5" @click="chagePanel(5)">上传文件</el-menu-item>
+                    </el-menu>
+                </el-col>
+                <el-col :span="1">
+                    <div style="background-color:#545c64;height:60px;color:#fff;">
+                        <el-dropdown trigger="click">
+                            <span class="el-dropdown-link" style="line-height:60px;color:#fff;"><i class="el-icon-bell"></i>Admin</span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+
+                </el-col>
+            </el-col>
+        </el-row>
+
+        <br>
+        <!--文件中心-->
+        <template v-if="panelFile">
+            <el-row>
+                <el-col :span="1" class="grid">
+                    <el-button type="success" icon="el-icon-refresh" size="mini" @click="fileChange(1)" round>刷新</el-button>
+                </el-col>
+            </el-row>
+            <br>
+            <el-table key="fileTable" :data="file.items" border style="width: 100%" stripe ref="multipleTable" tooltip-effect="dark">
+                <el-table-column type="selection" width="35">
+                </el-table-column>
+                <el-table-column type="index" :index="indexMethod">
+                </el-table-column>
+                <el-table-column prop="id" label="Id" width="300">
+                </el-table-column>
+                <el-table-column prop="name" label="文件名称">
+                </el-table-column>
+                <el-table-column prop="actualname" label="实际名称">
+                </el-table-column>
+                <el-table-column prop="length" label="大小(byte)" width="100">
+                </el-table-column>
+                <el-table-column prop="frames" label="帧数" width="100">
+                </el-table-column>
+                <el-table-column prop="url" show-overflow-tooltip="true" label="地址">
+                </el-table-column>
+                <el-table-column prop="uploadAndProcess" label="处理" width="50">
+                </el-table-column>
+                <el-table-column prop="streamed" label="流化" width="50">
+                </el-table-column>
+                <el-table-column prop="submitToTask" label="提交任务" width="80">
+                </el-table-column>
+                <el-table-column prop="createdAt" label="日期" width="160" sortable>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="resetStreamFile(scope.row)">重新流化</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block" style="float:right;margin-top:5px">
+                <el-pagination background layout="prev, pager, next, total" :current-page="file.currentPage" @current-change="fileChange" :total="file.total"></el-pagination>
+            </div>
+            <br>
+        </template>
+        <!--任务中心-->
+        <template v-if="panelTask">
+            <el-row>
+                <el-col :span="1" class="grid">
+                    <el-button type="success" icon="el-icon-refresh" size="mini" @click="taskChange(1)" round>刷新</el-button>
+                </el-col>
+            </el-row>
+            <br>
+            <el-table key="taskTable" :data="task.items" border style="width: 100%" stripe ref="multipleTable" tooltip-effect="dark">
+                <el-table-column type="selection" width="35">
+                </el-table-column>
+                <el-table-column type="index" :index="indexMethod">
+                </el-table-column>
+                <el-table-column prop="id" show-overflow-tooltip="true" label="Id" width="100">
+                </el-table-column>
+                <el-table-column prop="source_id" label="文件Id" width="300">
+                </el-table-column>
+                <el-table-column prop="source_name" show-overflow-tooltip="true" label="名称" width="200">
+                </el-table-column>
+                <el-table-column prop="source_type" label="类型" width="50">
+                </el-table-column>
+                <el-table-column prop="file_length" show-overflow-tooltip="true" label="大小" width="100">
+                </el-table-column>
+                <el-table-column prop="video_time" label="时长" width="100">
+                </el-table-column>
+                <el-table-column prop="task_id" label="任务Id" width="80">
+                </el-table-column>
+                <el-table-column prop="task_status" label="状态" width="100">
+                </el-table-column>
+                <el-table-column prop="progress" label="进度" width="50">
+                </el-table-column>
+                <el-table-column prop="vehicle_processed" label="车辆处理" width="80">
+                </el-table-column>
+                <el-table-column prop="face_processed" label="人脸处理" width="80">
+                </el-table-column>
+                <el-table-column prop="error_message" show-overflow-tooltip="true" label="错误信息" width="100">
+                </el-table-column>
+                <!--<el-table-column prop="url" show-overflow-tooltip="true" label="地址">
+                </el-table-column>-->
+                <el-table-column show-overflow-tooltip="true" label="地址">
+                    <template slot-scope="scope">
+                        <a href="#" @click="viewImage(scope.row.url)">{{scope.row.url}}</a>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop="createdAt" label="日期" width="150" sortable>
+                </el-table-column>
+                <el-table-column label="操作" width="200">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="resetTask(0,scope.row)" size="mini">重置人脸</el-button>
+                        <el-button type="success" @click="resetTask(1,scope.row)" size="mini">重置车辆</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block" style="float:right;margin-top:5px">
+                <el-pagination background layout="prev, pager, next, total" :current-page="task.currentPage" @current-change="taskChange" :total="task.total"></el-pagination>
+            </div>
+            <br>
+        </template>
+        <!--结果中心-->
+        <template v-if="panelResult">
+            <el-row>
+                <el-col :span="1" class="grid">
+                    <el-button type="success" icon="el-icon-refresh" size="mini" @click="resultChange(1)" round>刷新</el-button>
+                </el-col>
+            </el-row>
+            <br>
+            <el-table key="resultTable" :data="result.items" border style="width: 100%" stripe ref="multipleTable" tooltip-effect="dark">
+                <el-table-column type="selection" width="35">
+                </el-table-column>
+                <el-table-column type="index" :index="indexMethod">
+                </el-table-column>
+                <el-table-column prop="sourceId" show-overflow-tooltip="true" label="SourceId" sortable width="300">
+                </el-table-column>
+                <el-table-column prop="age" show-overflow-tooltip="true" label="Age" width="100">
+                </el-table-column>
+                <el-table-column prop="objectType" show-overflow-tooltip="true" label="Type" width="60">
+                </el-table-column>
+                <el-table-column prop="ethicCode" show-overflow-tooltip="true" label="Ethic" width="60">
+                </el-table-column>
+                <el-table-column prop="genderCode" show-overflow-tooltip="true" label="Sex" width="60">
+                </el-table-column>
+                <el-table-column prop="imageTargetRect" show-overflow-tooltip="true" label="ImageTargetRect" width="140">
+                </el-table-column>
+                <el-table-column show-overflow-tooltip="true" label="ImageSrcUrl" width="140">
+                    <template slot-scope="scope">
+                        <a href="#" @click="viewImage(scope.row.imageSrcUrl)">{{scope.row.imageSrcUrl}}</a>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip="true" label="ImageTargetUrl" width="140">
+                    <template slot-scope="scope">
+                        <a href="#" @click="viewImage(scope.row.imageTargetUrl)">{{scope.row.imageTargetUrl}}</a>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="bagStyle" show-overflow-tooltip="true" label="BagStyle" width="100">
+                </el-table-column>
+                <el-table-column prop="capStyle" show-overflow-tooltip="true" label="CapStyle" width="100">
+                </el-table-column>
+                <el-table-column prop="coatColor" show-overflow-tooltip="true" label="CoatColor" width="100">
+                </el-table-column>
+                <el-table-column prop="glassStyle" show-overflow-tooltip="true" label="Glass" width="100">
+                </el-table-column>
+                <el-table-column prop="headMarker" show-overflow-tooltip="true" label="HeadMark" width="100">
+                </el-table-column>
+                <el-table-column prop="lowerBodyColor" show-overflow-tooltip="true" label="LowerBody" width="100">
+                </el-table-column>
+                <el-table-column prop="upperBodyColor" show-overflow-tooltip="true" label="UpperBody" width="100">
+                </el-table-column>
+                <el-table-column prop="plateClass" show-overflow-tooltip="true" label="PlateClass" width="100">
+                </el-table-column>
+                <el-table-column prop="plateColor" show-overflow-tooltip="true" label="PlateColor" width="100">
+                </el-table-column>
+                <el-table-column prop="plateNo" show-overflow-tooltip="true" label="PlateNo" width="100">
+                </el-table-column>
+                <el-table-column prop="plateRect" show-overflow-tooltip="true" label="PlateRect" width="100">
+                </el-table-column>
+                <el-table-column prop="vehicleBrand" show-overflow-tooltip="true" label="VehicleBrand" width="100">
+                </el-table-column>
+                <el-table-column prop="vehicleClass" show-overflow-tooltip="true" label="VehicleClass" width="100">
+                </el-table-column>
+                <el-table-column prop="vehicleColor" show-overflow-tooltip="true" label="VehicleColor" width="100">
+                </el-table-column>
+                <el-table-column prop="frontThing" show-overflow-tooltip="true" label="FrontThing" width="100">
+                </el-table-column>
+                <el-table-column prop="features" show-overflow-tooltip="true" label="Features" width="100">
+                </el-table-column>
+                <el-table-column prop="createdAt" show-overflow-tooltip="true" label="CreatedAt" width="100">
+                </el-table-column>
+                <el-table-column label="操作" width="80" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="viewResult(scope.row)" size="mini">查看</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block" style="float:right;margin-top:5px">
+                <el-pagination background layout="prev, pager, next, total" :current-page="result.currentPage" @current-change="resultChange" :total="result.total"></el-pagination>
+            </div>
+            <br>
+        </template>
+        <!--系统配置-->
+        <template v-if="panelConfig">
+            <div style="margin:auto">
+                <el-row>
+                    <el-col :span="10" :offset="6">
+                        <div>
+                            <el-input placeholder="请输入内容(mongodb://127.0.0.1:9127)" v-model="config.mongourl">
+                                <template slot="prepend">
+                                    DBURL
+                                </template>
+                            </el-input>
+                        </div>
+                    </el-col>
+                    <el-col :span="2">
+                        <div>
+
+                        </div>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="10" :offset="6">
+                        <div style="margin-top: 15px;">
+                            <el-input placeholder="请输入内容(127.0.0.1)" v-model="config.pfsip">
+                                <template slot="prepend">
+                                    PFSIP
+                                </template>
+                            </el-input>
+                        </div>
+                    </el-col>
+                    <el-col :span="2">
+
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="10" :offset="6">
+                        <div style="margin-top: 15px;">
+                            <el-input placeholder="请输入内容(http://127.0.0.1:5000)" v-model="config.vsse">
+                                <template slot="prepend">
+                                    VSSE
+                                </template>
+                            </el-input>
+                        </div>
+                    </el-col>
+                    <el-col :span="2">
+                        <div style="margin-top: 15px;">
+                            <el-button type="success" @click="saveConfig">保存配置</el-button>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+        </template>
+        <!--上传文件-->
+        <template v-if="panelLog">
+            <el-row>
+                <el-col :span="2" class="grid">
+                    <el-button type="primary" id="browse" icon="el-icon-circle-plus-outline" size="mini" round>上传文件</el-button>
+                </el-col>
+                <el-col :span="2" class="grid">
+                    <!--<el-button type="success" id="browse_big" icon="el-icon-circle-plus-outline" size="mini" round>上传大文件</el-button>-->
+                    <el-upload class="upload-demo"
+                               action="/vsse/file/upload/bigfile"
+                               :on-success="uploadBigFileSuccess"
+                               :on-error="uploadBigFileError"
+                               :show-file-list="false">
+                        <el-button size="mini" icon="el-icon-circle-plus-outline" type="success" round>上传大文件</el-button>
+                    </el-upload>
+                </el-col>
+            </el-row>
+            <br />
+            <el-row>
+                <el-col :span="23" class="grid">
+                    <div>
+                        <el-progress :stroke-width="10" :percentage="userfile.uploadPercent"></el-progress>
+                    </div>
+                </el-col>
+            </el-row>
+            <br />
+            <el-table key="userFileTable" :data="userfile.items" border style="width: 100%" stripe ref="multipleTable" tooltip-effect="dark">
+                <el-table-column type="selection" width="35">
+                </el-table-column>
+                <el-table-column type="index" :index="indexMethod">
+                </el-table-column>
+                <el-table-column prop="id" label="Id" width="290">
+                </el-table-column>
+                <el-table-column prop="name" show-overflow-tooltip="true" label="文件名称" width="280">
+                </el-table-column>
+                <el-table-column prop="originalName" show-overflow-tooltip="true" label="实际名称" width="280">
+                </el-table-column>
+                <el-table-column prop="length" label="大小(byte)" width="90">
+                </el-table-column>
+                <el-table-column prop="ext" label="格式" width="70">
+                </el-table-column>
+                <el-table-column prop="url" show-overflow-tooltip="true" label="地址">
+                    <template slot-scope="scope">
+                        <a href="#" @click="viewuserImage(scope.row.url)">{{scope.row.url}}</a>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="fileType" label="类型" width="50">
+                </el-table-column>
+                <el-table-column prop="createdAt" label="日期" width="200" sortable>
+                </el-table-column>
+                <el-table-column label="操作" width="80">
+                    <template slot-scope="scope">
+                        <el-button type="danger" size="mini" @click="deleteUserFile(scope.row.id)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block" style="float:right;margin-top:5px">
+                <el-pagination background layout="prev, pager, next, total" :current-page="userfile.currentPage" @current-change="userfileChange" :total="userfile.total"></el-pagination>
+            </div>
+            <br>
+        </template>
+        <!--信息显示对话框-->
+        <template v-if="dialogVisible">
+            <el-dialog title="提示"
+                       :visible.sync="dialogVisible"
+                       width="30%">
+                <span v-html="currentMsg"></span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>
+        </template>
+        <!--图片显示对话框-->
+        <template v-if="imageViewVisible">
+            <el-dialog title="提示"
+                       :visible.sync="imageViewVisible"
+                       width="50%">
+                <img :src="imageViewUrl" style="width:100%">
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="imageViewVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>
+        </template>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                dialogVisible: false,
+                imageViewVisible: false,
+                imageViewUrl: "",
+                currentMsg: "",
+                activeIndex: "1",
+                visible2: false,
+                panelFile: true,
+                panelTask: false,
+                panelResult: false,
+                panelConfig: false,
+                panelLog: false,
+                file: {
+
+                    items: [],
+                    total: 0,
+                    currentPage: 1
+                },
+                userfile: {
+                    uploader: null,
+                    uploadPercent: 0,
+                    items: [],
+                    total: 0,
+                    currentPage: 1
+                },
+                task: {
+
+                    items: [],
+                    total: 0,
+                    currentPage: 1
+                },
+                result: {
+
+                    items: [],
+                    total: 0,
+                    currentPage: 1
+                },
+                config: {
+                    mongourl: "",
+                    pfsip: "",
+                    vsse: ""
+                },
+                logging: {
+
+                }
+            },
+            mounted: function () {
+
+                var vm = this;
+
+                console.log("mounted 1");
+                setTimeout(function () {
+                    vm.updateConfig();
+                    vm.searchFile();
+                }, 200);
+                console.log("mounted 2");
+
+
+            },
+            methods: {
+                initUpload() {
+
+                    var vm = this;
+                    //实例化一个plupload上传对象
+                    var uploader = new plupload.Uploader({
+                        browse_button: 'browse', // this can be an id of a DOM element or the DOM element itself
+                        url: '/vsse/file/upload/file',
+                        max_retries: 3,
+                        unique_names: true,
+                        multipart: true,
+                        chunk_size: "5Mb"
+                    });
+
+                    //在实例对象上调用init()方法进行初始化
+                    uploader.init();
+
+                    //绑定各种事件，并在事件监听函数中做你想做的事
+                    uploader.bind('FilesAdded', function (uploader, files) {
+                        //每个事件监听函数都会传入一些很有用的参数，
+                        //我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
+                        console.log("FilesAdded");
+                        console.log(files);
+
+                        vm.startUplaod();
+                    });
+
+                    uploader.bind("BeforeChunkUpload", function (
+                        up,
+                        file,
+                        post,
+                        chunkBlob,
+                        offset
+                    ) {
+                        post.offset = offset;
+                        post.originalname = file.name;
+                    });
+
+                    uploader.bind('UploadProgress', function (uploader, file) {
+                        //每个事件监听函数都会传入一些很有用的参数，
+                        //我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
+
+                        console.log("UploadProgress");
+                        console.log(file);
+                        vm.userfile.uploadPercent = file.percent;
+                    });
+
+                    uploader.bind('FileUploaded', function (up, file, info) {
+                        console.log("FileUploaded");
+                        console.log(info);
+                    });
+
+                    uploader.bind('UploadComplete', function (up, files) {
+                        console.log("UploadComplete");
+                        console.log(files);
+                        vm.$message({
+                            message: '上传成功',
+                            type: 'success'
+                        });
+                        vm.searchUserFile(vm.userfile.currentPage);
+                    });
+
+                    uploader.bind('Error', function (up, err) {
+                        console.log("Error");
+                        vm.$message(err.message);
+                    });
+
+                    vm.userfile.uploader = uploader;
+                },
+                startUplaod() {
+                    this.userfile.uploader.start();
+                },
+                chagePanel(index) {
+                    console.log("chagePanel " + index);
+                    if (index === 1) {
+                        this.panelFile = true
+                        this.panelLog = this.panelTask = this.panelResult = this.panelConfig = false;
+                        this.searchFile(1);
+                    }
+                    if (index === 2) {
+                        this.panelTask = true;
+                        this.panelLog = this.panelFile = this.panelResult = this.panelConfig = false;
+                        this.searchTask(1);
+                    }
+                    if (index === 3) {
+                        this.panelResult = true;
+                        this.panelLog = this.panelFile = this.panelTask = this.panelConfig = false;
+                        this.searchResult(1);
+                    }
+                    if (index === 4) {
+                        this.panelConfig = true;
+                        this.panelLog = this.panelFile = this.panelTask = this.panelResult = false;
+                        this.updateConfig();
+                    }
+                    if (index === 5) {
+                        this.panelLog = true;
+                        this.panelConfig = this.panelFile = this.panelTask = this.panelResult = false;
+                        this.searchUserFile(1);
+                        setTimeout(() => {
+                            this.initUpload();
+                        }, 500);
+                    }
+                },
+                handleSelect(key, keyPath) {
+                    console.log(key, keyPath);
+                },
+                indexMethod(index) {
+                    return index;
+                },
+                fileChange(page) {
+                    this.searchFile(page);
+                },
+                taskChange(page) {
+                    this.searchTask(page);
+                },
+                userfileChange(page) {
+                    this.searchUserFile(page);
+                },
+                resultChange(page) {
+                    this.searchResult(page);
+                },
+                handleMessage(row) {
+                    console.log("handleMessage");
+                    console.log(row);
+                },
+                deleteUserFile(id) {
+
+                    var vm = this;
+
+                    $.ajax({
+                        url: '/vsse/file/upload/' + id,
+                        type: 'DELETE',
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(errorThrown);
+                            console.log(textStatus);
+                            vm.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            });
+                        },
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            console.log(status);
+                            vm.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            vm.searchUserFile(vm.userfile.currentPage);
+                        }
+                    });
+                },
+                searchFile(index = 1, size = 10) {
+                    var data = {
+                        pageIndex: index,
+                        pageSize: size
+                    }
+                    var vm = this;
+                    //$.axget("/vsse/file/task/filelist", data, function (result) {
+                    //    console.log(result);
+                    //    vm.file.total = result.total;
+                    //    vm.file.items = result.items;
+                    //});
+
+                    $.axget("/vsse/file/task/filelist", data,
+                        function (result) {
+                            console.log(result);
+                            vm.file.total = result.total;
+                            vm.file.items = result.items;
+                        });
+
+                },
+                searchTask(index = 1, size = 10) {
+                    var data = {
+                        pageIndex: index,
+                        pageSize: size
+                    }
+                    var vm = this;
+                    $.axget("/vsse/file/task/tasklist", data,
+                        function (result) {
+                            console.log(result);
+                            vm.task.total = result.total;
+                            vm.task.items = result.items;
+                        }
+                    );
+                },
+                searchResult(index = 1, size = 10) {
+                    var data = {
+                        pageIndex: index,
+                        pageSize: size
+                    }
+                    var vm = this;
+                    $.axget("/vsse/file/task/structlist", data,
+                        function (result) {
+                            console.log(result);
+                            vm.result.total = result.total;
+                            vm.result.items = result.items;
+                        }
+                    );
+                },
+                searchUserFile(index = 1, size = 10) {
+                    var data = {
+                        pageIndex: index,
+                        pageSize: size
+                    }
+                    var vm = this;
+
+                    $.axget("/vsse/file/upload/list", data,
+                        function (result) {
+                            console.log(result);
+                            vm.userfile.total = result.total;
+                            vm.userfile.items = result.items;
+                        });
+                },
+                updateConfig() {
+                    var vm = this;
+                    $.axget("/vsse/file/task/getconfig", null,
+                        function (result) {
+                            console.log(result);
+                            vm.config.mongourl = result.mongodbUrl;
+                            vm.config.pfsip = result.pfsip;
+                            vm.config.vsse = result.vsse;
+                        }
+                    );
+                },
+                saveConfig() {
+                    var vm = this;
+                    var data = {
+                        mongodbUrl: vm.config.mongourl,
+                        pfsip: vm.config.pfsip,
+                        vsse: vm.config.vsse
+                    }
+                    $.axget(
+                        "/vsse/file/task/setconfig", data,
+                        function (result) {
+                            console.log(result);
+                            if (result.code == 0) {
+                                vm.currentMsg = "更新配置成功";
+                                vm.dialogVisible = true;
+                            }
+                            else {
+                                vm.currentMsg = "更新配置失败";
+                                vm.dialogVisible = true;
+                            }
+                        }
+                    );
+                },
+                viewResult(row) {
+                    this.currentMsg = formatJson(row);
+                    this.dialogVisible = true;
+                },
+                viewuserImage(url) {
+                    this.imageViewUrl = url;
+                    this.imageViewVisible = true;
+                },
+                viewImage(url) {
+                    if (url.indexOf("http://") == -1) {
+                        this.imageViewUrl = this.config.vsse + url;
+                    }
+                    else {
+                        this.imageViewUrl = url;
+                    }
+                    this.imageViewVisible = true;
+                },
+                logout() {
+                    clearAllCookie();
+                    window.location.href = "/login.html";
+                    //window.location.reload();
+                    return false;
+                },
+                resetStreamFile(row) {
+                    var vm = this;
+                    if (row.type == 1) {
+                        //图片
+                        vm.currentMsg = "图片不需要流化";
+                        vm.dialogVisible = true;
+                    };
+                    if (row.type == 0) {
+                        //视频
+                        $.axget("/vsse/file/task/resetfile", data,
+                            function (result) {
+                                console.log(result);
+                                if (result.code == 0) {
+                                    vm.currentMsg = "重置成功";
+                                    vm.dialogVisible = true;
+                                }
+                                else {
+                                    vm.currentMsg = "重置失败";
+                                    vm.dialogVisible = true;
+                                }
+                            }
+                        );
+                    }
+                },
+                resetTask(mode, row) {
+                    var vm = this;
+
+                    var data = {
+                        id: row.id,
+                    }
+                    if (mode == 0) data.resetFace = 1;
+                    if (mode == 1) data.resetVehicle = 1;
+
+                    $.axget("/vsse/file/task/resettask", data,
+                        function (result) {
+                            console.log(result);
+                            if (result.code == 0) {
+                                vm.currentMsg = "重置成功";
+                                vm.dialogVisible = true;
+                            }
+                            else {
+                                vm.currentMsg = "重置失败";
+                                vm.dialogVisible = true;
+                            }
+                        }
+                    );
+                },
+                uploadBigFileSuccess(response, file, fileList) {
+                    var vm = this;
+                    console.log("uploadBigFileSuccess");
+                    vm.$message({
+                        message: '上传成功',
+                        type: 'success'
+                    });
+                    vm.searchUserFile(vm.userfile.currentPage);
+
+                },
+                uploadBigFileError(err, file, fileList) {
+                    var vm = this;
+                    console.log("uploadBigFileError");
+                    vm.$message({
+                        message: '上传失败' + err.toUTCString(),
+                        type: 'error'
+                    });
+                }
+            }
+        });
+
+        function clearAllCookie() {
+            var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+            if (keys) {
+                for (var i = keys.length; i--;)
+                    document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+            }
+        }
+
+        function formatJson(msg) {
+            var rep = "~";
+            var jsonStr = JSON.stringify(msg, null, rep)
+            var str = "";
+            for (var i = 0; i < jsonStr.length; i++) {
+                var text2 = jsonStr.charAt(i)
+                if (i > 1) {
+                    var text = jsonStr.charAt(i - 1)
+                    if (rep != text && rep == text2) {
+                        str += "<br/>"
+                    }
+                }
+                str += text2;
+            }
+            jsonStr = "";
+            for (var i = 0; i < str.length; i++) {
+                var text = str.charAt(i);
+                if (rep == text)
+                    jsonStr += "        "
+                else {
+                    jsonStr += text;
+                }
+                if (i == str.length - 2)
+                    jsonStr += "<br/>"
+            }
+            return jsonStr;
+        }
+
+        var parseQuery = function (query) {
+            var reg = /([^=&\s]+)[=\s]*([^=&\s]*)/g;
+            var obj = {};
+            while (reg.exec(query)) {
+                obj[RegExp.$1] = RegExp.$2;
+            }
+            return obj;
+        }
+
+    </script>
+
+    <style>
+        #app {
+            font-family: Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        .el-dialog__title {
+            float: left;
+            line-height: 24px;
+            font-size: 18px;
+            color: #303133;
+        }
+
+        body {
+            margin: 0px;
+        }
+    </style>
+</body>
+</html>
